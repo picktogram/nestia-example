@@ -6,7 +6,7 @@ import { UsersService } from '@root/providers/users.service';
 import { LocalGuard } from './guards/local.guard';
 
 @ApiTags('권한 / Auth')
-@Controller('api/auth')
+@Controller('api/v1/auth')
 export class AuthController {
   constructor(private readonly usersService: UsersService) {}
 

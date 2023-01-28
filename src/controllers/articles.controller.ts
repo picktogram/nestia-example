@@ -3,7 +3,7 @@ import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ArticlesService } from '../providers/articles.service';
 
 @ApiTags('상품 / Articles')
-@Controller('api/articles')
+@Controller('api/v1/articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 }

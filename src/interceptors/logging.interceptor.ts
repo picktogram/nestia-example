@@ -14,18 +14,14 @@ export class LoggingInterceptor implements NestInterceptor {
     const { path, user, body, query } = request;
     const now = Date.now();
 
-    return next
-      .handle()
-      .pipe(
-        tap((response) =>
-          console.log(
-            `logging\n${request.method} ${path} time : ${
-              Date.now() - request.now
-            }ms\nuser : ${JSON.stringify(user)}\nbody : ${JSON.stringify(
-              body,
-            )}\nquery : ${JSON.stringify(query)}`,
-          ),
-        ),
-      );
+    return next.handle().pipe(
+      tap((response) => {
+        console.log(
+          `logging\n${request.method} ${path} time : ${
+            Date.now() - request.now
+          }ms`,
+        );
+      }),
+    );
   }
 }
