@@ -1,11 +1,11 @@
-import { Controller, Request, Post, UseGuards, Body } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '@root/common/decorators/user.decorator';
 import { CreateUserDto } from '@root/models/dtos/create-user.dto';
 import { LoginUserDto } from '@root/models/dtos/login-user.dto';
-import { User as UserEntity } from '@root/models/tables/user';
 import { UsersService } from '@root/providers/users.service';
+import { DecodedUserToken } from '@root/types';
 import { LocalGuard } from './guards/local.guard';
 
 @ApiTags('권한 / Auth')
@@ -22,11 +22,15 @@ export class AuthController {
     return await this.usersService.create(createUserDto);
   }
 
-  @ApiOperation({ summary: '이메일과 패스워드를 이용한 로그인' })
+  @ApiOperation({ summary: '220129 - 이메일과 패스워드를 이용한 로그인' })
+  @ApiOkResponse({
+    type: String,
+    description: '암호화된 토큰, decode하여 사용할 값을 담고 있다.',
+  })
   @ApiBody({ type: LoginUserDto })
   @UseGuards(LocalGuard)
   @Post('login')
-  async login(@User() user: UserEntity) {
-    return this.jwtService.sign(user);
+  async login(@User() user: DecodedUserToken) {
+    return this.jwtService.sign({ ...user });
   }
 }

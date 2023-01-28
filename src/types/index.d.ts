@@ -1,3 +1,5 @@
+import { User } from '@root/models/tables/user';
+
 type ListType = {
   data: any[];
   count: number;
@@ -15,3 +17,8 @@ type ExtendedResponse<T> = {
   // data: T;
   data: T extends ListType ? ListOutputValue : T;
 };
+
+type DecodedUserToken = Pick<
+  User,
+  'id' | 'name' | 'nickname' | 'phoneNumber' | 'email' | 'birth' | 'gender'
+>;
