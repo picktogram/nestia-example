@@ -18,8 +18,8 @@ export const TypeOrmModuleOptions = {
         path.join(__dirname, '../../models/tables/*.ts'),
         path.join(__dirname, '../../models/tables/*.js'),
       ],
-      synchronize: NODE_ENV === 'local' ? true : false,
-      ...(NODE_ENV === 'DEVELOPMENT'
+      synchronize: NODE_ENV === 'LOCAL' ? true : false,
+      ...(NODE_ENV === 'DEVELOPMENT' || NODE_ENV === 'LOCAL'
         ? { retryAttempts: 10, logging: true }
         : { logging: false }),
     };
