@@ -8,7 +8,7 @@ dotenv.config();
 const NODE_ENV = process.env.NODE_ENV;
 
 export default new DataSource({
-  type: 'mysql',
+  type: 'postgres',
   host: process.env[`${NODE_ENV}_DB_HOST`] as string,
   port: Number(process.env[`${NODE_ENV}_DB_PORT`]) as number,
   username: process.env[`${NODE_ENV}_DB_USERNAME`] as string,

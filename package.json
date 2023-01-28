@@ -11,6 +11,7 @@
     "build:tsc": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "cross-env NODE_ENV=PRODUCTION nest start",
+    "start:local": "cross-env NODE_ENV=DEVELOPMENT nest start --watch",
     "start:dev": "cross-env NODE_ENV=DEVELOPMENT nest start --watch",
     "start:debug": "cross-env NODE_ENV=DEVELOPMENT nest start --debug --watch",
     "start:prod": "node dist/main",
