@@ -7,8 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { CategoriesModule } from '@root/modules/categories.module';
-import { ProductsModule } from '@root/modules/products.module';
-import { SellersModule } from '@root/modules/sellers.module';
+import { ArticlesModule } from '@root/modules/articles.module';
 import { UsersModule } from '@root/modules/users.module';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from './strategies/local.strategy';
@@ -29,8 +28,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     TypeOrmModule.forFeature([User]),
     UsersModule,
     CategoriesModule,
-    SellersModule,
-    ProductsModule,
+    ArticlesModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, LocalStrategy],

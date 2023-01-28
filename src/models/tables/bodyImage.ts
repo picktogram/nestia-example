@@ -4,18 +4,16 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  Index,
 } from 'typeorm';
-import { Product } from './product';
+import { Article } from './article';
 
-@Index('FK__BodyImage__Product', ['productId'], {})
 @Entity()
 export class BodyImage {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column('int', { nullable: false, select: false })
-  productId: number;
+  articleId: number;
 
   @Column('varchar', { nullable: false })
   url: string;
@@ -23,7 +21,7 @@ export class BodyImage {
   @Column('decimal', { name: 'position', precision: 6, scale: 5, default: 0 })
   position: number;
 
-  @ManyToOne(() => Product, (product) => product.bodies)
-  @JoinColumn({ name: 'productId', referencedColumnName: 'id' })
-  product: Product;
+  @ManyToOne(() => Article, (article) => article.bodies)
+  @JoinColumn({ name: 'articleId', referencedColumnName: 'id' })
+  article: Article;
 }

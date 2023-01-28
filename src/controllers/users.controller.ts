@@ -11,12 +11,6 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @ApiOperation({ summary: 'MVP : Local 로그인을 위한 User 생성' })
-  @Post('sign-up')
-  async signUp(@Body() createUserDto: CreateUserDto) {
-    return await this.usersService.create(createUserDto);
-  }
-
   @ApiOperation({ summary: 'MVP : 유저 프로필 조회 & 토큰에 담긴 값 Parsing.' })
   @ApiBearerAuth('Bearer')
   @UseGuards(JwtGuard)

@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
 import { TimeColumns } from '../common/time-columns';
-import { Product } from './product';
+import { Article } from './article';
 
 @Entity()
 export class Category extends TimeColumns {
@@ -10,6 +10,6 @@ export class Category extends TimeColumns {
   @Column('varchar', { nullable: false, unique: true })
   name: string;
 
-  @ManyToMany(() => Product, (product) => product.categories)
-  products: Product[];
+  @ManyToMany(() => Article, (article) => article.categories)
+  articles: Article[];
 }

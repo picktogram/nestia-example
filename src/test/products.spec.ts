@@ -1,11 +1,11 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Product } from '../models/tables/product';
+import { Product } from '../models/tables/article';
 import { TypeOrmModuleOptions } from '../config/typeorm';
-import { ProductsController } from '../controllers/products.controller';
-import { ProductsService } from '../providers/products.service';
-import { ProductsModule } from '../modules/products.module';
+import { ProductsController } from '../controllers/articles.controller';
+import { ProductsService } from '../providers/articles.service';
+import { ProductsModule } from '../modules/articles.module';
 
 describe('Product Entity', () => {
   let controller: ProductsController;

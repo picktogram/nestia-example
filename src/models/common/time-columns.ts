@@ -1,14 +1,7 @@
-import {
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  BaseEntity,
-} from 'typeorm';
+import { UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { CreatedAtColumn } from './created-at.column';
 
-export abstract class TimeColumns extends BaseEntity {
-  @CreateDateColumn()
-  public readonly createdAt!: Date;
-
+export abstract class TimeColumns extends CreatedAtColumn {
   @UpdateDateColumn()
   public readonly updatedAt!: Date;
 
