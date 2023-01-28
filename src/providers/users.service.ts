@@ -4,6 +4,7 @@ import { User } from '../models/tables/user';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../models/dtos/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { ERROR } from '@root/config/constant/error';
 
 @Injectable()
 export class UsersService {
@@ -20,9 +21,7 @@ export class UsersService {
     });
 
     if (users.length) {
-      // throw new BadRequestException(
-      return '이미 해당 전화번호나 이메일로 만들어진 유저가 있습니다.';
-      // );
+      throw new BadRequestException(ERROR.ALREADY_CREATED_EMAIL);
     }
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
