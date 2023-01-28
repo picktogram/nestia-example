@@ -15,7 +15,7 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
   imports: [
     TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
     ConfigModule.forRoot({ isGlobal: true }),
-    ThrottlerModule.forRoot({ ttl: 60, limit: 10 }),
+    ThrottlerModule.forRoot({ ttl: 60, limit: 60 }),
     AuthModule,
   ],
   controllers: [],

@@ -30,10 +30,14 @@ export class TransformInterceptor<T>
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<ExtendedResponse<T>> {
-    const request: Request = context.switchToHttp().getRequest();
+    const request: Request & { now: number } = context
+      .switchToHttp()
+      .getRequest();
 
     return next.handle().pipe(
       map((value) => {
+        const requestToResponse = `${Date.now() - request.now}ms`;
+
         if (value instanceof Object && 'count' in value && 'list' in value) {
           const { list, count, ...restData } = value;
 
@@ -46,6 +50,7 @@ export class TransformInterceptor<T>
           return {
             result: true,
             code: 1000,
+            requestToResponse,
             data: {
               ...restData,
               list,
@@ -58,7 +63,7 @@ export class TransformInterceptor<T>
           };
         }
 
-        return { result: true, code: 1000, data: value };
+        return { result: true, code: 1000, requestToResponse, data: value };
       }),
     );
   }
