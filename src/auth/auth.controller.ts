@@ -17,9 +17,41 @@ export class AuthController {
   ) {}
 
   @ApiOperation({ summary: '220129 - Local 로그인을 위한 User 생성' })
+  @ApiOkResponse({
+    schema: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'number',
+        },
+        name: {
+          type: 'string',
+        },
+        nickname: {
+          type: 'string',
+        },
+        phoneNumber: {
+          type: 'string',
+        },
+        email: {
+          type: 'string',
+        },
+        birth: {
+          type: 'string',
+          example: new Date(),
+        },
+        gender: {
+          type: 'boolean',
+        },
+      },
+    },
+  })
   @Post('sign-up')
-  async signUp(@Body() createUserDto: CreateUserDto) {
-    return await this.usersService.create(createUserDto);
+  async signUp(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<DecodedUserToken> {
+    const { password, ...user } = await this.usersService.create(createUserDto);
+    return user;
   }
 
   @ApiOperation({ summary: '220129 - 이메일과 패스워드를 이용한 로그인' })
@@ -30,7 +62,7 @@ export class AuthController {
   @ApiBody({ type: LoginUserDto })
   @UseGuards(LocalGuard)
   @Post('login')
-  async login(@User() user: DecodedUserToken) {
+  login(@User() user: DecodedUserToken): string {
     return this.jwtService.sign({ ...user });
   }
 }
