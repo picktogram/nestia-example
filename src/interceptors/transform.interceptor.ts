@@ -5,6 +5,7 @@ import {
   CallHandler,
 } from '@nestjs/common';
 import { NON_PAGINATION } from '@root/config/constant';
+import { ExtendedResponse, ListOutputValue } from '@root/types';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';

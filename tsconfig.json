@@ -13,8 +13,9 @@
     "incremental": true,
     "paths": {
       "@root/*": ["./src/*"]
-    }
+    },
+    "typeRoots": ["node_modules/types", "src/@types"]
   },
-  "include": ["./src", "types"],
+  "include": ["./src", "src/@types"],
   "exclude": ["node_modules", "dist"]
 }
