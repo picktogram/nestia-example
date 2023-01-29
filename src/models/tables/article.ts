@@ -11,7 +11,6 @@ import {
 import { TimeColumns } from '../common/time-columns';
 import { BodyImage } from './bodyImage';
 import { Category } from './category';
-import { HeaderImage } from './headerImage';
 import { User } from './user';
 
 @Entity()
@@ -25,21 +24,6 @@ export class Article extends TimeColumns {
   @Column()
   public title: string;
 
-  @Column({ nullable: true })
-  public description: string;
-
-  @Column({ nullable: true })
-  public guide: string;
-
-  @Column()
-  public originalPrice: number;
-
-  @Column()
-  public salesPrice: number;
-
-  @Column()
-  public releaseCount: number;
-
   /**
    * below are relations
    */
@@ -47,9 +31,6 @@ export class Article extends TimeColumns {
   @ManyToOne(() => User, (writer) => writer.articles)
   @JoinColumn({ name: 'writerId', referencedColumnName: 'id' })
   writer: User;
-
-  @OneToMany(() => HeaderImage, (image) => image.article)
-  headers: HeaderImage[];
 
   @OneToMany(() => BodyImage, (image) => image.article)
   bodies: BodyImage[];
