@@ -18,10 +18,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     const { code, message } = exception.getResponse() as any;
     const { path, user, body, query } = request;
-    const requestToResponse = Date.now() - request.now;
+    const requestToResponse = `${Date.now() - request.now}ms`;
 
     console.log(
-      `error\n${request.method} ${path} ${requestToResponse}ms\n` +
+      `error\n${request.method} ${path} ${requestToResponse}\n` +
         `currentTime : ${new Date()}]\n`,
     );
 

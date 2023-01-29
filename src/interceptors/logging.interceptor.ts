@@ -13,11 +13,11 @@ export class LoggingInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const { path, user, body, query } = request;
 
-    const requestToResponse = Date.now() - request.now;
+    const requestToResponse = `${Date.now() - request.now}ms`;
     return next.handle().pipe(
       tap((response) => {
         console.log(
-          `logging\n${request.method} ${path} ${requestToResponse}ms\n` +
+          `logging\n${request.method} ${path} ${requestToResponse}\n` +
             `currentTime : ${new Date()}]\n`,
         );
       }),
