@@ -11,11 +11,14 @@ export class ArticlesService {
   ) {}
 
   async write(userId: number, createArticleDto: CreateArticleDto) {
-    const article = await this.articlesRepository.save({
-      writerId: userId,
-      ...createArticleDto,
-    });
-
-    return article;
+    try {
+      await this.articlesRepository.save({
+        writerId: userId,
+        ...createArticleDto,
+      });
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
 }
