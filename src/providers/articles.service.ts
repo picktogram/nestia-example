@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ERROR } from '@root/config/constant/error';
 import { CreateArticleDto } from '@root/models/dtos/create-article.dto';
 import { PaginationDto } from '@root/models/dtos/pagination.dto';
 import { ArticlesRepository } from '@root/models/repositories/articles.repository';
+import { BodyImage } from '@root/models/tables/bodyImage';
 import { getOffset } from '@root/utils/getOffset';
 
 @Injectable()
@@ -29,15 +31,36 @@ export class ArticlesService {
     return articles;
   }
 
-  async write(userId: number, createArticleDto: CreateArticleDto) {
-    try {
-      await this.articlesRepository.save({
-        writerId: userId,
-        ...createArticleDto,
+  async write(userId: number, { contents, images }: CreateArticleDto) {
+    const checkedImages = this.checkIsSamePosition(images);
+    await this.articlesRepository.save({
+      writerId: userId,
+      contents,
+      images: checkedImages,
+    });
+
+    return true;
+  }
+
+  private checkIsSamePosition(images: { position: number }[]) {
+    const isSamePositionImage = images
+      .map((el) => el.position)
+      .find((el, i, arr) => {
+        const isSamePosition = (other: number, otherIdx: number) => el === other && i !== otherIdx;
+        return arr.filter((el) => el !== 0).some(isSamePosition);
       });
-      return true;
-    } catch (err) {
-      return false;
+
+    if (isSamePositionImage) {
+      throw new BadRequestException(ERROR.IS_SAME_POSITION);
     }
+
+    return this.sortImageByIndex(images);
+  }
+
+  private sortImageByIndex(images: { position: number }[]) {
+    return images.map((image, i) => {
+      image.position = image.position || i;
+      return image;
+    });
   }
 }

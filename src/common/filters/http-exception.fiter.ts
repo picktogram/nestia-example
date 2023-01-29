@@ -3,8 +3,6 @@ import {
   Catch,
   ArgumentsHost,
   HttpException,
-  HttpStatus,
-  HttpAdapterHost,
 } from '@nestjs/common';
 import { SlackService } from '@root/external/slack/slack.service';
 import { Request, Response } from 'express';

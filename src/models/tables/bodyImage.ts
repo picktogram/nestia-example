@@ -9,10 +9,11 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
+import { TimeColumns } from '../common/time-columns';
 import { Article } from './article';
 
 @Entity()
-export class BodyImage {
+export class BodyImage extends TimeColumns {
   @PrimaryGeneratedColumn()
   id: number;
 
