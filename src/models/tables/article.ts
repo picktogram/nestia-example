@@ -38,8 +38,10 @@ export class Article extends TimeColumns {
   @JoinColumn({ name: 'writerId', referencedColumnName: 'id' })
   writer: User;
 
-  @OneToMany(() => BodyImage, (image) => image.article)
-  bodies: BodyImage[];
+  @OneToMany(() => BodyImage, (image) => image.article, {
+    cascade: ['insert'],
+  })
+  images: BodyImage[];
 
   @ManyToMany(() => Category, (category) => category.articles)
   @JoinTable({

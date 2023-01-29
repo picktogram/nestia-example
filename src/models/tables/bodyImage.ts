@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
 import { IsOptionalNumber } from '@root/decorators/is-optional-number.decorator';
 import { IsUrl } from 'class-validator';
 import {
@@ -20,10 +19,10 @@ export class BodyImage {
   @Column({ select: false })
   articleId: number;
 
-  @Column()
+  @Column({ nullable: true })
   parentId: number;
 
-  @Column()
+  @Column({ default: 1 })
   depth: number;
 
   @Column({ length: 2048 })
@@ -41,7 +40,7 @@ export class BodyImage {
    * below are relations
    */
 
-  @ManyToOne(() => Article, (article) => article.bodies)
+  @ManyToOne(() => Article, (article) => article.images)
   @JoinColumn({ name: 'articleId', referencedColumnName: 'id' })
   article: Article;
 
