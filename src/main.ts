@@ -1,9 +1,18 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerSetting } from './config/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      stopAtFirstError: true,
+      transform: true,
+      whitelist: true,
+    }),
+  );
 
   app.enableCors();
 
