@@ -17,7 +17,7 @@ export class ArticlesService {
 
     const articles = await this.articlesRepository
       .createQueryBuilder('a')
-      .select(['a.id', 'a.contents'])
+      .select(['a.id', 'a.contents', 'a.createdAt'])
       .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
       .leftJoin('a.images', 'i')
       .leftJoin('a.writer', 'w')
