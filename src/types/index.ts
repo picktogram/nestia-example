@@ -20,5 +20,5 @@ export type ExtendedResponse<T> = {
 
 export type DecodedUserToken = Pick<
   User,
-  'id' | 'name' | 'nickname' | 'phoneNumber' | 'email' | 'birth' | 'gender'
+  'id' | 'name' | 'nickname' | 'email' | 'birth' | 'gender'
 >;

@@ -38,7 +38,6 @@ export class UsersService {
         id: true,
         name: true,
         nickname: true,
-        phoneNumber: true,
         email: true,
         password: true,
         birth: true,

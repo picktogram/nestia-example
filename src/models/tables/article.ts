@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -21,13 +23,17 @@ export class Article extends TimeColumns {
   @Column()
   public writerId: number;
 
-  @Column()
-  public title: string;
+  @ApiProperty({ description: '글의 내용물로, 최대 3,000자' })
+  @Column('text')
+  @IsNotEmptyString(1, 3000)
+  public contents: string;
+
+  @Column({ default: 0, select: false })
+  isReported: number;
 
   /**
    * below are relations
    */
-
   @ManyToOne(() => User, (writer) => writer.articles)
   @JoinColumn({ name: 'writerId', referencedColumnName: 'id' })
   writer: User;

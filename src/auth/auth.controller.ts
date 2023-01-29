@@ -30,9 +30,6 @@ export class AuthController {
         nickname: {
           type: 'string',
         },
-        phoneNumber: {
-          type: 'string',
-        },
         email: {
           type: 'string',
         },

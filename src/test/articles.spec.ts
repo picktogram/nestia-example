@@ -1,31 +1,31 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Product } from '../models/tables/article';
+import { Article } from '../models/tables/article';
 import { TypeOrmModuleOptions } from '../config/typeorm';
-import { ProductsController } from '../controllers/articles.controller';
-import { ProductsService } from '../providers/articles.service';
-import { ProductsModule } from '../modules/articles.module';
+import { ArticlesController } from '../controllers/articles.controller';
+import { ArticlesService } from '../providers/articles.service';
+import { ArticlesModule } from '../modules/articles.module';
 
-describe('Product Entity', () => {
-  let controller: ProductsController;
-  let service: ProductsService;
-  let product;
+describe('Article Entity', () => {
+  let controller: ArticlesController;
+  let service: ArticlesService;
+  let article;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
-        TypeOrmModule.forFeature([Product]),
+        TypeOrmModule.forFeature([Article]),
         ConfigModule.forRoot({ isGlobal: true }),
-        ProductsModule,
+        ArticlesModule,
       ],
       controllers: [],
       providers: [],
     }).compile();
 
-    service = module.get<ProductsService>(ProductsService);
-    controller = module.get<ProductsController>(ProductsController);
+    service = module.get<ArticlesService>(ArticlesService);
+    controller = module.get<ArticlesController>(ArticlesController);
   });
 
   describe('0. 테스트 환경을 확인합니다.', () => {
