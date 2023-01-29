@@ -55,21 +55,18 @@ export class User extends TimeColumns {
 
   @ApiProperty({ description: '회원 가입 시 받는 값으로 수신 거부 가능' })
   @IsOptionalBoolean()
-  @Column({
-    select: false,
-    default: false,
-    comment: 'sms 광고 수신 동의',
-  })
+  @Column({ select: false, default: false, comment: 'sms 광고 수신 동의' })
   public smsAdsConsent!: boolean;
 
   @ApiProperty({ description: '회원 가입 시 받는 값으로 수신 거부 가능' })
   @IsOptionalBoolean()
-  @Column({
-    select: false,
-    default: false,
-    comment: 'email 광고 수신 동의',
-  })
+  @Column({ select: false, default: false, comment: 'email 광고 수신 동의' })
   public emailAdsConsent!: boolean;
+
+  @ApiProperty({ description: '유저의 탈퇴 여부를 의미한다.' })
+  @IsOptionalBoolean()
+  @Column({ select: false, default: false })
+  public status: boolean;
 
   /**
    * below are relations
@@ -92,6 +89,10 @@ export class User extends TimeColumns {
 
   @AfterLoad()
   setNickname() {
-    this.nickname ??= this.name;
+    if (this.status === false) {
+      this.nickname ??= this.name;
+    } else if (this.status === true) {
+      this.nickname = `이름없음`; // NOTE : 탈퇴한 유저의 이름을 숨기는 기능
+    }
   }
 }

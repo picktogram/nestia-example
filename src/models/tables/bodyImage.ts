@@ -1,14 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptionalNumber } from '@root/decorators/is-optional-number.decorator';
 import { IsUrl } from 'class-validator';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  JoinColumn,
-  OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { TimeColumns } from '../common/time-columns';
 import { Article } from './article';
 
