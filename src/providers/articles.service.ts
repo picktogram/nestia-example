@@ -57,6 +57,8 @@ export class ArticlesService {
       images: checkedImages,
     });
 
+    // TODO : 실제 이미지 저장에 사용되지 않은 이미지들을 삭제하는 기능을 여기에 추가할 것
+
     return writedArticle;
   }
 
