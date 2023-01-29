@@ -5,7 +5,7 @@ import { User } from '../common/decorators/user.decorator';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('유저 / User')
+@ApiTags('User')
 @Controller('api/v1/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

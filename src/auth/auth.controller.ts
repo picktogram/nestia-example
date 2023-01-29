@@ -8,13 +8,10 @@ import { UsersService } from '@root/providers/users.service';
 import { DecodedUserToken } from '@root/types';
 import { LocalGuard } from './guards/local.guard';
 
-@ApiTags('권한 / Auth')
+@ApiTags('Auth')
 @Controller('api/v1/auth')
 export class AuthController {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) {}
 
   @ApiOperation({ summary: '220129 - Local 로그인을 위한 User 생성' })
   @ApiOkResponse({
@@ -44,9 +41,7 @@ export class AuthController {
     },
   })
   @Post('sign-up')
-  async signUp(
-    @Body() createUserDto: CreateUserDto,
-  ): Promise<DecodedUserToken> {
+  async signUp(@Body() createUserDto: CreateUserDto): Promise<DecodedUserToken> {
     const { password, ...user } = await this.usersService.create(createUserDto);
     return user;
   }
