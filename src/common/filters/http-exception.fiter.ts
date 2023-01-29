@@ -4,13 +4,12 @@ import {
   ArgumentsHost,
   HttpException,
 } from '@nestjs/common';
-import { SlackService } from '@root/external/slack/slack.service';
 import { Request, Response } from 'express';
 
-@Catch(HttpException)
-export class HttpExceptionFilter implements ExceptionFilter {
-  constructor(private readonly slackService: SlackService) {}
+const UNCHATCHED_ERROR = '서버에서 캐치되지 못한 에러입니다.';
 
+@Catch()
+export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -25,8 +24,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
 
-      errorCode: code,
-      errorMessage: message,
+      errorCode: code ?? 4000,
+      errorMessage: code ? message : UNCHATCHED_ERROR,
       requestToResponse,
     });
   }
