@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ArticlesService } from '../providers/articles.service';
 import { ArticlesController } from '../controllers/articles.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ArticlesRepository } from '@root/models/repositories/articles.repository';
+import { CustomTypeOrmModule } from '@root/config/typeorm/custom-typeorm.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ArticlesRepository])],
+  imports: [CustomTypeOrmModule.forCustomRepository([ArticlesRepository])],
   controllers: [ArticlesController],
   providers: [ArticlesService],
 })

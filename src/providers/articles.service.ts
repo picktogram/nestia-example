@@ -12,7 +12,7 @@ export class ArticlesService {
 
   async write(userId: number, createArticleDto: CreateArticleDto) {
     const article = await this.articlesRepository.save({
-      userId,
+      writerId: userId,
       ...createArticleDto,
     });
 

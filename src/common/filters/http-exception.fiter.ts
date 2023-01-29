@@ -17,6 +17,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request & { now: number }>();
+
     const status = exception.getStatus();
 
     const { code, message } = exception.getResponse() as any;
@@ -28,7 +29,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
         `currentTime : ${new Date()}]\n`,
     );
 
-    if (!code) {
+    if (message instanceof Array) {
+      response.status(status).json({
+        statusCode: status,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        errorCode: 4000,
+        errorMessage: message,
+        requestToResponse,
+      });
+      return;
+    } else if (!code) {
       let slackMessageForm = `error\n`;
       slackMessageForm += `${request.method} ${path} ${exception}\n`;
       slackMessageForm += `user : ${JSON.stringify(user)}\n`;

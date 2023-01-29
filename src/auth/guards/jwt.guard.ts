@@ -16,7 +16,7 @@ export class JwtGuard extends AuthGuard('jwt') {
     context: ExecutionContext,
     status?: any,
   ): TUser {
-    if (info.message === 'No auth token') {
+    if (info?.message === 'No auth token') {
       throw new BadRequestException(ERROR.NO_AUTH_TOKEN);
     }
     return super.handleRequest(err, user, info, context, status);

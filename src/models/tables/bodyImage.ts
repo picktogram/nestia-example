@@ -28,7 +28,7 @@ export class BodyImage {
 
   @Column({ length: 2048 })
   @ApiProperty({ description: '서버를 통해 한 번 전처리된 이미지.' })
-  @IsNotEmptyString(4, 2048)
+  // @IsNotEmptyString(4, 2048)
   @IsUrl()
   url: string;
 
