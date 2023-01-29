@@ -1,7 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import multer from 'multer';
 import { imageMimeTypes, mediaMimeTypes, MulterBuilder } from './multer.builder';
+import multer from 'multer';
 
 export const fileFilter = (kind: 'image' | 'media') => (req: any, file: any, cb: any) => {
   const types = kind === 'image' ? imageMimeTypes : mediaMimeTypes;
@@ -17,10 +16,18 @@ export const fileFilter = (kind: 'image' | 'media') => (req: any, file: any, cb:
   return cb(null, true);
 };
 
-export const CreateProfileImageMulterOptions = (configService: ConfigService): multer.Options => {
+export const CreateProfileImageMulterOptions = (): multer.Options => {
   return {
     fileFilter: fileFilter('image'),
-    storage: new MulterBuilder(configService).allowImageMimeTypes().setResource('user').setPath('profile').build(),
+    storage: new MulterBuilder().allowImageMimeTypes().setResource('user').setPath('profile').build(),
+    limits: { fileSize: 1024 * 1024 * 20 },
+  };
+};
+
+export const CreateBodyImageMulterOptions = (): multer.Options => {
+  return {
+    fileFilter: fileFilter('image'),
+    storage: new MulterBuilder().allowImageMimeTypes().setResource('article').setPath('body-image').build(),
     limits: { fileSize: 1024 * 1024 * 20 },
   };
 };

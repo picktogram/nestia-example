@@ -1,7 +1,9 @@
 import multerS3 from 'multer-s3';
 import { Request } from 'express';
 import { S3Client } from '@aws-sdk/client-s3';
-import { ConfigService } from '@nestjs/config';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const imageMimeTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/bmp', 'image/webp'];
 export const mediaMimeTypes = ['video/mp4'];
@@ -14,15 +16,15 @@ export class MulterBuilder {
   private resource = '';
   private path = '';
 
-  constructor(private readonly configService: ConfigService) {
+  constructor() {
     this.s3 = new S3Client({
-      region: this.configService.get('AWS_BUCKET_REGION'),
+      region: process.env.AWS_BUCKET_REGION,
       credentials: {
-        accessKeyId: this.configService.get('AWS_ACCESS_KEY_ID'),
-        secretAccessKey: this.configService.get('AWS_SECRET_ACCESS_KEY'),
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       },
     });
-    this.bucketName = configService.get('AWS_BUCKET_NAME');
+    this.bucketName = process.env.AWS_BUCKET_NAME;
   }
 
   allowImageMimeTypes() {
@@ -55,11 +57,10 @@ export class MulterBuilder {
         const splitedFileNames = file.originalname.split('.');
         const extension = splitedFileNames.at(splitedFileNames.length - 1);
         if (this.path) {
-          filename = `${this.path}/${new Date().getTime()}.${extension}`;
+          filename = `${process.env.NODE_ENV}${this.path}/${new Date().getTime()}.${extension}`;
         } else {
-          filename = `${new Date().getTime()}.${extension}`;
+          filename = `${process.env.NODE_ENV}${new Date().getTime()}.${extension}`;
         }
-
         return callback(null, encodeURI(`${this.resource}/${filename}`));
       },
     });

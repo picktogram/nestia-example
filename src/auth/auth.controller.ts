@@ -13,7 +13,7 @@ import { LocalGuard } from './guards/local.guard';
 export class AuthController {
   constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) {}
 
-  @ApiOperation({ summary: '220129 - Local 로그인을 위한 User 생성' })
+  @ApiOperation({ summary: '230129 - Local 로그인을 위한 User 생성' })
   @ApiOkResponse({
     schema: {
       type: 'object',
@@ -46,7 +46,7 @@ export class AuthController {
     return user;
   }
 
-  @ApiOperation({ summary: '220129 - 이메일과 패스워드를 이용한 로그인' })
+  @ApiOperation({ summary: '230129 - 이메일과 패스워드를 이용한 로그인' })
   @ApiOkResponse({
     type: String,
     description: '암호화된 토큰, decode하여 사용할 값을 담고 있다.',

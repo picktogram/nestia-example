@@ -51,13 +51,13 @@ export class ArticlesService {
 
   async write(userId: number, { contents, images }: CreateArticleDto) {
     const checkedImages = this.checkIsSamePosition(images);
-    await this.articlesRepository.save({
+    const writedArticle = await this.articlesRepository.save({
       writerId: userId,
       contents,
       images: checkedImages,
     });
 
-    return true;
+    return writedArticle;
   }
 
   private checkIsSamePosition(images: { position: number }[]) {

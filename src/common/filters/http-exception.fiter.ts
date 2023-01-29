@@ -1,9 +1,4 @@
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-} from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { SlackService } from '@root/external/slack/slack.service';
 import { Request, Response } from 'express';
 
@@ -27,10 +22,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       const { path, user, body, query } = request;
       const requestToResponse = `${Date.now() - request.now}ms`;
 
-      console.log(
-        `error\n${request.method} ${path} ${requestToResponse}\n` +
-          `currentTime : ${new Date()}]\n`,
-      );
+      console.log(`error\n${request.method} ${path} ${requestToResponse}\n` + `currentTime : ${new Date()}]\n`);
 
       const { code, message } = exception.getResponse() as any;
 
@@ -71,6 +63,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         errorMessage: code ? message : UNCHATCHED_ERROR,
         requestToResponse,
       });
+      return;
     }
 
     // TODO : 정리 필요
@@ -80,8 +73,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       path: request.url,
 
       errorCode: 4000,
-      errorMessage:
-        'UnCatchedError : 추후 더 디테일한 정보를 담도록 수정할 예정',
+      errorMessage: 'UnCatchedError : 추후 더 디테일한 정보를 담도록 수정할 예정',
     });
   }
 }
