@@ -10,12 +10,14 @@ import { AuthModule } from './auth/auth.module';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { SlackModule } from './external/slack/slack.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
     ConfigModule.forRoot({ isGlobal: true }),
     ThrottlerModule.forRoot({ ttl: 60, limit: 60 }),
+    SlackModule,
     AuthModule,
   ],
   controllers: [],
