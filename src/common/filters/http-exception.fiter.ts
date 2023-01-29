@@ -17,7 +17,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
 
     const { code, message } = exception.getResponse() as any;
-    const requestToResponse = `${Date.now() - request.now}ms`;
+    const { path, user, body, query } = request;
+    const requestToResponse = Date.now() - request.now;
+
+    console.log(
+      `error\n${request.method} ${path} ${requestToResponse}ms\n` +
+        `currentTime : ${new Date()}]\n`,
+    );
 
     response.status(status).json({
       statusCode: status,
