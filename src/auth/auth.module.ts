@@ -11,6 +11,7 @@ import { ArticlesModule } from '@root/modules/articles.module';
 import { UsersModule } from '@root/modules/users.module';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from './strategies/local.strategy';
+import { BodyImageModule } from '@root/modules/body-images.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     UsersModule,
     CategoriesModule,
     ArticlesModule,
+    BodyImageModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, LocalStrategy],
