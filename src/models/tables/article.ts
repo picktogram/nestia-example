@@ -17,6 +17,7 @@ import { User } from './user';
 
 @Entity()
 export class Article extends TimeColumns {
+  @ApiProperty({ description: 'id', example: 1 })
   @PrimaryGeneratedColumn()
   public readonly id: number;
 

@@ -9,6 +9,7 @@ import { Article } from './article';
 
 @Entity()
 export class User extends TimeColumns {
+  @ApiProperty({ description: 'id', example: 1 })
   @PrimaryGeneratedColumn()
   public readonly id!: number;
 
