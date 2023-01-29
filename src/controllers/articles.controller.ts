@@ -20,6 +20,10 @@ import { ArticlesService } from '../providers/articles.service';
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
+  @ApiOperation({ summary: '210129 - 게시글 리스트 조회 (incompleted)' })
+  @Get()
+  async getAllArticles() {}
+
   @ApiOperation({ summary: '210129 - 게시글 작성 (incompleted)' })
   @Post()
   async writeArticle(
