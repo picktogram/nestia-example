@@ -3,14 +3,7 @@ import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator
 import { IsOptionalBoolean } from '@root/decorators/is-optional-boolean.decorator';
 import { Type } from 'class-transformer';
 import { IsDate, IsEmail, IsOptional } from 'class-validator';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToMany,
-  JoinTable,
-  OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany, AfterLoad } from 'typeorm';
 import { TimeColumns } from '../common/time-columns';
 import { Article } from './article';
 
@@ -92,4 +85,13 @@ export class User extends TimeColumns {
 
   @OneToMany(() => Article, (article) => article.writer)
   articles: Article[];
+
+  /**
+   * methods
+   */
+
+  @AfterLoad()
+  setNickname() {
+    this.nickname ??= this.name;
+  }
 }

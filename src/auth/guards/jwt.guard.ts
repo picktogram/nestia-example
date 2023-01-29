@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  ExecutionContext,
-  Injectable,
-} from '@nestjs/common';
+import { BadRequestException, ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ERROR } from '@root/config/constant/error';
 import { DecodedUserToken } from '@root/types';

@@ -4,7 +4,7 @@ import { ERROR } from '@root/config/constant/error';
 import { CreateArticleDto } from '@root/models/dtos/create-article.dto';
 import { PaginationDto } from '@root/models/dtos/pagination.dto';
 import { ArticlesRepository } from '@root/models/repositories/articles.repository';
-import { BodyImage } from '@root/models/tables/bodyImage';
+import { Article } from '@root/models/tables/article';
 import { getOffset } from '@root/utils/getOffset';
 
 @Injectable()
@@ -13,6 +13,32 @@ export class ArticlesService {
     @InjectRepository(ArticlesRepository)
     private readonly articlesRepository: ArticlesRepository,
   ) {}
+
+  async getOneDetailArticle(userId: number, articleId: number): Promise<Article> {
+    const article = await this.articlesRepository.findOne({
+      select: {
+        id: true,
+        writer: {
+          id: true,
+          nickname: true,
+          profileImage: true, // TODO : set bucket path
+        },
+      },
+      where: {
+        id: articleId,
+      },
+      relations: {
+        writer: true,
+        images: true,
+      },
+    });
+
+    if (!article) {
+      throw new BadRequestException(ERROR.CANNOT_FINDONE_ARTICLE);
+    }
+
+    return article;
+  }
 
   async read(userId: number, { page, limit }: PaginationDto) {
     const { skip, take } = getOffset(page, limit);
