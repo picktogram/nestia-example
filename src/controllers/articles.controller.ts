@@ -4,8 +4,10 @@ import { JwtGuard } from '@root/auth/guards/jwt.guard';
 import { UserId } from '@root/common/decorators/user-id.decorator';
 import { createErrorSchema, ERROR } from '@root/config/constant/error';
 import { CreateArticleDto } from '@root/models/dtos/create-article.dto';
+import { CreateCommentDto } from '@root/models/dtos/create-comment.dto';
 import { PaginationDto } from '@root/models/dtos/pagination.dto';
 import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
+import { CommentsService } from '@root/providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
 
 @ApiTags('Articles')
@@ -13,10 +15,17 @@ import { ArticlesService } from '../providers/articles.service';
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')
 export class ArticlesController {
-  constructor(private readonly articlesService: ArticlesService) {}
+  constructor(private readonly articlesService: ArticlesService, private readonly commentsService: CommentsService) {}
 
   @Post(':id/comments')
-  async writeComment(@UserId() writerId: number) {}
+  async writeComment(
+    @UserId() writerId: number,
+    @Param('id', ParseIntPipe) articleId: number,
+    @Body() createCommentDto: CreateCommentDto,
+  ) {
+    const comment = await this.commentsService.write(writerId, articleId, createCommentDto);
+    return comment;
+  }
 
   @ApiOperation({ summary: '230129 - 게시글 조회 (incompleted)' })
   @ApiOkResponse({ type: GetOneArticleResponseDto })

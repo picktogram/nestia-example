@@ -3,6 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 import { Article } from './article';
 import { TimeColumns } from '../common/time-columns';
 import { User } from './user';
+import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
 
 @Entity()
 export class Comment extends TimeColumns {
@@ -16,6 +17,7 @@ export class Comment extends TimeColumns {
   @Column({ select: false })
   writerId: number;
 
+  @IsNotEmptyString(0, 8000)
   @Column('text')
   contents: string;
 
