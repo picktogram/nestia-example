@@ -6,6 +6,7 @@ import { IsDate, IsEmail, IsOptional } from 'class-validator';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany, AfterLoad } from 'typeorm';
 import { TimeColumns } from '../common/time-columns';
 import { Article } from './article';
+import { Comment } from './comment';
 
 @Entity()
 export class User extends TimeColumns {
@@ -83,6 +84,9 @@ export class User extends TimeColumns {
 
   @OneToMany(() => Article, (article) => article.writer)
   articles: Article[];
+
+  @OneToMany(() => Comment, (c) => c.writer)
+  comments: Comment[];
 
   /**
    * methods

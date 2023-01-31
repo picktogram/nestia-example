@@ -13,6 +13,7 @@ import {
 import { TimeColumns } from '../common/time-columns';
 import { BodyImage } from './bodyImage';
 import { Category } from './category';
+import { Comment } from './comment';
 import { User } from './user';
 
 @Entity()
@@ -54,4 +55,7 @@ export class Article extends TimeColumns {
 
   @ManyToMany(() => User, (user) => user.userLikeArticles)
   users: User[];
+
+  @OneToMany(() => Comment, (c) => c.article)
+  comments: Comment[];
 }
