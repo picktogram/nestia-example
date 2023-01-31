@@ -15,6 +15,9 @@ import { ArticlesService } from '../providers/articles.service';
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
+  @Post(':id/comments')
+  async writeComment(@UserId() writerId: number) {}
+
   @ApiOperation({ summary: '230129 - 게시글 조회 (incompleted)' })
   @ApiOkResponse({ type: GetOneArticleResponseDto })
   @ApiBadRequestResponse({

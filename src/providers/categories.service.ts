@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../models/tables/category';
 import { Repository } from 'typeorm';
 import { ArticleHasCategory } from '@root/models/tables/articleHasCategory';
-import { getOffset } from '@root/utils/getOffset';
 
 @Injectable()
 export class CategoriesService {

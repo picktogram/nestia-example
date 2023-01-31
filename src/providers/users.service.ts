@@ -8,16 +8,11 @@ import { ERROR } from '@root/config/constant/error';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User) private readonly usersRepository: Repository<User>,
-  ) {}
+  constructor(@InjectRepository(User) private readonly usersRepository: Repository<User>) {}
 
   async create(createUserDto: CreateUserDto) {
     const users = await this.usersRepository.find({
-      where: [
-        { email: createUserDto.email },
-        { phoneNumber: createUserDto.phoneNumber },
-      ],
+      where: [{ email: createUserDto.email }, { phoneNumber: createUserDto.phoneNumber }],
     });
 
     if (users.length) {

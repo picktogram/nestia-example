@@ -12,6 +12,7 @@ import { UsersModule } from '@root/modules/users.module';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from './strategies/local.strategy';
 import { BodyImageModule } from '@root/modules/body-images.module';
+import { CommentsModule } from '@root/modules/comments.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { BodyImageModule } from '@root/modules/body-images.module';
     CategoriesModule,
     ArticlesModule,
     BodyImageModule,
+    CommentsModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, LocalStrategy],
