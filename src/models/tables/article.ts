@@ -25,7 +25,7 @@ export class Article extends TimeColumns {
   @Column()
   public writerId: number;
 
-  @ApiProperty({ description: '글의 내용물로, 최대 3,000자' })
+  @ApiProperty({ description: '글의 내용물로, 최대 3,000자', minLength: 1, maxLength: 3000 })
   @Column('text')
   @IsNotEmptyString(1, 3000)
   public contents: string;
@@ -58,4 +58,14 @@ export class Article extends TimeColumns {
 
   @OneToMany(() => Comment, (c) => c.article)
   comments: Comment[];
+
+  /**
+   * method( subscriber ) area
+   */
+
+  /**
+   * static values
+   */
+
+  static TOO_MANY_REPORTED: 10 = 10 as const;
 }

@@ -17,7 +17,7 @@ export class Comment extends TimeColumns {
   @Column({ select: false })
   writerId: number;
 
-  @IsNotEmptyString(0, 8000)
+  @IsNotEmptyString(0, 1000)
   @Column('text')
   contents: string;
 

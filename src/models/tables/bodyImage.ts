@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
 import { IsOptionalNumber } from '@root/decorators/is-optional-number.decorator';
-import { IsUrl } from 'class-validator';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { TimeColumns } from '../common/time-columns';
 import { Article } from './article';
@@ -25,7 +24,6 @@ export class BodyImage extends TimeColumns {
   @ApiProperty({ description: '서버를 통해 한 번 전처리된 이미지.', example: 'https://folder/test.jpg' })
   @Column({ length: 2048 })
   @IsNotEmptyString(4, 2048)
-  @IsUrl()
   url: string;
 
   @Column('decimal', { name: 'position', precision: 6, scale: 5, default: 0 })
