@@ -73,7 +73,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       path: request.url,
 
       errorCode: 4000,
-      errorMessage: 'UnCatchedError : 추후 더 디테일한 정보를 담도록 수정할 예정',
+      errorMessage: exception,
     });
   }
 }
