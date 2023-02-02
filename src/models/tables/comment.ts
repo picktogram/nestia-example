@@ -17,6 +17,7 @@ export class Comment extends TimeColumns {
   @Column({ select: false })
   writerId: number;
 
+  @ApiProperty()
   @IsNotEmptyString(0, 1000)
   @Column('text')
   contents: string;
