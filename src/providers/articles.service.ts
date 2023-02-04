@@ -44,7 +44,7 @@ export class ArticlesService {
       .orderBy('a.createdAt', 'DESC')
       .skip(skip)
       .take(take)
-      .getMany();
+      .getManyAndCount();
 
     return articles;
   }
