@@ -35,7 +35,7 @@ export class ArticlesService {
   async read(userId: number, { page, limit }: PaginationDto) {
     const { skip, take } = getOffset(page, limit);
 
-    const articles = await this.articlesRepository
+    const [list, count] = await this.articlesRepository
       .createQueryBuilder('a')
       .select(['a.id', 'a.contents', 'a.createdAt'])
       .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
@@ -46,7 +46,7 @@ export class ArticlesService {
       .take(take)
       .getManyAndCount();
 
-    return articles;
+    return { list, count };
   }
 
   async write(userId: number, { contents, images }: CreateArticleDto) {

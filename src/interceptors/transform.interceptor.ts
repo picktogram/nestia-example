@@ -38,7 +38,7 @@ export class TransformInterceptor<T> implements NestInterceptor<T, ExtendedRespo
                 ? { totalResult: count, totalPage: 1 }
                 : calcListTotalCount(count, Number(limit))),
               ...(search ? { search } : { search: null }),
-              ...(page && { page }),
+              ...(page && { page: Number(page) }),
             } as ListOutputValue,
           };
         }
