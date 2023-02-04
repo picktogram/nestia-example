@@ -30,29 +30,18 @@ export const createErrorSchema = (error: ValueOfError): SchemaObject => {
 type Push<T extends any[], U> = [...T, U];
 type NTuple<N extends number, T extends any[] = []> = T['length'] extends N ? T : NTuple<N, Push<T, any>>;
 
-export const createErrorSchemas = <T extends string[], U extends T['length']>(
-  description: T,
-  error: NTuple<U, ValueOfError[]>,
-): SchemaObject => {
+export const createErrorSchemas = <T extends string[]>(errors: NTuple<T['length'], ValueOfError[]>): SchemaObject => {
   return {
     type: 'array',
     items: {
-      anyOf: [
-        {
-          description: description[0],
+      anyOf: [...errors].map((error) => {
+        return {
           properties: {
-            code: { type: 'number', example: error[0].code },
-            message: { type: 'string', example: error[0].message },
+            code: { type: 'number', example: error['code'] },
+            message: { type: 'string', example: error['message'] },
           },
-        },
-        {
-          description: description[1],
-          properties: {
-            code: { type: 'number', example: error[1].code },
-            message: { type: 'string', example: error[1].message },
-          },
-        },
-      ],
+        };
+      }),
     },
   };
 };

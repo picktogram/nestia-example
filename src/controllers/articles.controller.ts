@@ -1,13 +1,5 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
-import {
-  ApiBadRequestResponse,
-  ApiBearerAuth,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-  refs,
-} from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '@root/auth/guards/jwt.guard';
 import { UserId } from '@root/common/decorators/user-id.decorator';
 import { createErrorSchema, createErrorSchemas, ERROR } from '@root/config/constant/error';
@@ -15,7 +7,6 @@ import { CreateArticleDto } from '@root/models/dtos/create-article.dto';
 import { CreateCommentDto } from '@root/models/dtos/create-comment.dto';
 import { PaginationDto } from '@root/models/dtos/pagination.dto';
 import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
-import { Article } from '@root/models/tables/article';
 import { CommentsService } from '@root/providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
 
@@ -28,12 +19,7 @@ export class ArticlesController {
 
   @ApiOperation({ summary: '230130 - 게시글에 댓글 작성' })
   @ApiBadRequestResponse({
-    // description: ,
-    schema: createErrorSchemas(
-      ['게시글을 찾지 못했거나 삭제된 게시글인 경우', `${Article.TOO_MANY_REPORTED}번 이상 신고된 경우`, ''],
-      [ERROR.NOT_FOUND_ARTICLE_TO_COMMENT, ERROR.TOO_MANY_REPORTED_ARTICLE],
-    ),
-    // schema: createErrorSchema([1, 2], {}),
+    schema: createErrorSchemas([ERROR.NOT_FOUND_ARTICLE_TO_COMMENT, ERROR.TOO_MANY_REPORTED_ARTICLE]),
   })
   @Post(':id/comments')
   async writeComment(
