@@ -4,6 +4,7 @@ import { ERROR } from '@root/config/constant/error';
 import { CreateArticleDto } from '@root/models/dtos/create-article.dto';
 import { PaginationDto } from '@root/models/dtos/pagination.dto';
 import { ArticlesRepository } from '@root/models/repositories/articles.repository';
+import { getAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
 import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
 import { getOffset } from '@root/utils/getOffset';
 
@@ -35,18 +36,18 @@ export class ArticlesService {
   async read(userId: number, { page, limit }: PaginationDto) {
     const { skip, take } = getOffset(page, limit);
 
-    const [list, count] = await this.articlesRepository
+    const query = this.articlesRepository
       .createQueryBuilder('a')
-      .select(['a.id', 'a.contents', 'a.createdAt'])
-      .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
-      .leftJoin('a.images', 'i')
+      .select(['a.id AS "id"', 'a.contents AS "contents"', 'a.createdAt AS "createdAt"'])
+      .addSelect(['w.id AS "writerId"', 'w.nickname AS "nickname"', 'w.profileImage AS "profileImage"'])
       .leftJoin('a.writer', 'w')
       .orderBy('a.createdAt', 'DESC')
-      .skip(skip)
-      .take(take)
-      .getManyAndCount();
+      .offset(skip)
+      .limit(take);
 
-    return { list, count };
+    const [list, count] = await Promise.all([query.getRawMany(), query.getCount()]);
+
+    return { list: list.map((el) => new getAllArticlesResponseDto(userId, el)), count };
   }
 
   async write(userId: number, { contents, images }: CreateArticleDto) {

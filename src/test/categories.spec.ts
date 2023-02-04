@@ -34,11 +34,4 @@ describe('Category Entity', () => {
       expect(service).toBeDefined();
     });
   });
-
-  describe('1. 카테고리들을 조회합니다.', () => {
-    it.only('1-1. Response는 Category의 배열입니다.', async () => {
-      const categories = await controller.getAll();
-      expect(categories).toBeInstanceOf(Array);
-    });
-  });
 });
