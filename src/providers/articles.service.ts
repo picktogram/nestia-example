@@ -18,7 +18,7 @@ export class ArticlesService {
   async getOneDetailArticle(userId: number, articleId: number): Promise<GetOneArticleResponseDto> {
     const article = await this.articlesRepository
       .createQueryBuilder('a')
-      .select(['a.id'])
+      .select(['a.id', 'a.contents'])
       .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
       .addSelect(['i.id', 'i.position', 'i.depth'])
       .leftJoin('a.images', 'i', 'i.parentId IS NULL')
