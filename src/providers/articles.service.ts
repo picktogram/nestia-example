@@ -7,14 +7,18 @@ import { ArticlesRepository } from '@root/models/repositories/articles.repositor
 import { CommentsRepository } from '@root/models/repositories/comments.repository';
 import { getAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
 import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
+import { Article } from '@root/models/tables/article';
+import { Comment } from '@root/models/tables/comment';
 import { getOffset } from '@root/utils/getOffset';
-import { In, IsNull } from 'typeorm';
+import { DataSource, In, IsNull } from 'typeorm';
 
 @Injectable()
 export class ArticlesService {
   constructor(
     @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
     @InjectRepository(CommentsRepository) private readonly commentsRepository: CommentsRepository,
+
+    private readonly dataSource: DataSource,
   ) {}
 
   async getOneDetailArticle(userId: number, articleId: number): Promise<GetOneArticleResponseDto> {
@@ -59,11 +63,15 @@ export class ArticlesService {
       number,
     ] = await Promise.all([query.getRawMany(), query.getCount()]);
 
-    const comments = await this.commentsRepository
-      .createQueryBuilder('c')
-      .select(['c.id AS "id"', 'c.contents AS "contents"'])
-      .addSelect('ROW_NUMBER() OVER (PARTITION BY c."articleId" ORDER BY c."createdAt" DESC) AS "rn"')
-      .where('c.articleId IN (:...articleIds)', { articleIds: list.map((el) => el.id) })
+    const comments = await this.dataSource
+      .createQueryBuilder()
+      .from((qb) => {
+        return qb
+          .from(Comment, 'c')
+          .select(['c.id AS "id"', 'c.contents AS "contents"', 'c.articleId AS "articleId"'])
+          .addSelect('ROW_NUMBER() OVER (PARTITION BY c."articleId" ORDER BY c."createdAt" DESC)::int4 AS "position"')
+          .where('c.articleId IN (:...articleIds)', { articleIds: list.map((el) => el.id) });
+      }, 'cte')
       .getRawMany();
 
     return {

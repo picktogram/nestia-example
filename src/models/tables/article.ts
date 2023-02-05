@@ -68,4 +68,5 @@ export class Article extends TimeColumns {
    */
 
   static TOO_MANY_REPORTED: 10 = 10 as const;
+  static REPRESENTATION_COMMENT_MAXIUM_COUNT: 3 = 3 as const;
 }
