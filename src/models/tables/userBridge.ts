@@ -1,4 +1,4 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { CreatedAtColumn } from '../common/created-at.column';
 import { User } from './user';
 
@@ -9,6 +9,9 @@ export class UserBridge extends CreatedAtColumn {
 
   @PrimaryColumn()
   secondUserId: number;
+
+  @Column({ default: 'follow' })
+  status: 'follow' | 'followUp' | 'reverse';
 
   /**
    * below are relations
