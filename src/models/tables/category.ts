@@ -1,12 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
-import { TimeColumns } from '../common/time-columns';
+import { Entity, Column, ManyToMany } from 'typeorm';
+import { CommonCloumns } from '../common/common-columns';
 import { Article } from './article';
 
 @Entity()
-export class Category extends TimeColumns {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Category extends CommonCloumns {
   @Column('varchar', { nullable: false, unique: true })
   name: string;
 

@@ -5,7 +5,7 @@ import { CreateArticleDto } from '@root/models/dtos/create-article.dto';
 import { PaginationDto } from '@root/models/dtos/pagination.dto';
 import { ArticlesRepository } from '@root/models/repositories/articles.repository';
 import { CommentsRepository } from '@root/models/repositories/comments.repository';
-import { getAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
+import { GetAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
 import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
 import { Article } from '@root/models/tables/article';
 import { Comment } from '@root/models/tables/comment';
@@ -77,7 +77,7 @@ export class ArticlesService {
     return {
       list: list.map((article) => {
         const representationComments = comments.filter((el) => el.articleId === article.id);
-        return new getAllArticlesResponseDto(userId, article, representationComments);
+        return new GetAllArticlesResponseDto(userId, article, representationComments);
       }),
       count,
     };

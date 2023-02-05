@@ -6,6 +6,7 @@ import { createErrorSchema, createErrorSchemas, ERROR } from '@root/config/const
 import { CreateArticleDto } from '@root/models/dtos/create-article.dto';
 import { CreateCommentDto } from '@root/models/dtos/create-comment.dto';
 import { PaginationDto } from '@root/models/dtos/pagination.dto';
+import { GetAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
 import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
 import { CommentsService } from '@root/providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
@@ -45,6 +46,7 @@ export class ArticlesController {
   }
 
   @ApiOperation({ summary: '230129 - 게시글 리스트 조회 (incompleted)' })
+  @ApiOkResponse({ type: GetAllArticlesResponseDto })
   @Get()
   async getAllArticles(@UserId() userId: number, @Query() paginationDto: PaginationDto) {
     const articlesToRead = await this.articlesService.read(userId, paginationDto);

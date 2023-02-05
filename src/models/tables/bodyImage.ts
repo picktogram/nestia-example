@@ -1,16 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
 import { IsOptionalNumber } from '@root/decorators/is-optional-number.decorator';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { TimeColumns } from '../common/time-columns';
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { CommonCloumns } from '../common/common-columns';
 import { Article } from './article';
 
 @Entity()
-export class BodyImage extends TimeColumns {
-  @ApiProperty({ description: 'id', example: 1 })
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class BodyImage extends CommonCloumns {
   @Column({ select: false })
   articleId: number;
 

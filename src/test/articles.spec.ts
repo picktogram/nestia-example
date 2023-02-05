@@ -8,7 +8,7 @@ import { ArticlesService } from '../providers/articles.service';
 import { ArticlesModule } from '../modules/articles.module';
 import { User } from '@root/models/tables/user';
 import { generateRandomNumber } from '@root/utils/generate-random-number';
-import { getAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
+import { GetAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
 
 describe('Article Entity', () => {
   let controller: ArticlesController;
@@ -42,45 +42,51 @@ describe('Article Entity', () => {
     let reader: User;
     let writer: User;
 
-    /**
-     * response
-     */
-    let list: getAllArticlesResponseDto[];
-    let count: number;
-    beforeAll(async () => {
-      const readerMetadata = generateRandomNumber(1000, 9999, true);
+    describe('일반적인 경우에 대한 검증', () => {
+      /**
+       * response
+       */
+      let list: GetAllArticlesResponseDto[];
+      let count: number;
+      beforeAll(async () => {
+        const readerMetadata = generateRandomNumber(1000, 9999, true);
 
-      reader = await User.save({
-        name: readerMetadata,
-        nickname: readerMetadata,
-        password: readerMetadata,
+        reader = await User.save({
+          name: readerMetadata,
+          nickname: readerMetadata,
+          password: readerMetadata,
+        });
+
+        const writerMetadata = generateRandomNumber(1000, 9999, true);
+        writer = await User.save({
+          name: writerMetadata,
+          nickname: writerMetadata,
+          password: writerMetadata,
+        });
+
+        await Article.save({ writerId: writer.id, contents: writerMetadata });
+
+        const response = await service.read(reader.id, { page: 1, limit: 10 });
+        list = response.list;
+        count = response.count;
       });
 
-      const writerMetadata = generateRandomNumber(1000, 9999, true);
-      writer = await User.save({
-        name: writerMetadata,
-        nickname: writerMetadata,
-        password: writerMetadata,
+      it('게시글은 페이지네이션 형태로 작성되어야 한다.', async () => {
+        expect(list).toBeInstanceOf(Array);
+        expect(typeof count).toBe('number');
       });
 
-      await Article.save({ writerId: writer.id, contents: writerMetadata });
+      it('게시글에는 작성자가 포함되어 있어야 하며, 이름과 사진을 알아볼 수 있어야 한다.', async () => {
+        list.forEach((article) => {
+          expect(article.writer).toBeDefined();
+          expect(article.writer.id).toBeDefined();
+          expect(article.writer.profileImage).toBeDefined();
+          expect(article.writer.nickname).toBeDefined();
+        });
+      });
 
-      const response = await service.read(reader.id, { page: 1, limit: 10 });
-      list = response.list;
-      count = response.count;
-    });
-
-    it('게시글은 페이지네이션 형태로 작성되어야 한다.', async () => {
-      expect(list).toBeInstanceOf(Array);
-      expect(typeof count).toBe('number');
-    });
-
-    it('게시글에는 작성자가 포함되어 있어야 하며, 이름과 사진을 알아볼 수 있어야 한다.', async () => {
-      list.forEach((article) => {
-        expect(article.writer).toBeDefined();
-        expect(article.writer.id).toBeDefined();
-        expect(article.writer.profileImage).toBeDefined();
-        expect(article.writer.nickname).toBeDefined();
+      it('게시글 리스트에서도 일정 개수(length) 이상의 댓글 배열이 포함되어 있어야 한다.', async () => {
+        expect(list.at(0)['commentMetadata']).toBeInstanceOf(Array);
       });
     });
 
@@ -90,10 +96,6 @@ describe('Article Entity', () => {
 
       expect(myArticle).toBeDefined();
       expect(myArticle['isMine']).toBeTruthy();
-    });
-
-    it('게시글 리스트에서도 일정 개수(length) 이상의 댓글 배열이 포함되어 있어야 한다.', async () => {
-      expect(list.at(0)['commentMetadata']).toBeInstanceOf(Array);
     });
 
     it('게시글의 댓글 배열은 인기 순, 좋아요 순으로 정렬되어야 한다.', async () => {});

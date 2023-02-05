@@ -3,17 +3,14 @@ import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator
 import { IsOptionalBoolean } from '@root/decorators/is-optional-boolean.decorator';
 import { Type } from 'class-transformer';
 import { IsDate, IsEmail, IsOptional } from 'class-validator';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany, AfterLoad } from 'typeorm';
-import { TimeColumns } from '../common/time-columns';
+import { Entity, Column, ManyToMany, JoinTable, OneToMany, AfterLoad } from 'typeorm';
+import { CommonCloumns } from '../common/common-columns';
 import { Article } from './article';
 import { Comment } from './comment';
+import { UserBridge } from './userBridge';
 
 @Entity()
-export class User extends TimeColumns {
-  @ApiProperty({ description: 'id', example: 1 })
-  @PrimaryGeneratedColumn()
-  public readonly id!: number;
-
+export class User extends CommonCloumns {
   @ApiProperty({ description: '이름 칼럼으로 사용자의 이름을 의미' })
   @IsNotEmptyString(1, 50)
   @Column({ length: 50, select: false })
@@ -81,6 +78,12 @@ export class User extends TimeColumns {
     inverseJoinColumn: { name: 'articleId', referencedColumnName: 'id' },
   })
   userLikeArticles: Article[];
+
+  @OneToMany(() => UserBridge, (ub) => ub.firstUser)
+  firstUserBridges: UserBridge[];
+
+  @OneToMany(() => UserBridge, (ub) => ub.secondUser)
+  secondUserBridges: UserBridge[];
 
   @OneToMany(() => Article, (article) => article.writer)
   articles: Article[];

@@ -1,27 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  OneToMany,
-  ManyToMany,
-  JoinTable,
-  JoinColumn,
-} from 'typeorm';
-import { TimeColumns } from '../common/time-columns';
+import { Entity, Column, ManyToOne, OneToMany, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
+import { CommonCloumns } from '../common/common-columns';
 import { BodyImage } from './bodyImage';
 import { Category } from './category';
 import { Comment } from './comment';
 import { User } from './user';
 
 @Entity()
-export class Article extends TimeColumns {
-  @ApiProperty({ description: 'id', example: 1 })
-  @PrimaryGeneratedColumn()
-  public readonly id: number;
-
+export class Article extends CommonCloumns {
   @Column()
   public writerId: number;
 

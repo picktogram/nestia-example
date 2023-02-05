@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 
-export class getAllArticlesResponseDto {
+export class GetAllArticlesResponseDto {
   @Expose()
   private readonly id: number;
   @Expose()
