@@ -17,12 +17,21 @@ export class getAllArticlesResponseDto {
   @Exclude()
   private readonly profileImage: string;
 
+  @Exclude()
+  private readonly commentMetadata: { id: number; contents: string }[];
+
+  @Expose()
   get writer() {
     return {
       id: this.writerId,
       nickname: this.nickname,
       profileImage: this.profileImage,
     };
+  }
+
+  @Expose()
+  get comments() {
+    return this.commentMetadata;
   }
 
   constructor(
@@ -35,8 +44,11 @@ export class getAllArticlesResponseDto {
       nickname: string;
       profileImage: string;
     },
+    commentMetadata: { id: number; contents: string }[] = [],
   ) {
     Object.assign(this, metadata);
+
+    this.commentMetadata = commentMetadata;
     this.isMine = readerId === this.writerId;
   }
 }

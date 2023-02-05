@@ -4,15 +4,17 @@ import { ERROR } from '@root/config/constant/error';
 import { CreateArticleDto } from '@root/models/dtos/create-article.dto';
 import { PaginationDto } from '@root/models/dtos/pagination.dto';
 import { ArticlesRepository } from '@root/models/repositories/articles.repository';
+import { CommentsRepository } from '@root/models/repositories/comments.repository';
 import { getAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
 import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
 import { getOffset } from '@root/utils/getOffset';
+import { In, IsNull } from 'typeorm';
 
 @Injectable()
 export class ArticlesService {
   constructor(
-    @InjectRepository(ArticlesRepository)
-    private readonly articlesRepository: ArticlesRepository,
+    @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
+    @InjectRepository(CommentsRepository) private readonly commentsRepository: CommentsRepository,
   ) {}
 
   async getOneDetailArticle(userId: number, articleId: number): Promise<GetOneArticleResponseDto> {
@@ -45,9 +47,32 @@ export class ArticlesService {
       .offset(skip)
       .limit(take);
 
-    const [list, count] = await Promise.all([query.getRawMany(), query.getCount()]);
+    const [list, count]: [
+      {
+        id: number;
+        contents: string;
+        createdAt: Date;
+        writerId: number;
+        nickname: string;
+        profileImage: string;
+      }[],
+      number,
+    ] = await Promise.all([query.getRawMany(), query.getCount()]);
 
-    return { list: list.map((el) => new getAllArticlesResponseDto(userId, el)), count };
+    const comments = await this.commentsRepository
+      .createQueryBuilder('c')
+      .select(['c.id AS "id"', 'c.contents AS "contents"'])
+      .addSelect('ROW_NUMBER() OVER (PARTITION BY c."articleId" ORDER BY c."createdAt" DESC) AS "rn"')
+      .where('c.articleId IN (:...articleIds)', { articleIds: list.map((el) => el.id) })
+      .getRawMany();
+
+    return {
+      list: list.map((article) => {
+        const representationComments = comments.filter((el) => el.articleId === article.id);
+        return new getAllArticlesResponseDto(userId, article, representationComments);
+      }),
+      count,
+    };
   }
 
   async write(userId: number, { contents, images }: CreateArticleDto) {

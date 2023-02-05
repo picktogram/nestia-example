@@ -4,6 +4,7 @@ import { Article } from './article';
 import { TimeColumns } from '../common/time-columns';
 import { User } from './user';
 import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
+import { IsOptionalNumber } from '@root/decorators/is-optional-number.decorator';
 
 @Entity()
 export class Comment extends TimeColumns {
@@ -16,6 +17,10 @@ export class Comment extends TimeColumns {
 
   @Column({ select: false })
   writerId: number;
+
+  @IsOptionalNumber()
+  @Column({ nullable: true })
+  parentId: number;
 
   @ApiProperty()
   @IsNotEmptyString(0, 1000)

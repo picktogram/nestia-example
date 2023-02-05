@@ -48,13 +48,22 @@ describe('Article Entity', () => {
     let list: getAllArticlesResponseDto[];
     let count: number;
     beforeAll(async () => {
-      const randomNumberString = generateRandomNumber(1000, 9999, true);
+      const readerMetadata = generateRandomNumber(1000, 9999, true);
 
       reader = await User.save({
-        name: randomNumberString,
-        nickname: randomNumberString,
-        password: randomNumberString,
+        name: readerMetadata,
+        nickname: readerMetadata,
+        password: readerMetadata,
       });
+
+      const writerMetadata = generateRandomNumber(1000, 9999, true);
+      writer = await User.save({
+        name: writerMetadata,
+        nickname: writerMetadata,
+        password: writerMetadata,
+      });
+
+      await Article.save({ writerId: writer.id, contents: writerMetadata });
 
       const response = await service.read(reader.id, { page: 1, limit: 10 });
       list = response.list;
@@ -76,14 +85,6 @@ describe('Article Entity', () => {
     });
 
     it('본인이 게시글의 작성자인 경우에는 본인인 줄 알 수 있게 표기가 되어야 한다.', async () => {
-      const randomNumberString = generateRandomNumber(1000, 9999, true);
-      writer = await User.save({
-        name: randomNumberString,
-        nickname: randomNumberString,
-        password: randomNumberString,
-      });
-
-      await Article.save({ writerId: writer.id, contents: randomNumberString });
       const response = await service.read(writer.id, { page: 1, limit: 10 });
       const myArticle = response.list.find((el) => el.writer.id === writer.id);
 
@@ -91,14 +92,16 @@ describe('Article Entity', () => {
       expect(myArticle['isMine']).toBeTruthy();
     });
 
-    it('게시글의 작성자가 이탈한 경우 프로필 사진과 이름은 익명으로 표기되어야 한다.', async () => {});
-
-    it('게시글 리스트에서도 일정 개수(length) 이상의 댓글 배열이 포함되어 있어야 한다.', async () => {});
+    it('게시글 리스트에서도 일정 개수(length) 이상의 댓글 배열이 포함되어 있어야 한다.', async () => {
+      expect(list.at(0)['commentMetadata']).toBeInstanceOf(Array);
+    });
 
     it('게시글의 댓글 배열은 인기 순, 좋아요 순으로 정렬되어야 한다.', async () => {});
 
     it('게시글의 글 순서는 기본적으로는 시간 순이다.', async () => {});
 
     it('시간 순이되, 보여지는 글은 유명인이거나 1촌 등 가까운 사이의 글만 노출된다.', async () => {});
+
+    it('게시글의 작성자가 이탈한 경우 프로필 사진과 이름은 익명으로 표기되어야 한다.', async () => {});
   });
 });
