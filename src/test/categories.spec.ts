@@ -1,13 +1,13 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Category } from '../models/tables/category.entity';
+import { CategoryEntity } from '../models/tables/category.entity';
 import { TypeOrmModuleOptions } from '../config/typeorm';
 import { CategoriesController } from '../controllers/categories.controller';
 import { CategoriesService } from '../providers/categories.service';
 import { CategoriesModule } from '../modules/categories.module';
 
-describe('Category Entity', () => {
+describe('CategoryEntity Entity', () => {
   let controller: CategoriesController;
   let service: CategoriesService;
   let category;
@@ -16,7 +16,7 @@ describe('Category Entity', () => {
     const module = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
-        TypeOrmModule.forFeature([Category]),
+        TypeOrmModule.forFeature([CategoryEntity]),
         ConfigModule.forRoot({ isGlobal: true }),
         CategoriesModule,
       ],

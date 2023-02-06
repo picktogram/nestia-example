@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { ArticleEntity } from './article.entity';
 import { UserEntity } from './user.entity';
 import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
@@ -23,6 +23,10 @@ export class CommentEntity extends CommonCloumns {
   @Column('text')
   contents: string;
 
+  /**
+   * below are relations
+   */
+
   @ManyToOne(() => ArticleEntity, (a) => a.comments)
   @JoinColumn({ name: 'articleId', referencedColumnName: 'id' })
   article: ArticleEntity;
@@ -30,4 +34,11 @@ export class CommentEntity extends CommonCloumns {
   @ManyToOne(() => UserEntity, (u) => u.comments)
   @JoinColumn({ name: 'writerId', referencedColumnName: 'id' })
   writer: UserEntity;
+
+  @ManyToOne(() => CommentEntity, (parent) => parent.children)
+  @JoinColumn({ name: 'parentId', referencedColumnName: 'id' })
+  parent: CommentEntity;
+
+  @OneToMany(() => CommentEntity, (children) => children.parent)
+  children: CommentEntity[];
 }

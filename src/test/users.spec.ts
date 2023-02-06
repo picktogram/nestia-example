@@ -13,13 +13,12 @@ describe('User Entity', () => {
   let controller: UsersController;
   let service: UsersService;
   let authService: AuthService;
-  let user;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
-        TypeOrmModule.forFeature([User]),
+        TypeOrmModule.forFeature([UserEntity]),
         ConfigModule.forRoot({ isGlobal: true }),
         UsersModule,
         AuthModule,
@@ -42,15 +41,13 @@ describe('User Entity', () => {
   });
 
   describe('1. 유저의 생성 로직을 검증합니다.', () => {
-    let user: User;
-
+    // let user: UserEntity;
     // afterEach(async () => {
     //   const searched = await User.findOne({ where: { id: user.id } });
     //   if (searched) {
     //     await User.remove(searched);
     //   }
     // });
-
     // it('1-1. 유저를 생성하거나 조회합니다.', async () => {
     //   user = await controller.signUp({
     //     name: 'test',
@@ -64,7 +61,6 @@ describe('User Entity', () => {
     //     emailAdsConsent: true,
     //   });
     //   console.log(user);
-
     //   expect(user).toBeDefined();
     // });
   });

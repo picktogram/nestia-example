@@ -13,7 +13,7 @@ describe('Auth Entity', () => {
     const module = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
-        TypeOrmModule.forFeature([User]),
+        TypeOrmModule.forFeature([UserEntity]),
         ConfigModule.forRoot({ isGlobal: true }),
         AuthModule,
       ],

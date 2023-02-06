@@ -1,25 +1,26 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Article } from '../models/tables/article.entity';
+import { ArticleEntity } from '../models/tables/article.entity';
 import { TypeOrmModuleOptions } from '../config/typeorm';
 import { ArticlesController } from '../controllers/articles.controller';
 import { ArticlesService } from '../providers/articles.service';
 import { ArticlesModule } from '../modules/articles.module';
-import { User } from '@root/models/tables/user.entity';
-import { generateRandomNumber } from '@root/utils/generate-random-number';
-import { GetAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
+import { UserEntity } from '../models/tables/user.entity';
+import { generateRandomNumber } from '../utils/generate-random-number';
+import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
+import { CommentEntity } from '../models/tables/comment.entity';
+import { IsNull } from 'typeorm';
 
 describe('Article Entity', () => {
   let controller: ArticlesController;
   let service: ArticlesService;
-  let article;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
-        TypeOrmModule.forFeature([Article]),
+        TypeOrmModule.forFeature([ArticleEntity]),
         ConfigModule.forRoot({ isGlobal: true }),
         ArticlesModule,
       ],
@@ -40,7 +41,7 @@ describe('Article Entity', () => {
 
   describe('GET api/v1/articles', () => {
     describe('리턴 값에 대한 검증', () => {
-      let reader: User;
+      let reader: UserEntity;
 
       /**
        * response
@@ -50,7 +51,7 @@ describe('Article Entity', () => {
       beforeAll(async () => {
         const readerMetadata = generateRandomNumber(1000, 9999, true);
 
-        reader = await User.save({
+        reader = await UserEntity.save({
           name: readerMetadata,
           nickname: readerMetadata,
           password: readerMetadata,
@@ -81,17 +82,17 @@ describe('Article Entity', () => {
     });
 
     describe('게시글 리스트 조회 시 작성자에 대한 정보 검증', () => {
-      let writer: User;
+      let writer: UserEntity;
 
       beforeAll(async () => {
         const writerMetadata = generateRandomNumber(1000, 9999, true);
-        writer = await User.save({
+        writer = await UserEntity.save({
           name: writerMetadata,
           nickname: writerMetadata,
           password: writerMetadata,
         });
 
-        await Article.save({ writerId: writer.id, contents: writerMetadata });
+        await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata });
       });
 
       it('본인이 게시글의 작성자인 경우에는 본인인 줄 알 수 있게 표기가 되어야 한다.', async () => {
@@ -104,23 +105,50 @@ describe('Article Entity', () => {
     });
 
     describe('게시글 내부의 댓글에 대한 검증', () => {
-      let writer: User;
+      let writer: UserEntity;
+      let article: ArticleEntity;
+      let comments: CommentEntity[];
+
+      /**
+       * response
+       */
+      let list: GetAllArticlesResponseDto[];
+      let count: number;
+
       beforeAll(async () => {
         const writerMetadata = generateRandomNumber(1000, 9999, true);
-        writer = await User.save({
+        writer = await UserEntity.save({
           name: writerMetadata,
           nickname: writerMetadata,
           password: writerMetadata,
         });
 
-        await Article.save({ writerId: writer.id, contents: writerMetadata });
-        await Comment.save({ writerId: writer.id });
+        article = await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata });
+        comments = await CommentEntity.save(
+          [1, 2, 3].map((el) => {
+            return CommentEntity.create({
+              articleId: article.id,
+              writerId: writer.id,
+              contents: `test${el}`,
+            });
+          }),
+        );
+
+        const response = await service.read(writer.id, { page: 1, limit: 100 });
+        list = response.list;
+      });
+
+      it('게시글의 글 순서는 기본적으로는 시간 순이다.', async () => {
+        const [created]: GetAllArticlesResponseDto[] = list.filter((el) => el['id'] === article.id);
+        const sorted = created.comments.sort((a, b) => a.id - b.id);
+
+        const isSame = JSON.stringify(created.comments) === JSON.stringify(sorted);
+
+        expect(isSame).toBeTruthy();
       });
 
       it('게시글의 댓글 배열은 인기 순, 좋아요 순으로 정렬되어야 한다.', async () => {});
     });
-
-    describe('게시글의 글 순서는 기본적으로는 시간 순이다.', () => {});
 
     describe('시간 순이되, 보여지는 글은 유명인이거나 1촌 등 가까운 사이의 글만 노출된다.', () => {});
 
