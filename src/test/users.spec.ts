@@ -8,6 +8,8 @@ import { UsersService } from '../providers/users.service';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../modules/users.module';
 import { AuthService } from '../auth/auth.service';
+import { generateRandomNumber } from '@root/utils/generate-random-number';
+import { UserBridgeEntity } from '@root/models/tables/userBridge.entity';
 
 describe('User Entity', () => {
   let controller: UsersController;
@@ -63,5 +65,65 @@ describe('User Entity', () => {
     //   console.log(user);
     //   expect(user).toBeDefined();
     // });
+  });
+
+  describe('2. 유저의 좋아요 기능을 검증', () => {
+    const NON_EXIST = 987654321;
+    let follower: UserEntity;
+    let followee: UserEntity;
+
+    beforeEach(async () => {
+      const folwerMetadata = generateRandomNumber(1000, 9999, true);
+      follower = await UserEntity.save({
+        name: folwerMetadata,
+        nickname: folwerMetadata,
+        password: folwerMetadata,
+      });
+
+      const followeeMetadata = generateRandomNumber(1000, 9999, true);
+      followee = await UserEntity.save({
+        name: followeeMetadata,
+        nickname: followeeMetadata,
+        password: followeeMetadata,
+      });
+    });
+
+    it('유저 좋아요 시 좋아요 성공 시 현재 관계 상태를 리턴한다.', async () => {
+      const response: UserBridgeEntity = await controller.follow(follower.id, followee.id);
+
+      expect(response).toBeDefined();
+      expect(response.firstUserId).toBe(follower.id);
+      expect(response.secondUserId).toBe(followee.id);
+      expect(response.status).toBe('follow');
+    });
+
+    it('이미 좋아요를 누른 유저에게 좋아요 시 에러를 발생시킨다.', async () => {
+      try {
+        await controller.follow(follower.id, followee.id);
+        await controller.follow(follower.id, followee.id);
+
+        expect(1).toBe(2);
+      } catch (err) {
+        expect(err.message).toBe('이미 좋아요를 누른 디자이너입니다!');
+      }
+    });
+
+    it('존재하지 않는 유저에 대해서는 좋아요를 할 수 없어야 한다.', async () => {
+      try {
+        await controller.follow(follower.id, NON_EXIST);
+        expect(1).toBe(2);
+      } catch (err) {
+        expect(err.message).toBe('팔로우할 디자이너를 찾지 못했습니다.');
+      }
+    });
+
+    it('좋아요한 상대에게 좋아요를 받은 경우 userBridge의 상태 값이 맞팔(followUp)으로 변경된다.', async () => {
+      await controller.follow(follower.id, followee.id);
+      const response: UserBridgeEntity = await controller.follow(followee.id, follower.id);
+
+      expect(response.status).toBe('followUp');
+    });
+
+    it('좋아요한 상대에게 좋아요를 받은 직후 좋아요를 끊을 경우, 좋아요 관계가 역전(reverse)으로 변경된다.', async () => {});
   });
 });

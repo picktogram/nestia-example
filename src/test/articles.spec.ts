@@ -9,7 +9,7 @@ import { ArticlesModule } from '../modules/articles.module';
 import { UserEntity } from '../models/tables/user.entity';
 import { generateRandomNumber } from '../utils/generate-random-number';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
-import { CommentEntity } from '../models/tables/comment.entity';
+import { CommentEntity } from 'src/models/tables/comment.entity';
 import { IsNull } from 'typeorm';
 
 describe('Article Entity', () => {
