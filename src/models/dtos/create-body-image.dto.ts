@@ -1,9 +1,6 @@
 import { PickType } from '@nestjs/swagger';
-import { BodyImage } from '../tables/bodyImage';
+import { BodyImageEntity } from '../tables/bodyImage.entity';
 
-export class CreateRootBodyImageDto extends PickType(BodyImage, [
-  'url',
-  'position',
-]) {
+export class CreateRootBodyImageDto extends PickType(BodyImageEntity, ['url', 'position']) {
   position = 0;
 }

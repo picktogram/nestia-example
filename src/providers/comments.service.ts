@@ -4,7 +4,7 @@ import { ERROR } from '@root/config/constant/error';
 import { CreateCommentDto } from '@root/models/dtos/create-comment.dto';
 import { ArticlesRepository } from '@root/models/repositories/articles.repository';
 import { CommentsRepository } from '@root/models/repositories/comments.repository';
-import { Article } from '@root/models/tables/article';
+import { ArticleEntity } from '@root/models/tables/article.entity';
 
 @Injectable()
 export class CommentsService {
@@ -26,7 +26,7 @@ export class CommentsService {
       throw new BadRequestException(ERROR.NOT_FOUND_ARTICLE_TO_COMMENT);
     }
 
-    if (article.isReported >= Article.TOO_MANY_REPORTED) {
+    if (article.isReported >= ArticleEntity.TOO_MANY_REPORTED) {
       throw new BadRequestException(ERROR.TOO_MANY_REPORTED_ARTICLE);
     }
 

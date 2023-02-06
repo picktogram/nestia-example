@@ -1,6 +1,6 @@
 import { CustomRepository } from '@root/config/typeorm/custom-typeorm.decorator';
 import { Repository } from 'typeorm';
-import { Article } from '../tables/article';
+import { ArticleEntity } from '../tables/article.entity';
 
-@CustomRepository(Article)
-export class ArticlesRepository extends Repository<Article> {}
+@CustomRepository(ArticleEntity)
+export class ArticlesRepository extends Repository<ArticleEntity> {}

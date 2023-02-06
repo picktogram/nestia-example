@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Article } from './article';
-import { User } from './user';
+import { ArticleEntity } from './article.entity';
+import { UserEntity } from './user.entity';
 import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
 import { IsOptionalNumber } from '@root/decorators/is-optional-number.decorator';
 import { CommonCloumns } from '../common/common-columns';
 
-@Entity()
-export class Comment extends CommonCloumns {
+@Entity({ name: 'comment' })
+export class CommentEntity extends CommonCloumns {
   @Column({ select: false })
   articleId: number;
 
@@ -23,11 +23,11 @@ export class Comment extends CommonCloumns {
   @Column('text')
   contents: string;
 
-  @ManyToOne(() => Article, (a) => a.comments)
+  @ManyToOne(() => ArticleEntity, (a) => a.comments)
   @JoinColumn({ name: 'articleId', referencedColumnName: 'id' })
-  article: Article;
+  article: ArticleEntity;
 
-  @ManyToOne(() => User, (u) => u.comments)
+  @ManyToOne(() => UserEntity, (u) => u.comments)
   @JoinColumn({ name: 'writerId', referencedColumnName: 'id' })
-  writer: User;
+  writer: UserEntity;
 }

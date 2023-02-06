@@ -1,7 +1,7 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../models/tables/user';
+import { UserEntity } from '../models/tables/user.entity';
 import { TypeOrmModuleOptions } from '../config/typeorm';
 import { UsersController } from '../controllers/users.controller';
 import { UsersService } from '../providers/users.service';

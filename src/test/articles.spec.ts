@@ -1,12 +1,12 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Article } from '../models/tables/article';
+import { Article } from '../models/tables/article.entity';
 import { TypeOrmModuleOptions } from '../config/typeorm';
 import { ArticlesController } from '../controllers/articles.controller';
 import { ArticlesService } from '../providers/articles.service';
 import { ArticlesModule } from '../modules/articles.module';
-import { User } from '@root/models/tables/user';
+import { User } from '@root/models/tables/user.entity';
 import { generateRandomNumber } from '@root/utils/generate-random-number';
 import { GetAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
 
@@ -39,10 +39,9 @@ describe('Article Entity', () => {
   });
 
   describe('GET api/v1/articles', () => {
-    let reader: User;
-    let writer: User;
+    describe('리턴 값에 대한 검증', () => {
+      let reader: User;
 
-    describe('일반적인 경우에 대한 검증', () => {
       /**
        * response
        */
@@ -56,15 +55,6 @@ describe('Article Entity', () => {
           nickname: readerMetadata,
           password: readerMetadata,
         });
-
-        const writerMetadata = generateRandomNumber(1000, 9999, true);
-        writer = await User.save({
-          name: writerMetadata,
-          nickname: writerMetadata,
-          password: writerMetadata,
-        });
-
-        await Article.save({ writerId: writer.id, contents: writerMetadata });
 
         const response = await service.read(reader.id, { page: 1, limit: 10 });
         list = response.list;
@@ -90,20 +80,50 @@ describe('Article Entity', () => {
       });
     });
 
-    it('본인이 게시글의 작성자인 경우에는 본인인 줄 알 수 있게 표기가 되어야 한다.', async () => {
-      const response = await service.read(writer.id, { page: 1, limit: 10 });
-      const myArticle = response.list.find((el) => el.writer.id === writer.id);
+    describe('게시글 리스트 조회 시 작성자에 대한 정보 검증', () => {
+      let writer: User;
 
-      expect(myArticle).toBeDefined();
-      expect(myArticle['isMine']).toBeTruthy();
+      beforeAll(async () => {
+        const writerMetadata = generateRandomNumber(1000, 9999, true);
+        writer = await User.save({
+          name: writerMetadata,
+          nickname: writerMetadata,
+          password: writerMetadata,
+        });
+
+        await Article.save({ writerId: writer.id, contents: writerMetadata });
+      });
+
+      it('본인이 게시글의 작성자인 경우에는 본인인 줄 알 수 있게 표기가 되어야 한다.', async () => {
+        const response = await service.read(writer.id, { page: 1, limit: 10 });
+        const myArticle = response.list.find((el) => el.writer.id === writer.id);
+
+        expect(myArticle).toBeDefined();
+        expect(myArticle['isMine']).toBeTruthy();
+      });
     });
 
-    it('게시글의 댓글 배열은 인기 순, 좋아요 순으로 정렬되어야 한다.', async () => {});
+    describe('게시글 내부의 댓글에 대한 검증', () => {
+      let writer: User;
+      beforeAll(async () => {
+        const writerMetadata = generateRandomNumber(1000, 9999, true);
+        writer = await User.save({
+          name: writerMetadata,
+          nickname: writerMetadata,
+          password: writerMetadata,
+        });
 
-    it('게시글의 글 순서는 기본적으로는 시간 순이다.', async () => {});
+        await Article.save({ writerId: writer.id, contents: writerMetadata });
+        await Comment.save({ writerId: writer.id });
+      });
 
-    it('시간 순이되, 보여지는 글은 유명인이거나 1촌 등 가까운 사이의 글만 노출된다.', async () => {});
+      it('게시글의 댓글 배열은 인기 순, 좋아요 순으로 정렬되어야 한다.', async () => {});
+    });
 
-    it('게시글의 작성자가 이탈한 경우 프로필 사진과 이름은 익명으로 표기되어야 한다.', async () => {});
+    describe('게시글의 글 순서는 기본적으로는 시간 순이다.', () => {});
+
+    describe('시간 순이되, 보여지는 글은 유명인이거나 1촌 등 가까운 사이의 글만 노출된다.', () => {});
+
+    describe('게시글의 작성자가 이탈한 경우 프로필 사진과 이름은 익명으로 표기되어야 한다.', () => {});
   });
 });

@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
 import { Entity, Column, ManyToOne, OneToMany, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
 import { CommonCloumns } from '../common/common-columns';
-import { BodyImage } from './bodyImage';
-import { Category } from './category';
-import { Comment } from './comment';
-import { User } from './user';
+import { BodyImageEntity } from './bodyImage.entity';
+import { CategoryEntity } from './category.entity';
+import { CommentEntity } from './comment.entity';
+import { UserEntity } from './user.entity';
 
-@Entity()
-export class Article extends CommonCloumns {
+@Entity({ name: 'article' })
+export class ArticleEntity extends CommonCloumns {
   @Column()
   public writerId: number;
 
@@ -23,28 +23,28 @@ export class Article extends CommonCloumns {
   /**
    * below are relations
    */
-  @ManyToOne(() => User, (writer) => writer.articles)
+  @ManyToOne(() => UserEntity, (writer) => writer.articles)
   @JoinColumn({ name: 'writerId', referencedColumnName: 'id' })
-  writer: User;
+  writer: UserEntity;
 
-  @OneToMany(() => BodyImage, (image) => image.article, {
+  @OneToMany(() => BodyImageEntity, (image) => image.article, {
     cascade: ['insert'],
   })
-  images: BodyImage[];
+  images: BodyImageEntity[];
 
-  @ManyToMany(() => Category, (category) => category.articles)
+  @ManyToMany(() => CategoryEntity, (category) => category.articles)
   @JoinTable({
     name: 'article_has_categories',
     joinColumn: { name: 'articleId', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'categoryId', referencedColumnName: 'id' },
   })
-  categories: Category[];
+  categories: CategoryEntity[];
 
-  @ManyToMany(() => User, (user) => user.userLikeArticles)
-  users: User[];
+  @ManyToMany(() => UserEntity, (user) => user.userLikeArticles)
+  users: UserEntity[];
 
-  @OneToMany(() => Comment, (c) => c.article)
-  comments: Comment[];
+  @OneToMany(() => CommentEntity, (c) => c.article)
+  comments: CommentEntity[];
 
   /**
    * method( subscriber ) area

@@ -3,10 +3,10 @@ import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator
 import { IsOptionalNumber } from '@root/decorators/is-optional-number.decorator';
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { CommonCloumns } from '../common/common-columns';
-import { Article } from './article';
+import { ArticleEntity } from './article.entity';
 
-@Entity()
-export class BodyImage extends CommonCloumns {
+@Entity({ name: 'body_image' })
+export class BodyImageEntity extends CommonCloumns {
   @Column({ select: false })
   articleId: number;
 
@@ -31,14 +31,14 @@ export class BodyImage extends CommonCloumns {
    * below are relations
    */
 
-  @ManyToOne(() => Article, (article) => article.images)
+  @ManyToOne(() => ArticleEntity, (article) => article.images)
   @JoinColumn({ name: 'articleId', referencedColumnName: 'id' })
-  article: Article;
+  article: ArticleEntity;
 
-  @ManyToOne(() => BodyImage, (parent) => parent.children)
+  @ManyToOne(() => BodyImageEntity, (parent) => parent.children)
   @JoinColumn({ name: 'parentId', referencedColumnName: 'id' })
-  parent: BodyImage;
+  parent: BodyImageEntity;
 
-  @OneToMany(() => BodyImage, (child) => child.parent)
-  children: BodyImage[];
+  @OneToMany(() => BodyImageEntity, (child) => child.parent)
+  children: BodyImageEntity[];
 }

@@ -1,7 +1,7 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Category } from '../models/tables/category';
+import { Category } from '../models/tables/category.entity';
 import { TypeOrmModuleOptions } from '../config/typeorm';
 import { CategoriesController } from '../controllers/categories.controller';
 import { CategoriesService } from '../providers/categories.service';

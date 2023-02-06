@@ -1,6 +1,6 @@
 import { CustomRepository } from '@root/config/typeorm/custom-typeorm.decorator';
 import { Repository } from 'typeorm';
-import { Comment } from '../tables/comment';
+import { CommentEntity } from '../tables/comment.entity';
 
-@CustomRepository(Comment)
-export class CommentsRepository extends Repository<Comment> {}
+@CustomRepository(CommentEntity)
+export class CommentsRepository extends Repository<CommentEntity> {}

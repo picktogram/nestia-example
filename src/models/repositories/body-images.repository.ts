@@ -1,6 +1,6 @@
 import { CustomRepository } from '@root/config/typeorm/custom-typeorm.decorator';
 import { Repository } from 'typeorm';
-import { BodyImage } from '../tables/bodyImage';
+import { BodyImageEntity } from '../tables/bodyImage.entity';
 
-@CustomRepository(BodyImage)
-export class BodyImagesRepository extends Repository<BodyImage> {}
+@CustomRepository(BodyImageEntity)
+export class BodyImagesRepository extends Repository<BodyImageEntity> {}

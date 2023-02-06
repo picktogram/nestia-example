@@ -7,8 +7,8 @@ import { ArticlesRepository } from '@root/models/repositories/articles.repositor
 import { CommentsRepository } from '@root/models/repositories/comments.repository';
 import { GetAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
 import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
-import { Article } from '@root/models/tables/article';
-import { Comment } from '@root/models/tables/comment';
+import { ArticleEntity } from '@root/models/tables/article.entity';
+import { CommentEntity } from '@root/models/tables/comment.entity';
 import { getOffset } from '@root/utils/getOffset';
 import { DataSource, In, IsNull } from 'typeorm';
 
@@ -67,7 +67,7 @@ export class ArticlesService {
       .createQueryBuilder()
       .from((qb) => {
         return qb
-          .from(Comment, 'c')
+          .from(CommentEntity, 'c')
           .select(['c.id AS "id"', 'c.contents AS "contents"', 'c.articleId AS "articleId"'])
           .addSelect('ROW_NUMBER() OVER (PARTITION BY c."articleId" ORDER BY c."createdAt" DESC)::int4 AS "position"')
           .where('c.articleId IN (:...articleIds)', { articleIds: list.map((el) => el.id) });

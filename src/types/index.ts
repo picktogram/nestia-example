@@ -1,4 +1,4 @@
-import { User } from '@root/models/tables/user';
+import { UserEntity } from '@root/models/tables/user.entity';
 
 export type ListType = {
   data: any[];
@@ -18,7 +18,4 @@ export type ExtendedResponse<T> = {
   data: T extends ListType ? ListOutputValue : T;
 };
 
-export type DecodedUserToken = Pick<
-  User,
-  'id' | 'name' | 'nickname' | 'email' | 'birth' | 'gender'
->;
+export type DecodedUserToken = Pick<UserEntity, 'id' | 'name' | 'nickname' | 'email' | 'birth' | 'gender'>;

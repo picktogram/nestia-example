@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { CreatedAtColumn } from '../common/created-at.column';
-import { User } from './user';
+import { UserEntity } from './user.entity';
 
-@Entity()
-export class UserBridge extends CreatedAtColumn {
+@Entity({ name: 'user_bridge' })
+export class UserBridgeEntity extends CreatedAtColumn {
   @PrimaryColumn()
   firstUserId: number;
 
@@ -17,11 +17,11 @@ export class UserBridge extends CreatedAtColumn {
    * below are relations
    */
 
-  @ManyToOne(() => User, (u) => u.firstUserBridges)
+  @ManyToOne(() => UserEntity, (u) => u.firstUserBridges)
   @JoinColumn({ name: 'firstUserId', referencedColumnName: 'id' })
-  firstUser: User;
+  firstUser: UserEntity;
 
-  @ManyToOne(() => User, (u) => u.secondUserBridges)
+  @ManyToOne(() => UserEntity, (u) => u.secondUserBridges)
   @JoinColumn({ name: 'secondUserId', referencedColumnName: 'id' })
-  secondUser: User;
+  secondUser: UserEntity;
 }

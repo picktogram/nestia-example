@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { CategoriesService } from '../providers/categories.service';
 import { CategoriesController } from '../controllers/categories.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Category } from '../models/tables/category';
-import { ArticleHasCategory } from '../models/tables/articleHasCategory';
+import { CategoryEntity } from '../models/tables/category.entity';
+import { ArticleHasCategoryEntity } from '../models/tables/articleHasCategory.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Category, ArticleHasCategory])],
+  imports: [TypeOrmModule.forFeature([CategoryEntity, ArticleHasCategoryEntity])],
   controllers: [CategoriesController],
   providers: [CategoriesService],
 })

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../models/tables/user';
+import { UserEntity } from '../models/tables/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../models/dtos/create-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -8,7 +8,7 @@ import { ERROR } from '@root/config/constant/error';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private readonly usersRepository: Repository<User>) {}
+  constructor(@InjectRepository(UserEntity) private readonly usersRepository: Repository<UserEntity>) {}
 
   async create(createUserDto: CreateUserDto) {
     const users = await this.usersRepository.find({
@@ -42,7 +42,7 @@ export class UsersService {
     });
   }
 
-  async findOne(userId: number): Promise<User> {
+  async findOne(userId: number): Promise<UserEntity> {
     return await this.usersRepository.findOne({ where: { id: userId } });
   }
 }

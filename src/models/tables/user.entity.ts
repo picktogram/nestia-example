@@ -5,12 +5,12 @@ import { Type } from 'class-transformer';
 import { IsDate, IsEmail, IsOptional } from 'class-validator';
 import { Entity, Column, ManyToMany, JoinTable, OneToMany, AfterLoad } from 'typeorm';
 import { CommonCloumns } from '../common/common-columns';
-import { Article } from './article';
-import { Comment } from './comment';
-import { UserBridge } from './userBridge';
+import { ArticleEntity } from './article.entity';
+import { CommentEntity } from './comment.entity';
+import { UserBridgeEntity } from './userBridge.entity';
 
-@Entity()
-export class User extends CommonCloumns {
+@Entity({ name: 'user' })
+export class UserEntity extends CommonCloumns {
   @ApiProperty({ description: '이름 칼럼으로 사용자의 이름을 의미' })
   @IsNotEmptyString(1, 50)
   @Column({ length: 50, select: false })
@@ -71,25 +71,25 @@ export class User extends CommonCloumns {
    * below are relations
    */
 
-  @ManyToMany(() => Article, (article) => article.users, { nullable: false })
+  @ManyToMany(() => ArticleEntity, (article) => article.users, { nullable: false })
   @JoinTable({
     name: 'user_like_article',
     joinColumn: { name: 'userId', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'articleId', referencedColumnName: 'id' },
   })
-  userLikeArticles: Article[];
+  userLikeArticles: ArticleEntity[];
 
-  @OneToMany(() => UserBridge, (ub) => ub.firstUser)
-  firstUserBridges: UserBridge[];
+  @OneToMany(() => UserBridgeEntity, (ub) => ub.firstUser)
+  firstUserBridges: UserBridgeEntity[];
 
-  @OneToMany(() => UserBridge, (ub) => ub.secondUser)
-  secondUserBridges: UserBridge[];
+  @OneToMany(() => UserBridgeEntity, (ub) => ub.secondUser)
+  secondUserBridges: UserBridgeEntity[];
 
-  @OneToMany(() => Article, (article) => article.writer)
-  articles: Article[];
+  @OneToMany(() => ArticleEntity, (article) => article.writer)
+  articles: ArticleEntity[];
 
-  @OneToMany(() => Comment, (c) => c.writer)
-  comments: Comment[];
+  @OneToMany(() => CommentEntity, (c) => c.writer)
+  comments: CommentEntity[];
 
   /**
    * methods

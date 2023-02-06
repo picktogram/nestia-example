@@ -1,3 +1,3 @@
 import { PickType } from '@nestjs/swagger';
-import { Article } from '../tables/article';
-import { BodyImage } from '../tables/bodyImage';
+import { ArticleEntity } from '../tables/article.entity';
+import { BodyImageEntity } from '../tables/bodyImage.entity';
