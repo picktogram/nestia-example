@@ -19,5 +19,8 @@ export class UsersController {
   }
 
   @Post(':id/follow')
-  async follow(@User() userId: number, @Param('id', ParseIntPipe) followeeId: number) {}
+  async follow(@User() userId: number, @Param('id', ParseIntPipe) followeeId: number) {
+    const response = await this.usersService.follow(userId, followeeId);
+    return response;
+  }
 }

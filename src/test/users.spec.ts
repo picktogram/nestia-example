@@ -88,6 +88,11 @@ describe('User Entity', () => {
       });
     });
 
+    afterEach(async () => {
+      follower = null;
+      followee = null;
+    });
+
     it('유저 좋아요 시 좋아요 성공 시 현재 관계 상태를 리턴한다.', async () => {
       const response: UserBridgeEntity = await controller.follow(follower.id, followee.id);
 
@@ -124,6 +129,7 @@ describe('User Entity', () => {
       expect(response.status).toBe('followUp');
     });
 
-    it('좋아요한 상대에게 좋아요를 받은 직후 좋아요를 끊을 경우, 좋아요 관계가 역전(reverse)으로 변경된다.', async () => {});
+    // TODO : 팔로우를 끊는 API에서 테스트할 것
+    // it('좋아요한 상대에게 좋아요를 받은 직후 좋아요를 끊을 경우, 좋아요 관계가 역전(reverse)으로 변경된다.', async () => {});
   });
 });
