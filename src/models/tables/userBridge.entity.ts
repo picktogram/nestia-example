@@ -1,15 +1,19 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { CreatedAtColumn } from '../common/created-at.column';
 import { UserEntity } from './user.entity';
 
 @Entity({ name: 'user_bridge' })
 export class UserBridgeEntity extends CreatedAtColumn {
+  @ApiProperty()
   @PrimaryColumn()
   firstUserId: number;
 
+  @ApiProperty()
   @PrimaryColumn()
   secondUserId: number;
 
+  @ApiProperty({ enum: ['follow', 'followUp', 'reverse'] })
   @Column({ default: 'follow' })
   status: 'follow' | 'followUp' | 'reverse';
 
