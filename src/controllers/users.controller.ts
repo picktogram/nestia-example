@@ -1,10 +1,11 @@
-import { Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { UserEntity } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
 import { User } from '../common/decorators/user.decorator';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserBridgeEntity } from '@root/models/tables/userBridge.entity';
+import { UserId } from '@root/common/decorators/user-id.decorator';
 
 @ApiBearerAuth('Bearer')
 @UseGuards(JwtGuard)
@@ -19,10 +20,13 @@ export class UsersController {
     return user;
   }
 
+  @Delete(':id/follow')
+  async unfollow(@UserId() userId: number, @Param('id', ParseIntPipe) followeeId: number) {}
+
   @ApiOperation({ summary: '230207 - 디자이너님이 다른 디자이너님을 팔로우하는 API' })
   @ApiOkResponse({ type: UserBridgeEntity })
   @Post(':id/follow')
-  async follow(@User() userId: number, @Param('id', ParseIntPipe) followeeId: number) {
+  async follow(@UserId() userId: number, @Param('id', ParseIntPipe) followeeId: number) {
     const response = await this.usersService.follow(userId, followeeId);
     return response;
   }
