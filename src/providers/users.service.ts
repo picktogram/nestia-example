@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../models/tables/user.entity';
 import { CreateUserDto } from '../models/dtos/create-user.dto';
-import { ERROR } from '@root/config/constant/error';
+import { ERROR, ValueOfError } from '@root/config/constant/error';
 import { UsersRepository } from '@root/models/repositories/users.repository';
 import { UserBridgesRepository } from '@root/models/repositories/user-bridge.repository';
 
@@ -51,25 +51,38 @@ export class UsersService {
     return await this.usersRepository.findOne({ where: { id: userId } });
   }
 
-  async follow(followerId: number, followeeId: number) {
-    const [followee, bridge] = await Promise.all([
-      this.usersRepository.findOne({ where: { id: followeeId } }),
-      this.userBridgesRepository.findOne({
-        where: { firstUserId: followerId, secondUserId: followeeId },
-      }),
-    ]);
+  async unfollow(followerId: number, followeeId: number) {
+    const { followee, bridge, reversedBridge } = await this.getFolloweeOrThrow(
+      followerId,
+      followeeId,
+      ERROR.CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW,
+    );
 
-    if (bridge) {
+    if (!bridge && (!reversedBridge || reversedBridge.status === 'follow')) {
+      throw new BadRequestException(ERROR.STILL_UNFOLLOW_USER);
+    }
+
+    if (reversedBridge) {
+      return await this.userBridgesRepository.save({
+        firstUserId: followee.id,
+        secondUserId: followerId,
+        status: 'follow',
+      });
+    }
+
+    return await this.userBridgesRepository.delete({ firstUserId: followerId, secondUserId: followeeId });
+  }
+
+  async follow(followerId: number, followeeId: number) {
+    const { followee, bridge, reversedBridge } = await this.getFolloweeOrThrow(
+      followerId,
+      followeeId,
+      ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
+    );
+
+    if (bridge || reversedBridge?.status === 'followUp') {
       throw new BadRequestException(ERROR.ALREADY_FOLLOW_USER);
     }
-
-    if (!followee) {
-      throw new BadRequestException(ERROR.CANNOT_FIND_ONE_DESIGNER);
-    }
-
-    const reversedBridge = await this.userBridgesRepository.findOne({
-      where: { firstUserId: followee.id, secondUserId: followerId },
-    });
 
     if (reversedBridge) {
       return await this.userBridgesRepository.save({
@@ -80,5 +93,19 @@ export class UsersService {
     }
 
     return await this.userBridgesRepository.save({ firstUserId: followerId, secondUserId: followeeId });
+  }
+
+  private async getFolloweeOrThrow(followerId: number, followeeId: number, customError: ValueOfError) {
+    const [followee, bridge, reversedBridge] = await Promise.all([
+      this.usersRepository.findOne({ where: { id: followeeId } }),
+      this.userBridgesRepository.findOne({ where: { firstUserId: followerId, secondUserId: followeeId } }),
+      this.userBridgesRepository.findOne({ where: { firstUserId: followeeId, secondUserId: followerId } }),
+    ]);
+
+    if (!followee) {
+      throw new BadRequestException(customError);
+    }
+
+    return { followee, bridge, reversedBridge };
   }
 }

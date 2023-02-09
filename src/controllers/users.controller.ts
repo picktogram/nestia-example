@@ -20,10 +20,14 @@ export class UsersController {
     return user;
   }
 
+  @ApiOperation({ summary: '230210 - 디자이너님이 다른 디자이너님을 언팔로우하는 API (수정 필요)' })
   @Delete(':id/follow')
-  async unfollow(@UserId() userId: number, @Param('id', ParseIntPipe) followeeId: number) {}
+  async unfollow(@UserId() userId: number, @Param('id', ParseIntPipe) followeeId: number) {
+    const response = await this.usersService.unfollow(userId, followeeId);
+    return response;
+  }
 
-  @ApiOperation({ summary: '230207 - 디자이너님이 다른 디자이너님을 팔로우하는 API' })
+  @ApiOperation({ summary: '230207 - 디자이너님이 다른 디자이너님을 팔로우하는 API (수정 필요)' })
   @ApiOkResponse({ type: UserBridgeEntity })
   @Post(':id/follow')
   async follow(@UserId() userId: number, @Param('id', ParseIntPipe) followeeId: number) {

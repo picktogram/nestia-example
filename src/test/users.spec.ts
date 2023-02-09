@@ -102,14 +102,15 @@ describe('User Entity', () => {
       expect(response.status).toBe('follow');
     });
 
-    it('이미 좋아요를 누른 유저에게 좋아요 시 에러를 발생시킨다.', async () => {
+    it.only('이미 좋아요를 누른 유저에게 좋아요 시 에러를 발생시킨다.', async () => {
       try {
-        await controller.follow(follower.id, followee.id);
+        const saved = await controller.follow(follower.id, followee.id);
+        console.log(saved, 'saved');
         await controller.follow(follower.id, followee.id);
 
         expect(1).toBe(2);
       } catch (err) {
-        expect(err.message).toBe('이미 좋아요를 누른 디자이너입니다!');
+        expect(err.message).toBe('이미 좋아요를 누른 디자이너님입니다!');
       }
     });
 
@@ -118,7 +119,7 @@ describe('User Entity', () => {
         await controller.follow(follower.id, NON_EXIST);
         expect(1).toBe(2);
       } catch (err) {
-        expect(err.message).toBe('팔로우할 디자이너를 찾지 못했습니다.');
+        expect(err.message).toBe('팔로우할 디자이너님을 찾지 못했습니다.');
       }
     });
 
