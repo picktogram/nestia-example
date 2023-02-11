@@ -41,7 +41,7 @@ export class CommentsService {
       throw new BadRequestException(ERROR.TOO_MANY_REPORTED_ARTICLE);
     }
 
-    const comment = await this.commentsRepository.save(createCommentDto);
+    const comment = await this.commentsRepository.save({ writerId, articleId, ...createCommentDto });
     return comment;
   }
 }
