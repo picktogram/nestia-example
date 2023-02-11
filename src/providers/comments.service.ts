@@ -14,7 +14,7 @@ export class CommentsService {
     @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
   ) {}
 
-  async write(writerId: number, articleId: number, { contents }: CreateCommentDto): Promise<CommentEntity> {
+  async write(writerId: number, articleId: number, createCommentDto: CreateCommentDto): Promise<CommentEntity> {
     const article = await this.articlesRepository.findOne({
       select: {
         id: true,
@@ -22,6 +22,16 @@ export class CommentsService {
       },
       where: { id: articleId },
     });
+
+    if (createCommentDto.parentId) {
+      const parentComment = await this.commentsRepository.findOne({
+        where: { articleId, parentId: createCommentDto.parentId },
+      });
+
+      if (!parentComment) {
+        throw new BadRequestException(ERROR.CANNOT_FIND_ONE_REPLY_COMMENT);
+      }
+    }
 
     if (!article) {
       throw new BadRequestException(ERROR.NOT_FOUND_ARTICLE_TO_COMMENT);
@@ -31,14 +41,7 @@ export class CommentsService {
       throw new BadRequestException(ERROR.TOO_MANY_REPORTED_ARTICLE);
     }
 
-    const comment = await this.commentsRepository.save(
-      CommentEntity.create({
-        writerId,
-        articleId,
-        contents,
-      }),
-    );
-
+    const comment = await this.commentsRepository.save(createCommentDto);
     return comment;
   }
 }

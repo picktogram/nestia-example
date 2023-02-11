@@ -14,6 +14,7 @@ export class CommentEntity extends CommonCloumns {
   @Column({ select: false })
   writerId: number;
 
+  @ApiProperty({ description: '부모 댓글이 있는 경우, 즉 답글인 경우에는 부모 댓글 아이디를 받는다.' })
   @IsOptionalNumber()
   @Column({ nullable: true })
   parentId: number;
@@ -22,6 +23,16 @@ export class CommentEntity extends CommonCloumns {
   @IsNotEmptyString(0, 1000)
   @Column('text')
   contents: string;
+
+  @ApiProperty({ description: '소수점을 포함한 좌표 값' })
+  @IsOptionalNumber()
+  @Column({ type: 'numeric', nullable: true })
+  xPosition: number;
+
+  @ApiProperty({ description: '소수점을 포함한 좌표 값' })
+  @IsOptionalNumber()
+  @Column({ type: 'numeric', nullable: true })
+  yPosition: number;
 
   /**
    * below are relations

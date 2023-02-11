@@ -13,6 +13,7 @@ export const ERROR = {
   CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW: { code: 4009, message: '팔로우할 디자이너님을 찾지 못했습니다.' },
   STILL_UNFOLLOW_USER: { code: 4010, message: '아직 팔로우한 적 없는 디자이너님에요!' },
   CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW: { code: 4011, message: '언팔로우할 디자이너님을 찾지 못했습니다.' },
+  CANNOT_FIND_ONE_REPLY_COMMENT: { code: 4012, message: '답글을 달 댓글을 찾지 못했어요.' },
 } as const;
 
 export type KeyOfError = keyof typeof ERROR;
