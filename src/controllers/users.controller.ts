@@ -14,7 +14,7 @@ import { UserId } from '@root/common/decorators/user-id.decorator';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @ApiOperation({ summary: 'MVP : 유저 프로필 조회 & 토큰에 담긴 값 Parsing' })
+  @ApiOperation({ summary: 'MVP : 디자이너 프로필 조회 & 토큰에 담긴 값 Parsing' })
   @Get('profile')
   async getProfile(@User() user: UserEntity) {
     return user;

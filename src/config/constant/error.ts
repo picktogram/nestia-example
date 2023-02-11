@@ -1,4 +1,5 @@
 import { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
+import { NTuple } from '@root/types';
 
 export const ERROR = {
   ALREADY_CREATED_EMAIL: { code: 4001, message: '이미 생성된 이메일입니다.' },
@@ -26,13 +27,6 @@ export const createErrorSchema = (error: ValueOfError): SchemaObject => {
     },
   };
 };
-
-/**
- * TODO :
- */
-
-type Push<T extends any[], U> = [...T, U];
-type NTuple<N extends number, T extends any[] = []> = T['length'] extends N ? T : NTuple<N, Push<T, any>>;
 
 export const createErrorSchemas = <T extends string[]>(errors: NTuple<T['length'], ValueOfError[]>): SchemaObject => {
   return {

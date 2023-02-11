@@ -154,4 +154,27 @@ describe('Article Entity', () => {
 
     describe('게시글의 작성자가 이탈한 경우 프로필 사진과 이름은 익명으로 표기되어야 한다.', () => {});
   });
+
+  describe('POST api/v1/articles', () => {
+    it('동일한 포지션의 이미지가 있을 경우 에러를 발생', async () => {
+      const positions = [1, 2, 3, 4, 5, 6, 6].map((position) => ({ position }));
+      try {
+        const checkIsSame = service['checkIsSamePosition'](positions);
+        expect(checkIsSame).toBeUndefined();
+      } catch (err) {
+        expect(err.message).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
+      }
+    });
+
+    it('should ', async () => {
+      const positions = [undefined, undefined, undefined].map((position) => ({ position }));
+      const answer = [0, 1, 2].map((position) => ({ position }));
+      try {
+        const checkIsSame = service['checkIsSamePosition'](positions);
+        expect(JSON.stringify(checkIsSame)).toBe(JSON.stringify(answer));
+      } catch (err) {
+        expect(err.message).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
+      }
+    });
+  });
 });
