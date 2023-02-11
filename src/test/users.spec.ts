@@ -94,7 +94,10 @@ describe('User Entity', () => {
     });
 
     it('유저 좋아요 시 좋아요 성공 시 현재 관계 상태를 리턴한다.', async () => {
-      const response: UserBridgeEntity = await controller.follow(follower.id, followee.id);
+      await controller.follow(follower.id, followee.id);
+      const response = await UserBridgeEntity.findOne({
+        where: { firstUserId: follower.id, secondUserId: followee.id },
+      });
 
       expect(response).toBeDefined();
       expect(response.firstUserId).toBe(follower.id);
@@ -104,8 +107,7 @@ describe('User Entity', () => {
 
     it.only('이미 좋아요를 누른 유저에게 좋아요 시 에러를 발생시킨다.', async () => {
       try {
-        const saved = await controller.follow(follower.id, followee.id);
-        console.log(saved, 'saved');
+        await controller.follow(follower.id, followee.id);
         await controller.follow(follower.id, followee.id);
 
         expect(1).toBe(2);
@@ -125,7 +127,10 @@ describe('User Entity', () => {
 
     it('좋아요한 상대에게 좋아요를 받은 경우 userBridge의 상태 값이 맞팔(followUp)으로 변경된다.', async () => {
       await controller.follow(follower.id, followee.id);
-      const response: UserBridgeEntity = await controller.follow(followee.id, follower.id);
+      await controller.follow(followee.id, follower.id);
+      const response = await UserBridgeEntity.findOne({
+        where: { firstUserId: follower.id, secondUserId: followee.id },
+      });
 
       expect(response.status).toBe('followUp');
     });

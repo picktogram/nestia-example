@@ -5,6 +5,7 @@ import { CreateCommentDto } from '@root/models/dtos/create-comment.dto';
 import { ArticlesRepository } from '@root/models/repositories/articles.repository';
 import { CommentsRepository } from '@root/models/repositories/comments.repository';
 import { ArticleEntity } from '@root/models/tables/article.entity';
+import { CommentEntity } from '@root/models/tables/comment.entity';
 
 @Injectable()
 export class CommentsService {
@@ -13,7 +14,7 @@ export class CommentsService {
     @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
   ) {}
 
-  async write(writerId: number, articleId: number, { contents }: CreateCommentDto) {
+  async write(writerId: number, articleId: number, { contents }: CreateCommentDto): Promise<CommentEntity> {
     const article = await this.articlesRepository.findOne({
       select: {
         id: true,
@@ -30,11 +31,13 @@ export class CommentsService {
       throw new BadRequestException(ERROR.TOO_MANY_REPORTED_ARTICLE);
     }
 
-    const comment = await this.commentsRepository.save({
-      writerId,
-      articleId,
-      contents,
-    });
+    const comment = await this.commentsRepository.save(
+      CommentEntity.create({
+        writerId,
+        articleId,
+        contents,
+      }),
+    );
 
     return comment;
   }

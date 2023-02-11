@@ -22,3 +22,15 @@ export type ExtendedResponse<T> = {
 };
 
 export type DecodedUserToken = Pick<UserEntity, 'id' | 'name' | 'nickname' | 'email' | 'birth' | 'gender'>;
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace ArticleType {
+  export type ReadArticleResponse = {
+    id: number;
+    contents: string;
+    createdAt: Date;
+    writerId: number;
+    nickname: string;
+    profileImage: string;
+  };
+}

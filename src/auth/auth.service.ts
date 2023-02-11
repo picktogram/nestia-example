@@ -9,13 +9,13 @@ import { DecodedUserToken } from '@root/types';
 export class AuthService {
   constructor(private readonly jwtService: JwtService, private readonly usersService: UsersService) {}
 
-  async validateUser(email: string, password: string): Promise<DecodedUserToken & { password: string }> {
+  async validateUser(email: string, password: string): Promise<DecodedUserToken> {
     const user = await this.usersService.findOneByEmail(email);
     if (user) {
       const isRightPassword = await bcrypt.compare(password, user.password);
       if (isRightPassword) {
-        delete user.password;
-        return user;
+        const { password, ...rest } = user;
+        return rest;
       }
     }
     return null;

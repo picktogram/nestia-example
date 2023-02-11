@@ -156,13 +156,24 @@ describe('Article Entity', () => {
   });
 
   describe('POST api/v1/articles', () => {
-    it('동일한 포지션의 이미지가 있을 경우 에러를 발생', async () => {
+    it('동일한 포지션의 이미지가 있을 경우 에러를 발생 1.', async () => {
       const positions = [1, 2, 3, 4, 5, 6, 6].map((position) => ({ position }));
       try {
         const checkIsSame = service['checkIsSamePosition'](positions);
-        expect(checkIsSame).toBeUndefined();
+        expect(checkIsSame).toBe('This is to be failed.');
       } catch (err) {
         expect(err.message).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
+      }
+    });
+
+    it('postion 값이 0과 1일 경우 에러로 처리되는 문제 발생 2.', async () => {
+      // NOTE : 프론트 측의 오류 제보로 인해 추가
+      const positions = [0, 1].map((position) => ({ position }));
+      try {
+        const checkIsSame = service['checkIsSamePosition'](positions);
+        expect(JSON.stringify(checkIsSame)).toBe(JSON.stringify(positions));
+      } catch (err) {
+        expect(err).toBeUndefined();
       }
     });
 

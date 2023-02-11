@@ -59,7 +59,10 @@ export class ArticlesController {
     schema: createErrorSchema(ERROR.IS_SAME_POSITION),
   })
   @Post()
-  async writeArticle(@UserId() userId: number, @Body() createArticleDto: CreateArticleDto) {
+  async writeArticle(
+    @UserId() userId: number,
+    @Body() createArticleDto: CreateArticleDto,
+  ): Promise<GetOneArticleResponseDto> {
     const savedArticle = await this.articlesService.write(userId, createArticleDto);
     const article = await this.articlesService.getOneDetailArticle(userId, savedArticle.id);
     return article;

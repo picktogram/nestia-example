@@ -7,6 +7,7 @@ import { UsersRepository } from '@root/models/repositories/users.repository';
 import { UserBridgesRepository } from '@root/models/repositories/user-bridge.repository';
 
 import bcrypt from 'bcrypt';
+import { DecodedUserToken } from '@root/types';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +16,7 @@ export class UsersService {
     @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const users = await this.usersRepository.find({
       where: [{ email: createUserDto.email }, { phoneNumber: createUserDto.phoneNumber }],
     });
@@ -26,13 +27,15 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-    return await this.usersRepository.save({
-      ...createUserDto,
-      password: hashedPassword,
-    });
+    return await this.usersRepository.save(
+      UserEntity.create({
+        ...createUserDto,
+        password: hashedPassword,
+      }),
+    );
   }
 
-  async findOneByEmail(email: string) {
+  async findOneByEmail(email: string): Promise<DecodedUserToken & { password: string }> {
     return await this.usersRepository.findOne({
       select: {
         id: true,
@@ -51,7 +54,7 @@ export class UsersService {
     return await this.usersRepository.findOne({ where: { id: userId } });
   }
 
-  async unfollow(followerId: number, followeeId: number) {
+  async unfollow(followerId: number, followeeId: number): Promise<true> {
     const { followee, bridge, reversedBridge } = await this.getFolloweeOrThrow(
       followerId,
       followeeId,
@@ -63,17 +66,19 @@ export class UsersService {
     }
 
     if (reversedBridge) {
-      return await this.userBridgesRepository.save({
+      await this.userBridgesRepository.save({
         firstUserId: followee.id,
         secondUserId: followerId,
         status: 'follow',
       });
+      return true;
     }
 
-    return await this.userBridgesRepository.delete({ firstUserId: followerId, secondUserId: followeeId });
+    await this.userBridgesRepository.delete({ firstUserId: followerId, secondUserId: followeeId });
+    return true;
   }
 
-  async follow(followerId: number, followeeId: number) {
+  async follow(followerId: number, followeeId: number): Promise<true> {
     const { followee, bridge, reversedBridge } = await this.getFolloweeOrThrow(
       followerId,
       followeeId,
@@ -85,14 +90,16 @@ export class UsersService {
     }
 
     if (reversedBridge) {
-      return await this.userBridgesRepository.save({
+      await this.userBridgesRepository.save({
         firstUserId: followee.id,
         secondUserId: followerId,
         status: 'followUp',
       });
+      return true;
     }
 
-    return await this.userBridgesRepository.save({ firstUserId: followerId, secondUserId: followeeId });
+    await this.userBridgesRepository.save({ firstUserId: followerId, secondUserId: followeeId });
+    return true;
   }
 
   private async getFolloweeOrThrow(followerId: number, followeeId: number, customError: ValueOfError) {

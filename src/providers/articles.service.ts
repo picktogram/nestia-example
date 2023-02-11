@@ -9,8 +9,9 @@ import { GetAllArticlesResponseDto } from '@root/models/response/get-all-article
 import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
 import { ArticleEntity } from '@root/models/tables/article.entity';
 import { CommentEntity } from '@root/models/tables/comment.entity';
+import { ArticleType } from '@root/types';
 import { getOffset } from '@root/utils/getOffset';
-import { DataSource, In, IsNull } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class ArticlesService {
@@ -39,7 +40,13 @@ export class ArticlesService {
     return new GetOneArticleResponseDto(article);
   }
 
-  async read(userId: number, { page, limit }: PaginationDto) {
+  async read(
+    userId: number,
+    { page, limit }: PaginationDto,
+  ): Promise<{
+    list: GetAllArticlesResponseDto[];
+    count: number;
+  }> {
     const { skip, take } = getOffset(page, limit);
 
     const query = this.articlesRepository
@@ -51,17 +58,10 @@ export class ArticlesService {
       .offset(skip)
       .limit(take);
 
-    const [list, count]: [
-      {
-        id: number;
-        contents: string;
-        createdAt: Date;
-        writerId: number;
-        nickname: string;
-        profileImage: string;
-      }[],
-      number,
-    ] = await Promise.all([query.getRawMany(), query.getCount()]);
+    const [list, count]: [ArticleType.ReadArticleResponse[], number] = await Promise.all([
+      query.getRawMany(),
+      query.getCount(),
+    ]);
 
     const comments = await this.dataSource
       .createQueryBuilder()
@@ -83,25 +83,30 @@ export class ArticlesService {
     };
   }
 
-  async write(userId: number, { contents, images }: CreateArticleDto) {
+  async write(userId: number, { contents, images }: CreateArticleDto): Promise<ArticleEntity> {
     const checkedImages = this.checkIsSamePosition(images);
-    const writedArticle = await this.articlesRepository.save({
-      writerId: userId,
-      contents,
-      images: checkedImages,
-    });
+    const writedArticle = await this.articlesRepository.save(
+      ArticleEntity.create({
+        writerId: userId,
+        contents,
+        images: checkedImages,
+      }),
+    );
 
     // TODO : 실제 이미지 저장에 사용되지 않은 이미지들을 삭제하는 기능을 여기에 추가할 것
 
     return writedArticle;
   }
 
-  private checkIsSamePosition(images: { position: number }[]) {
+  private checkIsSamePosition<T extends { position: number }>(images: T[]): T[] {
     const isSamePositionImage = images
       .map((el) => el.position)
+      .filter((el) => el !== 0)
       .find((el, i, arr) => {
-        const isSamePosition = (other: number, otherIdx: number) => el === other && i !== otherIdx;
-        return arr.filter((el) => el !== 0).some(isSamePosition);
+        const isSamePosition = (other: number, otherIdx: number) => {
+          return el === other && i !== otherIdx;
+        };
+        return arr.some(isSamePosition);
       });
 
     if (isSamePositionImage) {
@@ -111,7 +116,7 @@ export class ArticlesService {
     return this.sortImageByIndex(images);
   }
 
-  private sortImageByIndex(images: { position: number }[]) {
+  private sortImageByIndex<T extends { position: number }>(images: T[]): T[] {
     return images.map((image, i) => {
       image.position = image.position || i;
       return image;
