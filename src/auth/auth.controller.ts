@@ -55,6 +55,7 @@ export class AuthController {
   @UseGuards(LocalGuard)
   @Post('login')
   login(@User() user: DecodedUserToken): string {
+    console.log('야호');
     return this.jwtService.sign({ ...user });
   }
 }

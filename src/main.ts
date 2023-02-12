@@ -19,7 +19,7 @@ async function bootstrap() {
   app.enableCors();
 
   SwaggerSetting(app);
-  await app.listen(3000, () => {
+  await app.listen(3000, '0.0.0.0', () => {
     if (process.env.NODE_ENV === 'production') {
       process.send('ready');
     }

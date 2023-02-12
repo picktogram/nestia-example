@@ -1,0 +1,15 @@
+FROM node:16-alpine as test
+
+WORKDIR /usr/src/app
+
+COPY ./package.json ./
+
+ENV NODE_ENV=TEST
+
+RUN npm install
+
+COPY ./ ./
+
+RUN npm run build
+
+CMD ["npm", "run", "test"]

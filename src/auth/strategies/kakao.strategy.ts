@@ -15,12 +15,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(
-    accessToken: string,
-    refreshToken: string,
-    profile: Profile,
-    done,
-  ) {
+  async validate(accessToken: string, refreshToken: string, profile: Profile, done) {
     done(null, profile);
   }
 }
