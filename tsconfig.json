@@ -14,10 +14,10 @@
     "paths": {
       "@root/*": ["./src/*"]
     },
-    "types": ["@types/jest", "node"],
-    "typeRoots": ["node_modules/types", "src/types"],
+    "noEmit": false,
+    "typeRoots": ["node_modules/@types", "./src/types"],
     "esModuleInterop": true
   },
-  "include": ["./src", "src/types"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["./src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "*.spec.ts"]
 }

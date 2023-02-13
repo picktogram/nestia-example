@@ -5,6 +5,7 @@ import { BodyImageEntity } from '../tables/bodyImage.entity';
 import { UserEntity } from '../tables/user.entity';
 
 export class GetWriterResponseDto extends PickType(UserEntity, ['id', 'nickname', 'profileImage'] as const) {}
+
 export class GetBodyImageListResponseDto extends PickType(BodyImageEntity, [
   'id',
   'position',

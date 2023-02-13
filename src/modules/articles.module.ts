@@ -5,9 +5,13 @@ import { ArticlesRepository } from '@root/models/repositories/articles.repositor
 import { CustomTypeOrmModule } from '@root/config/typeorm/custom-typeorm.module';
 import { CommentsModule } from './comments.module';
 import { CommentsRepository } from '@root/models/repositories/comments.repository';
+import { UserBridgesRepository } from '@root/models/repositories/user-bridge.repository';
 
 @Module({
-  imports: [CustomTypeOrmModule.forCustomRepository([ArticlesRepository, CommentsRepository]), CommentsModule],
+  imports: [
+    CustomTypeOrmModule.forCustomRepository([ArticlesRepository, CommentsRepository, UserBridgesRepository]),
+    CommentsModule,
+  ],
   controllers: [ArticlesController],
   providers: [ArticlesService],
 })

@@ -1,4 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
+import { UserBridgeType } from '@root/types';
 
 export class GetAllArticlesResponseDto {
   @Expose()
@@ -19,6 +20,8 @@ export class GetAllArticlesResponseDto {
 
   @Exclude()
   private readonly commentMetadata: { id: number; contents: string }[];
+  @Exclude()
+  private readonly followStatus: UserBridgeType.FollowStatus;
 
   @Expose()
   get writer() {
@@ -26,6 +29,7 @@ export class GetAllArticlesResponseDto {
       id: this.writerId,
       nickname: this.nickname,
       profileImage: this.profileImage,
+      followStatus: this.followStatus,
     };
   }
 
@@ -45,10 +49,12 @@ export class GetAllArticlesResponseDto {
       profileImage: string;
     },
     commentMetadata: { id: number; contents: string }[] = [],
+    followStatus: UserBridgeType.FollowStatus,
   ) {
     Object.assign(this, metadata);
 
     this.commentMetadata = commentMetadata;
+    this.followStatus = followStatus;
     this.isMine = readerId === this.writerId;
   }
 }

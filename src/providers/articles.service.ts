@@ -5,19 +5,22 @@ import { CreateArticleDto } from '@root/models/dtos/create-article.dto';
 import { PaginationDto } from '@root/models/dtos/pagination.dto';
 import { ArticlesRepository } from '@root/models/repositories/articles.repository';
 import { CommentsRepository } from '@root/models/repositories/comments.repository';
+import { UserBridgesRepository } from '@root/models/repositories/user-bridge.repository';
 import { GetAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
 import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
 import { ArticleEntity } from '@root/models/tables/article.entity';
 import { CommentEntity } from '@root/models/tables/comment.entity';
-import { ArticleType } from '@root/types';
+import { UserBridgeEntity } from '@root/models/tables/userBridge.entity';
+import { ArticleType, UserBridgeType } from '@root/types';
 import { getOffset } from '@root/utils/getOffset';
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 
 @Injectable()
 export class ArticlesService {
   constructor(
     @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
     @InjectRepository(CommentsRepository) private readonly commentsRepository: CommentsRepository,
+    @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
 
     private readonly dataSource: DataSource,
   ) {}
@@ -63,21 +66,38 @@ export class ArticlesService {
       query.getCount(),
     ]);
 
-    const comments = await this.dataSource
-      .createQueryBuilder()
-      .from((qb) => {
-        return qb
-          .from(CommentEntity, 'c')
-          .select(['c.id AS "id"', 'c.contents AS "contents"', 'c.articleId AS "articleId"'])
-          .addSelect('ROW_NUMBER() OVER (PARTITION BY c."articleId" ORDER BY c."createdAt" DESC)::int4 AS "position"')
-          .where('c.articleId IN (:...articleIds)', { articleIds: list.map((el) => el.id) });
-      }, 'cte')
-      .getRawMany();
+    const [comments, userBridges] = await Promise.all([
+      this.dataSource
+        .createQueryBuilder()
+        .from((qb) => {
+          return qb
+            .from(CommentEntity, 'c')
+            .select(['c.id AS "id"', 'c.contents AS "contents"', 'c.articleId AS "articleId"'])
+            .addSelect('ROW_NUMBER() OVER (PARTITION BY c."articleId" ORDER BY c."createdAt" DESC)::int4 AS "position"')
+            .where('c.articleId IN (:...articleIds)', { articleIds: list.map((el) => el.id) });
+        }, 'cte')
+        .getRawMany(),
+      this.userBridgesRepository.find({
+        where: [
+          {
+            firstUserId: userId,
+            secondUserId: In(list.map((el) => el.writerId)),
+          },
+          {
+            firstUserId: In(list.map((el) => el.writerId)),
+            secondUserId: userId,
+          },
+        ],
+      }),
+    ]);
 
     return {
       list: list.map((article) => {
         const representationComments = comments.filter((el) => el.articleId === article.id);
-        return new GetAllArticlesResponseDto(userId, article, representationComments);
+        const follow = userBridges.find((el) => el.firstUserId === userId && el.secondUserId === article.writerId);
+        const followed = userBridges.find((el) => el.firstUserId === userId && el.secondUserId === article.writerId);
+        const followStatus: 'follow' | 'followUp' | 'reverse' | 'nothing' = this.getFollowStatus(follow, followed);
+        return new GetAllArticlesResponseDto(userId, article, representationComments, followStatus);
       }),
       count,
     };
@@ -121,5 +141,17 @@ export class ArticlesService {
       image.position = image.position || i;
       return image;
     });
+  }
+
+  private getFollowStatus(follow?: UserBridgeEntity, followed?: UserBridgeEntity): UserBridgeType.FollowStatus {
+    if (follow && followed) {
+      return 'followUp';
+    } else if (follow) {
+      return 'follow';
+    } else if (followed) {
+      return 'reverse';
+    } else {
+      return 'nothing';
+    }
   }
 }

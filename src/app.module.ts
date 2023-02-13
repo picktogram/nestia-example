@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { CacheModule, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { HttpExceptionFilter } from './common/filters/http-exception.fiter';
@@ -17,6 +17,7 @@ import { SlackModule } from './external/slack/slack.module';
     TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
     ConfigModule.forRoot({ isGlobal: true }),
     ThrottlerModule.forRoot({ ttl: 60, limit: 60 }),
+    CacheModule.register({ isGlobal: true }),
     SlackModule,
     AuthModule,
   ],
