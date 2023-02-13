@@ -13,10 +13,6 @@ export class UserBridgeEntity extends CreatedAtColumn {
   @PrimaryColumn()
   secondUserId: number;
 
-  @ApiProperty({ enum: ['follow', 'followUp'] })
-  @Column({ default: 'follow' })
-  status: 'follow' | 'followUp';
-
   /**
    * below are relations
    */

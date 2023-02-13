@@ -61,17 +61,8 @@ export class UsersService {
       ERROR.CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW,
     );
 
-    if (!bridge && (!reversedBridge || reversedBridge.status === 'follow')) {
+    if (!bridge) {
       throw new BadRequestException(ERROR.STILL_UNFOLLOW_USER);
-    }
-
-    if (reversedBridge) {
-      await this.userBridgesRepository.save({
-        firstUserId: followee.id,
-        secondUserId: followerId,
-        status: 'follow',
-      });
-      return true;
     }
 
     await this.userBridgesRepository.delete({ firstUserId: followerId, secondUserId: followeeId });
@@ -85,17 +76,8 @@ export class UsersService {
       ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
     );
 
-    if (bridge || reversedBridge?.status === 'followUp') {
+    if (bridge) {
       throw new BadRequestException(ERROR.ALREADY_FOLLOW_USER);
-    }
-
-    if (reversedBridge) {
-      await this.userBridgesRepository.save({
-        firstUserId: followee.id,
-        secondUserId: followerId,
-        status: 'followUp',
-      });
-      return true;
     }
 
     await this.userBridgesRepository.save({ firstUserId: followerId, secondUserId: followeeId });
