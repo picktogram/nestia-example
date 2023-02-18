@@ -9,6 +9,8 @@ import { ArticleEntity } from './article.entity';
 import { CommentEntity } from './comment.entity';
 import { UserBridgeEntity } from './userBridge.entity';
 
+export type DecodedUserToken = Pick<UserEntity, 'id' | 'name' | 'nickname' | 'email' | 'birth' | 'gender'>;
+
 @Entity({ name: 'user' })
 export class UserEntity extends CommonCloumns {
   @ApiProperty({ description: '이름 칼럼으로 사용자의 이름을 의미' })

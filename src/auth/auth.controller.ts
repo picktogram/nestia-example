@@ -4,8 +4,8 @@ import { ApiBody, ApiOperation, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '@root/common/decorators/user.decorator';
 import { CreateUserDto } from '@root/models/dtos/create-user.dto';
 import { LoginUserDto } from '@root/models/dtos/login-user.dto';
+import { DecodedUserToken } from '@root/models/tables/user.entity';
 import { UsersService } from '@root/providers/users.service';
-import { DecodedUserToken } from '@root/types';
 import { LocalGuard } from './guards/local.guard';
 
 @ApiTags('Auth')

@@ -11,7 +11,6 @@ import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-
 import { ArticleEntity } from '@root/models/tables/article.entity';
 import { CommentEntity } from '@root/models/tables/comment.entity';
 import { UserBridgeEntity } from '@root/models/tables/userBridge.entity';
-import { ArticleType, UserBridgeType } from '@root/types';
 import { getOffset } from '@root/utils/getOffset';
 import { DataSource, In } from 'typeorm';
 
@@ -30,7 +29,7 @@ export class ArticlesService {
       .createQueryBuilder('a')
       .select(['a.id', 'a.contents'])
       .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
-      .addSelect(['i.id', 'i.position', 'i.depth'])
+      .addSelect(['i.id', 'i.position', 'i.url', 'i.depth'])
       .leftJoin('a.images', 'i', 'i.parentId IS NULL')
       .innerJoin('a.writer', 'w')
       .where('a.id = :articleId', { articleId })

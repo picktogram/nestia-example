@@ -1,13 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../models/tables/user.entity';
+import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import { CreateUserDto } from '../models/dtos/create-user.dto';
 import { ERROR, ValueOfError } from '@root/config/constant/error';
 import { UsersRepository } from '@root/models/repositories/users.repository';
 import { UserBridgesRepository } from '@root/models/repositories/user-bridge.repository';
-
 import bcrypt from 'bcrypt';
-import { DecodedUserToken } from '@root/types';
 
 @Injectable()
 export class UsersService {

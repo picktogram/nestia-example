@@ -1,5 +1,4 @@
 import { Exclude, Expose } from 'class-transformer';
-import { UserBridgeType } from '@root/types';
 
 export class GetAllArticlesResponseDto {
   @Expose()
