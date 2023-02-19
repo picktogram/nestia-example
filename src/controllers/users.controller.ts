@@ -4,8 +4,8 @@ import { UsersService } from '../providers/users.service';
 import { User } from '../common/decorators/user.decorator';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UserBridgeEntity } from '@root/models/tables/userBridge.entity';
-import { UserId } from '@root/common/decorators/user-id.decorator';
+import { UserBridgeEntity } from '../models/tables/userBridge.entity';
+import { UserId } from '../common/decorators/user-id.decorator';
 
 @ApiBearerAuth('Bearer')
 @UseGuards(JwtGuard)

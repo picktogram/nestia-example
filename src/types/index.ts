@@ -20,7 +20,7 @@ export type ExtendedResponse<T> = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace ArticleType {
+export declare namespace ArticleType {
   interface ReadArticleResponse {
     id: number;
     contents: string;
@@ -32,7 +32,7 @@ declare namespace ArticleType {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace UserBridgeType {
+export declare namespace UserBridgeType {
   export type FollowStatus = 'follow' | 'followUp' | 'reverse' | 'nothing';
 }
 

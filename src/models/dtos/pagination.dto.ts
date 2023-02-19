@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptionalNumber } from '@root/decorators/is-optional-number.decorator';
+import { IsOptionalNumber } from '../../decorators/is-optional-number.decorator';
 
 export class PaginationDto {
   @ApiProperty({

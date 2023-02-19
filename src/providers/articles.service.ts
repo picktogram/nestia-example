@@ -1,18 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ERROR } from '@root/config/constant/error';
-import { CreateArticleDto } from '@root/models/dtos/create-article.dto';
-import { PaginationDto } from '@root/models/dtos/pagination.dto';
-import { ArticlesRepository } from '@root/models/repositories/articles.repository';
-import { CommentsRepository } from '@root/models/repositories/comments.repository';
-import { UserBridgesRepository } from '@root/models/repositories/user-bridge.repository';
-import { GetAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
-import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
-import { ArticleEntity } from '@root/models/tables/article.entity';
-import { CommentEntity } from '@root/models/tables/comment.entity';
-import { UserBridgeEntity } from '@root/models/tables/userBridge.entity';
-import { ArticleType, UserBridgeType } from '@root/types';
-import { getOffset } from '@root/utils/getOffset';
+import { ERROR } from '../config/constant/error';
+import { CreateArticleDto } from '../models/dtos/create-article.dto';
+import { PaginationDto } from '../models/dtos/pagination.dto';
+import { ArticlesRepository } from '../models/repositories/articles.repository';
+import { CommentsRepository } from '../models/repositories/comments.repository';
+import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
+import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
+import { GetOneArticleResponseDto } from '../models/response/get-one-article-response.dto';
+import { ArticleEntity } from '../models/tables/article.entity';
+import { CommentEntity } from '../models/tables/comment.entity';
+import { UserBridgeEntity } from '../models/tables/userBridge.entity';
+import { ArticleType, UserBridgeType } from '../types';
+import { getOffset } from '../utils/getOffset';
 import { DataSource, In } from 'typeorm';
 
 @Injectable()

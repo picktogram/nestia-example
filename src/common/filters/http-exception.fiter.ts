@@ -1,5 +1,5 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
-import { SlackService } from '@root/external/slack/slack.service';
+import { SlackService } from '../../external/slack/slack.service';
 import { Request, Response } from 'express';
 
 const UNCHATCHED_ERROR = '서버에서 캐치되지 못한 에러입니다.';

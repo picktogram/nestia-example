@@ -1,8 +1,9 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
-import { NON_PAGINATION } from '@root/config/constant';
+import { NON_PAGINATION } from '../config/constant';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ExtendedResponse, ListOutputValue } from '../types';
 
 export const calcListTotalCount = (totalCount = 0, limit = 0): { totalResult: number; totalPage: number } => {
   const totalResult = totalCount;

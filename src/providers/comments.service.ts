@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ERROR } from '@root/config/constant/error';
-import { CreateCommentDto } from '@root/models/dtos/create-comment.dto';
-import { ArticlesRepository } from '@root/models/repositories/articles.repository';
-import { CommentsRepository } from '@root/models/repositories/comments.repository';
-import { ArticleEntity } from '@root/models/tables/article.entity';
-import { CommentEntity } from '@root/models/tables/comment.entity';
+import { ERROR } from '../config/constant/error';
+import { CreateCommentDto } from '../models/dtos/create-comment.dto';
+import { ArticlesRepository } from '../models/repositories/articles.repository';
+import { CommentsRepository } from '../models/repositories/comments.repository';
+import { ArticleEntity } from '../models/tables/article.entity';
+import { CommentEntity } from '../models/tables/comment.entity';
 
 @Injectable()
 export class CommentsService {

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
-import { IsOptionalNumber } from '@root/decorators/is-optional-number.decorator';
+import { IsNotEmptyString } from '../../decorators/is-not-empty-string.decorator';
+import { IsOptionalNumber } from '../../decorators/is-optional-number.decorator';
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { CommonCloumns } from '../common/common-columns';
 import { ArticleEntity } from './article.entity';

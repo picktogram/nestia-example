@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
-import { IsOptionalBoolean } from '@root/decorators/is-optional-boolean.decorator';
+import { IsNotEmptyString } from '../../decorators/is-not-empty-string.decorator';
+import { IsOptionalBoolean } from '../../decorators/is-optional-boolean.decorator';
 import { Type } from 'class-transformer';
 import { IsDate, IsEmail, IsOptional } from 'class-validator';
 import { Entity, Column, ManyToMany, JoinTable, OneToMany, AfterLoad } from 'typeorm';

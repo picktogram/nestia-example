@@ -12,10 +12,10 @@
     "baseUrl": "./",
     "incremental": true,
     "paths": {
-      "@root/*": ["./src/*"]
+      "../*": ["./src/*"]
     },
     "noEmit": false,
-    "typeRoots": ["node_modules/@types", "./src/types"],
+    "typeRoots": ["node_modules/@types", "./src/types/**.*.d.ts"],
     "esModuleInterop": true,
     "plugins": [
       {

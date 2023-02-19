@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
+import { IsNotEmptyString } from '../../decorators/is-not-empty-string.decorator';
 import { Entity, Column, ManyToOne, OneToMany, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
 import { CommonCloumns } from '../common/common-columns';
 import { BodyImageEntity } from './bodyImage.entity';
