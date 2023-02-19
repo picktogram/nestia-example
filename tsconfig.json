@@ -16,7 +16,18 @@
     },
     "noEmit": false,
     "typeRoots": ["node_modules/@types", "./src/types"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "plugins": [
+      {
+        "transform": "@nestia/core/lib/transform",
+        "validate": "assert", // "assert", "is", "validate"
+        "stringify": "is" // "stringify", "assert", "is", "validate", null
+      },
+      {
+        "transform": "typia/lib/transform"
+      }
+    ],
+    "strict": false
   },
   "include": ["./src/**/*.ts"],
   "exclude": ["node_modules", "dist", "*.spec.ts"]

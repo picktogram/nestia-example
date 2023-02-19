@@ -5,8 +5,8 @@ import { ArticleEntity } from './article.entity';
 @Entity({ name: 'category' })
 export class CategoryEntity extends CommonCloumns {
   @Column('varchar', { nullable: false, unique: true })
-  name: string;
+  name!: string;
 
   @ManyToMany(() => ArticleEntity, (article) => article.categories)
-  articles: ArticleEntity[];
+  articles!: ArticleEntity[];
 }

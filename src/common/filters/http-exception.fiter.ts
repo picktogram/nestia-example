@@ -51,6 +51,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           slackMessageForm += `\t${stackMessage}\n`;
         });
 
+        console.error(slackMessageForm);
         this.slackService.sendToServerErrorChannel(slackMessageForm);
       }
 
@@ -66,14 +67,28 @@ export class HttpExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    // TODO : 정리 필요
+    console.log(exception);
+    if (exception instanceof Error) {
+      // TODO : 정리 필요
+      response.status(400).json({
+        statusCode: 400,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+
+        errorCode: 4000,
+        errorMessage: exception.message,
+      });
+      return;
+    }
+
     response.status(400).json({
       statusCode: 400,
       timestamp: new Date().toISOString(),
       path: request.url,
 
       errorCode: 4000,
-      errorMessage: exception,
+      errorMessage: `I DON'T KNOW WHAT HAPPENS.`,
     });
+    return;
   }
 }

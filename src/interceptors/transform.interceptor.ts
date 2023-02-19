@@ -17,6 +17,7 @@ export class TransformInterceptor<T> implements NestInterceptor<T, ExtendedRespo
 
     return next.handle().pipe(
       map((value) => {
+        console.log(value);
         const requestToResponse = `${Date.now() - request.now}ms`;
 
         if (value instanceof Object && 'count' in value && 'list' in value) {

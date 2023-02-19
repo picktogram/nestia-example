@@ -1,3 +1,4 @@
+import { TypedBody, TypedRoute } from '@nestia/core';
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '@root/auth/guards/jwt.guard';
@@ -58,10 +59,10 @@ export class ArticlesController {
     description: '이미지들 중 position이 null이 아니면서 동일하게 배정된 경우',
     schema: createErrorSchema(ERROR.IS_SAME_POSITION),
   })
-  @Post()
+  @TypedRoute.Post()
   async writeArticle(
     @UserId() userId: number,
-    @Body() createArticleDto: CreateArticleDto,
+    @TypedBody() createArticleDto: CreateArticleDto,
   ): Promise<GetOneArticleResponseDto> {
     const savedArticle = await this.articlesService.write(userId, createArticleDto);
     const article = await this.articlesService.getOneDetailArticle(userId, savedArticle.id);

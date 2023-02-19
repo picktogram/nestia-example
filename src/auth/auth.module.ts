@@ -13,6 +13,7 @@ import { AuthController } from './auth.controller';
 import { LocalStrategy } from './strategies/local.strategy';
 import { BodyImageModule } from '@root/modules/body-images.module';
 import { CommentsModule } from '@root/modules/comments.module';
+import { NestiaController } from '@root/controllers/nestia.controller';
 
 @Module({
   imports: [
@@ -34,7 +35,7 @@ import { CommentsModule } from '@root/modules/comments.module';
     BodyImageModule,
     CommentsModule,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, NestiaController],
   providers: [AuthService, JwtStrategy, LocalStrategy],
   exports: [AuthService],
 })
