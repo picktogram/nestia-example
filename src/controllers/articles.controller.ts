@@ -1,4 +1,4 @@
-import { TypedBody, TypedRoute } from '@nestia/core';
+import { TypedBody, TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import { Body, Controller, Param, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
@@ -17,6 +17,16 @@ import { ArticlesService } from '../providers/articles.service';
 @Controller('api/v1/articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService, private readonly commentsService: CommentsService) {}
+
+  @ApiOperation({ summary: '230223 - 게시글의 댓글을 최신 순으로 조회한다.' })
+  @TypedRoute.Get(':id/comments')
+  async readComments(
+    @TypedParam('id', 'number') articleId: number,
+    @TypedQuery() paginationDto: { page: number; limit: number },
+  ) {
+    const comments = await this.commentsService.readByArticleId(articleId, paginationDto);
+    return comments;
+  }
 
   @ApiOperation({ summary: '230130 - 게시글에 댓글 작성' })
   @ApiBadRequestResponse({

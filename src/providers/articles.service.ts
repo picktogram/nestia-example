@@ -57,7 +57,7 @@ export class ArticlesService {
     list: GetAllArticlesResponseDto[];
     count: number;
   }> {
-    const { skip, take } = getOffset(page, limit);
+    const { skip, take } = getOffset({ page, limit });
 
     const query = this.articlesRepository
       .createQueryBuilder('a')
