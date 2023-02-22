@@ -10,6 +10,7 @@ import { PaginationDto } from '../models/dtos/pagination.dto';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
 import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
+import { CommentType } from '../types';
 
 @ApiTags('Articles')
 @ApiBearerAuth('Bearer')
@@ -23,7 +24,7 @@ export class ArticlesController {
   async readComments(
     @TypedParam('id', 'number') articleId: number,
     @TypedQuery() paginationDto: { page: number; limit: number },
-  ) {
+  ): Promise<CommentType.RootComment[]> {
     const comments = await this.commentsService.readByArticleId(articleId, paginationDto);
     return comments;
   }

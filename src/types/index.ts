@@ -55,6 +55,18 @@ export declare namespace ArticleType {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
+export declare namespace CommentType {
+  interface RootComment {
+    id: number;
+    writerId: number;
+    parentId: number;
+    contents: string;
+    xPosition: number;
+    yPosition: number;
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export declare namespace UserBridgeType {
   export type FollowStatus = 'follow' | 'followUp' | 'reverse' | 'nothing';
 }

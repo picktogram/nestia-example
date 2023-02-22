@@ -6,6 +6,7 @@ import { ArticlesRepository } from '../models/repositories/articles.repository';
 import { CommentsRepository } from '../models/repositories/comments.repository';
 import { ArticleEntity } from '../models/tables/article.entity';
 import { CommentEntity } from '../models/tables/comment.entity';
+import { CommentType } from '../types';
 import { getOffset } from '../utils/getOffset';
 
 @Injectable()
@@ -15,9 +16,20 @@ export class CommentsService {
     @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
   ) {}
 
-  async readByArticleId(articleId: number, { page, limit }: { page: number; limit: number }) {
+  async readByArticleId(
+    articleId: number,
+    { page, limit }: { page: number; limit: number },
+  ): Promise<CommentType.RootComment[]> {
     const { skip, take } = getOffset({ page, limit });
     const comments = await this.commentsRepository.find({
+      select: {
+        id: true,
+        writerId: true,
+        parentId: true,
+        contents: true,
+        xPosition: true,
+        yPosition: true,
+      },
       where: { articleId },
       order: { createdAt: 'DESC' },
       skip,
