@@ -8,8 +8,8 @@ import { UsersService } from '../providers/users.service';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../modules/users.module';
 import { AuthService } from '../auth/auth.service';
-import { generateRandomNumber } from '@root/utils/generate-random-number';
-import { UserBridgeEntity } from '@root/models/tables/userBridge.entity';
+import { generateRandomNumber } from '../utils/generate-random-number';
+import { UserBridgeEntity } from '../models/tables/userBridge.entity';
 
 describe('User Entity', () => {
   let controller: UsersController;

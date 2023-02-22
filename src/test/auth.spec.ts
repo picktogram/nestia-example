@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../models/tables/user.entity';
 import { TypeOrmModuleOptions } from '../config/typeorm';
 import { AuthModule } from '../auth/auth.module';
-import { AuthController } from '@root/auth/auth.controller';
+import { AuthController } from '../auth/auth.controller';
 
 describe('Auth Entity', () => {
   let controller: AuthController;

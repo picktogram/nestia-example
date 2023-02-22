@@ -7,11 +7,11 @@ import { UserEntity } from './user.entity';
 export class UserBridgeEntity extends CreatedAtColumn {
   @ApiProperty()
   @PrimaryColumn()
-  firstUserId: number;
+  firstUserId!: number;
 
   @ApiProperty()
   @PrimaryColumn()
-  secondUserId: number;
+  secondUserId!: number;
 
   /**
    * below are relations
@@ -19,9 +19,9 @@ export class UserBridgeEntity extends CreatedAtColumn {
 
   @ManyToOne(() => UserEntity, (u) => u.firstUserBridges)
   @JoinColumn({ name: 'firstUserId', referencedColumnName: 'id' })
-  firstUser: UserEntity;
+  firstUser!: UserEntity;
 
   @ManyToOne(() => UserEntity, (u) => u.secondUserBridges)
   @JoinColumn({ name: 'secondUserId', referencedColumnName: 'id' })
-  secondUser: UserEntity;
+  secondUser!: UserEntity;
 }

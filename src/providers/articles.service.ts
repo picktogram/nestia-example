@@ -1,18 +1,17 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ERROR } from '@root/config/constant/error';
-import { CreateArticleDto } from '@root/models/dtos/create-article.dto';
-import { PaginationDto } from '@root/models/dtos/pagination.dto';
-import { ArticlesRepository } from '@root/models/repositories/articles.repository';
-import { CommentsRepository } from '@root/models/repositories/comments.repository';
-import { UserBridgesRepository } from '@root/models/repositories/user-bridge.repository';
-import { GetAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
-import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
-import { ArticleEntity } from '@root/models/tables/article.entity';
-import { CommentEntity } from '@root/models/tables/comment.entity';
-import { UserBridgeEntity } from '@root/models/tables/userBridge.entity';
-import { ArticleType, UserBridgeType } from '@root/types';
-import { getOffset } from '@root/utils/getOffset';
+import { ERROR } from '../config/constant/error';
+import { CreateArticleDto } from '../models/dtos/create-article.dto';
+import { PaginationDto } from '../models/dtos/pagination.dto';
+import { ArticlesRepository } from '../models/repositories/articles.repository';
+import { CommentsRepository } from '../models/repositories/comments.repository';
+import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
+import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
+import { ArticleEntity } from '../models/tables/article.entity';
+import { CommentEntity } from '../models/tables/comment.entity';
+import { UserBridgeEntity } from '../models/tables/userBridge.entity';
+import { ArticleType, UserBridgeType } from '../types';
+import { getOffset } from '../utils/getOffset';
 import { DataSource, In } from 'typeorm';
 
 @Injectable()
@@ -25,22 +24,30 @@ export class ArticlesService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async getOneDetailArticle(userId: number, articleId: number): Promise<GetOneArticleResponseDto> {
-    const article = await this.articlesRepository
-      .createQueryBuilder('a')
-      .select(['a.id', 'a.contents'])
-      .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
-      .addSelect(['i.id', 'i.position', 'i.depth'])
-      .leftJoin('a.images', 'i', 'i.parentId IS NULL')
-      .innerJoin('a.writer', 'w')
-      .where('a.id = :articleId', { articleId })
-      .getOne();
+  async getOneDetailArticle(userId: number, articleId: number): Promise<ArticleType.DetailArticle> {
+    const [article, comments] = await Promise.all([
+      this.articlesRepository
+        .createQueryBuilder('a')
+        .select(['a.id', 'a.contents'])
+        .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
+        .addSelect(['i.id', 'i.position', 'i.url', 'i.depth'])
+        .leftJoin('a.images', 'i', 'i.parentId IS NULL')
+        .innerJoin('a.writer', 'w')
+        .where('a.id = :articleId', { articleId })
+        .getOne(),
+      this.commentsRepository.find({
+        select: { id: true, parentId: true, contents: true, xPosition: true, yPosition: true },
+        where: { articleId },
+        order: { createdAt: 'DESC' },
+        take: 10,
+      }),
+    ]);
 
     if (!article) {
       throw new BadRequestException(ERROR.CANNOT_FINDONE_ARTICLE);
     }
 
-    return new GetOneArticleResponseDto(article);
+    return (article.comments = comments), article;
   }
 
   async read(
@@ -50,7 +57,7 @@ export class ArticlesService {
     list: GetAllArticlesResponseDto[];
     count: number;
   }> {
-    const { skip, take } = getOffset(page, limit);
+    const { skip, take } = getOffset({ page, limit });
 
     const query = this.articlesRepository
       .createQueryBuilder('a')

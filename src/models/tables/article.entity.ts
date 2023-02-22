@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
+import { IsNotEmptyString } from '../../decorators/is-not-empty-string.decorator';
 import { Entity, Column, ManyToOne, OneToMany, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
 import { CommonCloumns } from '../common/common-columns';
 import { BodyImageEntity } from './bodyImage.entity';
@@ -10,27 +10,27 @@ import { UserEntity } from './user.entity';
 @Entity({ name: 'article' })
 export class ArticleEntity extends CommonCloumns {
   @Column()
-  public writerId: number;
+  public writerId!: number;
 
   @ApiProperty({ description: '글의 내용물로, 최대 3,000자', minLength: 1, maxLength: 3000 })
   @Column('text')
   @IsNotEmptyString(1, 3000)
-  public contents: string;
+  public contents!: string;
 
   @Column({ default: 0, select: false })
-  isReported: number;
+  isReported!: number;
 
   /**
    * below are relations
    */
   @ManyToOne(() => UserEntity, (writer) => writer.articles)
   @JoinColumn({ name: 'writerId', referencedColumnName: 'id' })
-  writer: UserEntity;
+  writer!: UserEntity;
 
   @OneToMany(() => BodyImageEntity, (image) => image.article, {
     cascade: ['insert'],
   })
-  images: BodyImageEntity[];
+  images!: BodyImageEntity[];
 
   @ManyToMany(() => CategoryEntity, (category) => category.articles)
   @JoinTable({
@@ -38,13 +38,13 @@ export class ArticleEntity extends CommonCloumns {
     joinColumn: { name: 'articleId', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'categoryId', referencedColumnName: 'id' },
   })
-  categories: CategoryEntity[];
+  categories!: CategoryEntity[];
 
   @ManyToMany(() => UserEntity, (user) => user.userLikeArticles)
-  users: UserEntity[];
+  users!: UserEntity[];
 
   @OneToMany(() => CommentEntity, (c) => c.article)
-  comments: CommentEntity[];
+  comments!: CommentEntity[];
 
   /**
    * method( subscriber ) area

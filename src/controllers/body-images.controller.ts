@@ -2,10 +2,10 @@ import { BadRequestException, Controller, Get, Post, UploadedFiles, UseGuards, U
 import { ConfigService } from '@nestjs/config';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiBadRequestResponse, ApiBody, ApiConsumes } from '@nestjs/swagger';
-import { JwtGuard } from '@root/auth/guards/jwt.guard';
-import { createErrorSchema, ERROR } from '@root/config/constant/error';
-import { CreateBodyImageMulterOptions } from '@root/config/multer-s3/multer-option';
-import { BodyImagesService } from '@root/providers/body-images.service';
+import { JwtGuard } from '../auth/guards/jwt.guard';
+import { createErrorSchema, ERROR } from '../config/constant/error';
+import { CreateBodyImageMulterOptions } from '../config/multer-s3/multer-option';
+import { BodyImagesService } from '../providers/body-images.service';
 
 @ApiTags('Articles')
 @ApiBearerAuth('Bearer')

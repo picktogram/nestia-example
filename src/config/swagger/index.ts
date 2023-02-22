@@ -1,5 +1,8 @@
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { readFileSync } from 'fs';
+
+import path from 'path';
 
 export const SwaggerSetting = (app: INestApplication) => {
   const config = new DocumentBuilder()
@@ -12,4 +15,7 @@ export const SwaggerSetting = (app: INestApplication) => {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+
+  const swaagerConfig = readFileSync(path.join(__dirname, '../../swagger.json'), 'utf8');
+  SwaggerModule.setup('api/nestia', app, JSON.parse(swaagerConfig));
 };

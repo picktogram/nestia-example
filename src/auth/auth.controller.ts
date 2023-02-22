@@ -1,11 +1,11 @@
 import { Controller, Post, UseGuards, Body } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBody, ApiOperation, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { User } from '@root/common/decorators/user.decorator';
-import { CreateUserDto } from '@root/models/dtos/create-user.dto';
-import { LoginUserDto } from '@root/models/dtos/login-user.dto';
-import { UsersService } from '@root/providers/users.service';
-import { DecodedUserToken } from '@root/types';
+import { User } from '../common/decorators/user.decorator';
+import { CreateUserDto } from '../models/dtos/create-user.dto';
+import { LoginUserDto } from '../models/dtos/login-user.dto';
+import { DecodedUserToken } from '../models/tables/user.entity';
+import { UsersService } from '../providers/users.service';
 import { LocalGuard } from './guards/local.guard';
 
 @ApiTags('Auth')

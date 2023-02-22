@@ -1,5 +1,5 @@
 import { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
-import { NTuple } from '@root/types';
+import { NTuple } from '../../types';
 
 export const ERROR = {
   ALREADY_CREATED_EMAIL: { code: 4001, message: '이미 생성된 이메일입니다.' },

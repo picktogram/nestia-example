@@ -9,7 +9,7 @@ import { ArticlesModule } from '../modules/articles.module';
 import { UserEntity } from '../models/tables/user.entity';
 import { generateRandomNumber } from '../utils/generate-random-number';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
-import { CommentEntity } from '@root/models/tables/comment.entity';
+import { CommentEntity } from '../models/tables/comment.entity';
 import { IsNull } from 'typeorm';
 
 describe('Article Entity', () => {
@@ -177,15 +177,91 @@ describe('Article Entity', () => {
       }
     });
 
-    it('should ', async () => {
+    it('이미지의 정렬 값이 동일한 경우가 존재하면 안 된다.', async () => {
       const positions = [undefined, undefined, undefined].map((position) => ({ position }));
       const answer = [0, 1, 2].map((position) => ({ position }));
-      try {
-        const checkIsSame = service['checkIsSamePosition'](positions);
-        expect(JSON.stringify(checkIsSame)).toBe(JSON.stringify(answer));
-      } catch (err) {
-        expect(err.message).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
-      }
+
+      const checkIsSame = service['checkIsSamePosition'](positions);
+      expect(JSON.stringify(checkIsSame)).toBe(JSON.stringify(answer));
+    });
+  });
+
+  describe('GET api/v1/articles', () => {
+    let writer: UserEntity;
+    let article: ArticleEntity;
+    let comments: CommentEntity[];
+
+    beforeAll(async () => {
+      const writerMetadata = generateRandomNumber(1000, 9999, true);
+      writer = await UserEntity.save({
+        name: writerMetadata,
+        nickname: writerMetadata,
+        password: writerMetadata,
+      });
+
+      article = await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata });
+      comments = await CommentEntity.save(
+        [1, 2, 3].map((el) => {
+          return CommentEntity.create({
+            articleId: article.id,
+            writerId: writer.id,
+            contents: `test${el}`,
+          });
+        }),
+      );
+    });
+
+    it('게시글을 조회할 때, 게시글에 댓글이 있는 경우 댓글이 조회되어야 한다.', async () => {
+      const detailArticle = await controller.getOneDetailArticle(writer.id, article.id);
+
+      expect(detailArticle.comments.length).toBeGreaterThan(0);
+      expect(detailArticle.comments.length).toBe(3);
+      expect(detailArticle.comments.at(0).id).toBeDefined();
+      expect(detailArticle.comments.at(0).parentId).toBeDefined();
+      expect(detailArticle.comments.at(0).contents).toBeDefined();
+      expect(detailArticle.comments.at(0).xPosition).toBeDefined();
+      expect(detailArticle.comments.at(0).yPosition).toBeDefined();
+    });
+  });
+
+  describe('GET api/v1/articles/:id/comments', () => {
+    let writer: UserEntity;
+    let article: ArticleEntity;
+    let comments: CommentEntity[];
+
+    beforeAll(async () => {
+      const writerMetadata = generateRandomNumber(1000, 9999, true);
+      writer = await UserEntity.save({
+        name: writerMetadata,
+        nickname: writerMetadata,
+        password: writerMetadata,
+      });
+
+      article = await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata });
+      comments = await CommentEntity.save(
+        [1, 2, 3].map((el) => {
+          return CommentEntity.create({
+            articleId: article.id,
+            writerId: writer.id,
+            contents: `test${el}`,
+          });
+        }),
+      );
+    });
+
+    it('특정 게시글의 댓글을 조회하는, 페이지네이션 함수가 제공된다.', async () => {
+      const [comment1] = await controller.readComments(article.id, { page: 1, limit: 1 });
+      const [comment2] = await controller.readComments(article.id, { page: 2, limit: 1 });
+      const [comment3] = await controller.readComments(article.id, { page: 3, limit: 1 });
+
+      expect(comment1).toBeDefined();
+      expect(comment1.id).toBe(comments.at(1 - 1).id);
+
+      expect(comment2).toBeDefined();
+      expect(comment2.id).toBe(comments.at(2 - 1).id);
+
+      expect(comment3).toBeDefined();
+      expect(comment3.id).toBe(comments.at(3 - 1).id);
     });
   });
 });

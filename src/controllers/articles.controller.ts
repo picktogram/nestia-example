@@ -1,15 +1,16 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
+import { TypedBody, TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
+import { Body, Controller, Param, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from '@root/auth/guards/jwt.guard';
-import { UserId } from '@root/common/decorators/user-id.decorator';
-import { createErrorSchema, createErrorSchemas, ERROR } from '@root/config/constant/error';
-import { CreateArticleDto } from '@root/models/dtos/create-article.dto';
-import { CreateCommentDto } from '@root/models/dtos/create-comment.dto';
-import { PaginationDto } from '@root/models/dtos/pagination.dto';
-import { GetAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
-import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
-import { CommentsService } from '@root/providers/comments.service';
+import { JwtGuard } from '../auth/guards/jwt.guard';
+import { UserId } from '../common/decorators/user-id.decorator';
+import { createErrorSchema, createErrorSchemas, ERROR } from '../config/constant/error';
+import { CreateArticleDto } from '../models/dtos/create-article.dto';
+import { CreateCommentDto } from '../models/dtos/create-comment.dto';
+import { PaginationDto } from '../models/dtos/pagination.dto';
+import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
+import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
+import { CommentType } from '../types';
 
 @ApiTags('Articles')
 @ApiBearerAuth('Bearer')
@@ -18,12 +19,22 @@ import { ArticlesService } from '../providers/articles.service';
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService, private readonly commentsService: CommentsService) {}
 
+  @ApiOperation({ summary: '230223 - 게시글의 댓글을 최신 순으로 조회한다.' })
+  @TypedRoute.Get(':id/comments')
+  async readComments(
+    @TypedParam('id', 'number') articleId: number,
+    @TypedQuery() paginationDto: { page: number; limit: number },
+  ): Promise<CommentType.RootComment[]> {
+    const comments = await this.commentsService.readByArticleId(articleId, paginationDto);
+    return comments;
+  }
+
   @ApiOperation({ summary: '230130 - 게시글에 댓글 작성' })
   @ApiBadRequestResponse({
     schema: createErrorSchemas([ERROR.NOT_FOUND_ARTICLE_TO_COMMENT, ERROR.TOO_MANY_REPORTED_ARTICLE]),
   })
-  @Post(':id/comments')
-  async writeComment(
+  @TypedRoute.Post(':id/comments')
+  public async writeComment(
     @UserId() writerId: number,
     @Param('id', ParseIntPipe) articleId: number,
     @Body() createCommentDto: CreateCommentDto,
@@ -33,22 +44,21 @@ export class ArticlesController {
   }
 
   @ApiOperation({ summary: '230129 - 게시글 조회 (incompleted)' })
-  @ApiOkResponse({ type: GetOneArticleResponseDto })
   @ApiBadRequestResponse({
     description: '이미지들 중 position이 null이 아니면서 동일하게 배정된 경우',
     schema: createErrorSchema(ERROR.CANNOT_FINDONE_ARTICLE),
   })
   @ApiParam({ name: 'id', description: '조회하고자 하는 게시글의 id 값' })
-  @Get(':id')
-  async getOneDetailArticle(@UserId() userId: number, @Param('id', ParseIntPipe) articleId: number) {
+  @TypedRoute.Get(':id')
+  public async getOneDetailArticle(@UserId() userId: number, @Param('id', ParseIntPipe) articleId: number) {
     const article = await this.articlesService.getOneDetailArticle(userId, articleId);
     return article;
   }
 
   @ApiOperation({ summary: '230129 - 게시글 리스트 조회 (incompleted)' })
   @ApiOkResponse({ type: GetAllArticlesResponseDto })
-  @Get()
-  async getAllArticles(@UserId() userId: number, @Query() paginationDto: PaginationDto) {
+  @TypedRoute.Get()
+  public async getAllArticles(@UserId() userId: number, @Query() paginationDto: PaginationDto) {
     const articlesToRead = await this.articlesService.read(userId, paginationDto);
     return articlesToRead;
   }
@@ -58,11 +68,8 @@ export class ArticlesController {
     description: '이미지들 중 position이 null이 아니면서 동일하게 배정된 경우',
     schema: createErrorSchema(ERROR.IS_SAME_POSITION),
   })
-  @Post()
-  async writeArticle(
-    @UserId() userId: number,
-    @Body() createArticleDto: CreateArticleDto,
-  ): Promise<GetOneArticleResponseDto> {
+  @TypedRoute.Post()
+  public async writeArticle(@UserId() userId: number, @TypedBody() createArticleDto: CreateArticleDto) {
     const savedArticle = await this.articlesService.write(userId, createArticleDto);
     const article = await this.articlesService.getOneDetailArticle(userId, savedArticle.id);
     return article;

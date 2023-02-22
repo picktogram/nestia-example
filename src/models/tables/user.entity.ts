@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmptyString } from '@root/decorators/is-not-empty-string.decorator';
-import { IsOptionalBoolean } from '@root/decorators/is-optional-boolean.decorator';
+import { IsNotEmptyString } from '../../decorators/is-not-empty-string.decorator';
+import { IsOptionalBoolean } from '../../decorators/is-optional-boolean.decorator';
 import { Type } from 'class-transformer';
 import { IsDate, IsEmail, IsOptional } from 'class-validator';
 import { Entity, Column, ManyToMany, JoinTable, OneToMany, AfterLoad } from 'typeorm';
@@ -8,6 +8,8 @@ import { CommonCloumns } from '../common/common-columns';
 import { ArticleEntity } from './article.entity';
 import { CommentEntity } from './comment.entity';
 import { UserBridgeEntity } from './userBridge.entity';
+
+export type DecodedUserToken = Pick<UserEntity, 'id' | 'name' | 'nickname' | 'email' | 'birth' | 'gender'>;
 
 @Entity({ name: 'user' })
 export class UserEntity extends CommonCloumns {
@@ -38,7 +40,7 @@ export class UserEntity extends CommonCloumns {
 
   @ApiProperty({ description: '사용자의 비밀번호로 로그인 시 필요' })
   @Column({ select: false })
-  password: string;
+  public password!: string;
 
   @ApiProperty({ description: '생일 이벤트 및 고객 분석을 위해 수집' })
   @IsOptional()
@@ -65,7 +67,7 @@ export class UserEntity extends CommonCloumns {
   @ApiProperty({ description: '유저의 탈퇴 여부를 의미한다.' })
   @IsOptionalBoolean()
   @Column({ select: false, default: false })
-  public status: boolean;
+  public status!: boolean;
 
   /**
    * below are relations
@@ -77,19 +79,19 @@ export class UserEntity extends CommonCloumns {
     joinColumn: { name: 'userId', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'articleId', referencedColumnName: 'id' },
   })
-  userLikeArticles: ArticleEntity[];
+  userLikeArticles!: ArticleEntity[];
 
   @OneToMany(() => UserBridgeEntity, (ub) => ub.firstUser)
-  firstUserBridges: UserBridgeEntity[];
+  firstUserBridges!: UserBridgeEntity[];
 
   @OneToMany(() => UserBridgeEntity, (ub) => ub.secondUser)
-  secondUserBridges: UserBridgeEntity[];
+  secondUserBridges!: UserBridgeEntity[];
 
   @OneToMany(() => ArticleEntity, (article) => article.writer)
-  articles: ArticleEntity[];
+  articles!: ArticleEntity[];
 
   @OneToMany(() => CommentEntity, (c) => c.writer)
-  comments: CommentEntity[];
+  comments!: CommentEntity[];
 
   /**
    * methods

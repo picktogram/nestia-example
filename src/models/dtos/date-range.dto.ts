@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptionalDate } from '@root/decorators/is-optional-date.decorator';
+import { IsOptionalDate } from '../../decorators/is-optional-date.decorator';
 
 export class DateRangeDto {
   @ApiProperty({
