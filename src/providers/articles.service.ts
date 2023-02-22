@@ -7,7 +7,6 @@ import { ArticlesRepository } from '../models/repositories/articles.repository';
 import { CommentsRepository } from '../models/repositories/comments.repository';
 import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
-import { GetOneArticleResponseDto } from '../models/response/get-one-article-response.dto';
 import { ArticleEntity } from '../models/tables/article.entity';
 import { CommentEntity } from '../models/tables/comment.entity';
 import { UserBridgeEntity } from '../models/tables/userBridge.entity';
@@ -25,13 +24,15 @@ export class ArticlesService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async getOneDetailArticle(userId: number, articleId: number): Promise<GetOneArticleResponseDto> {
+  async getOneDetailArticle(userId: number, articleId: number): Promise<ArticleType.DetailArticle> {
     const article = await this.articlesRepository
       .createQueryBuilder('a')
       .select(['a.id', 'a.contents'])
       .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
       .addSelect(['i.id', 'i.position', 'i.url', 'i.depth'])
+      .addSelect(['c.id', 'c.parentId', 'c.contents', 'c.xPosition', 'c.yPosition'])
       .leftJoin('a.images', 'i', 'i.parentId IS NULL')
+      .leftJoin('a.comments', 'c')
       .innerJoin('a.writer', 'w')
       .where('a.id = :articleId', { articleId })
       .getOne();
@@ -40,7 +41,7 @@ export class ArticlesService {
       throw new BadRequestException(ERROR.CANNOT_FINDONE_ARTICLE);
     }
 
-    return new GetOneArticleResponseDto(article);
+    return article;
   }
 
   async read(

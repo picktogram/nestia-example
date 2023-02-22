@@ -4,7 +4,7 @@ export const NESTIA_CONFIG: SDK.INestiaConfig = {
   /**
    * List of files or directories containing the NestJS controller classes.
    */
-  input: 'src/controllers',
+  input: ['src/controllers', 'src/auth'],
 
   /**
    * Output directory that SDK would be placed in.
@@ -65,6 +65,11 @@ export const NESTIA_CONFIG: SDK.INestiaConfig = {
      * `swagger.json` file would be renamed to it.
      */
     output: 'dist/swagger.json',
+    security: {
+      bearer: {
+        type: 'apiKey',
+      },
+    },
   },
 };
 export default NESTIA_CONFIG;

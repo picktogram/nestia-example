@@ -29,6 +29,29 @@ export declare namespace ArticleType {
     nickname: string;
     profileImage: string;
   }
+
+  interface DetailArticle {
+    id: number;
+    contents: string;
+    images: {
+      id: number;
+      position: number;
+      url: string;
+      depth: number;
+    }[];
+    writer: {
+      id: number;
+      nickname: string;
+      profileImage: string;
+    };
+    comments: {
+      id: number;
+      parentId: number;
+      contents: string;
+      xPosition: number;
+      yPosition: number;
+    }[];
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -40,7 +63,7 @@ export interface TestDto {
   /**
    * @format email
    * @minLength 10
-   * @maxLength 60
+   * @maxLength 100
    */
 
   email: string;

@@ -7,16 +7,15 @@ export class NestiaController {
   constructor() {}
 
   /**
-   * it's very important API.
+   * it's very important API -> it will be summary of API document.
    *
-   * how to use? read bellow!
+   * if you want to use... -> description of API document.
    *
-   * @param id maybe you know already
+   * @param id
    * @returns true, just return true. that's all.
    */
   @TypedRoute.Post(':id')
   async nestiaTest(@TypedParam('id', 'number') id: number) {
-    console.log('id : ', id);
     return true;
   }
 

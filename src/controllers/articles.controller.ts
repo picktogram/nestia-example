@@ -1,5 +1,5 @@
 import { TypedBody, TypedRoute } from '@nestia/core';
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UserId } from '../common/decorators/user-id.decorator';
@@ -8,7 +8,6 @@ import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { PaginationDto } from '../models/dtos/pagination.dto';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
-import { GetOneArticleResponseDto } from '../models/response/get-one-article-response.dto';
 import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
 
@@ -23,8 +22,8 @@ export class ArticlesController {
   @ApiBadRequestResponse({
     schema: createErrorSchemas([ERROR.NOT_FOUND_ARTICLE_TO_COMMENT, ERROR.TOO_MANY_REPORTED_ARTICLE]),
   })
-  @Post(':id/comments')
-  async writeComment(
+  @TypedRoute.Post(':id/comments')
+  public async writeComment(
     @UserId() writerId: number,
     @Param('id', ParseIntPipe) articleId: number,
     @Body() createCommentDto: CreateCommentDto,
@@ -34,22 +33,21 @@ export class ArticlesController {
   }
 
   @ApiOperation({ summary: '230129 - 게시글 조회 (incompleted)' })
-  @ApiOkResponse({ type: GetOneArticleResponseDto })
   @ApiBadRequestResponse({
     description: '이미지들 중 position이 null이 아니면서 동일하게 배정된 경우',
     schema: createErrorSchema(ERROR.CANNOT_FINDONE_ARTICLE),
   })
   @ApiParam({ name: 'id', description: '조회하고자 하는 게시글의 id 값' })
-  @Get(':id')
-  async getOneDetailArticle(@UserId() userId: number, @Param('id', ParseIntPipe) articleId: number) {
+  @TypedRoute.Get(':id')
+  public async getOneDetailArticle(@UserId() userId: number, @Param('id', ParseIntPipe) articleId: number) {
     const article = await this.articlesService.getOneDetailArticle(userId, articleId);
     return article;
   }
 
   @ApiOperation({ summary: '230129 - 게시글 리스트 조회 (incompleted)' })
   @ApiOkResponse({ type: GetAllArticlesResponseDto })
-  @Get()
-  async getAllArticles(@UserId() userId: number, @Query() paginationDto: PaginationDto) {
+  @TypedRoute.Get()
+  public async getAllArticles(@UserId() userId: number, @Query() paginationDto: PaginationDto) {
     const articlesToRead = await this.articlesService.read(userId, paginationDto);
     return articlesToRead;
   }
@@ -60,10 +58,7 @@ export class ArticlesController {
     schema: createErrorSchema(ERROR.IS_SAME_POSITION),
   })
   @TypedRoute.Post()
-  async writeArticle(
-    @UserId() userId: number,
-    @TypedBody() createArticleDto: CreateArticleDto,
-  ): Promise<GetOneArticleResponseDto> {
+  public async writeArticle(@UserId() userId: number, @TypedBody() createArticleDto: CreateArticleDto) {
     const savedArticle = await this.articlesService.write(userId, createArticleDto);
     const article = await this.articlesService.getOneDetailArticle(userId, savedArticle.id);
     return article;
