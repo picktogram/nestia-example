@@ -25,23 +25,29 @@ export class ArticlesService {
   ) {}
 
   async getOneDetailArticle(userId: number, articleId: number): Promise<ArticleType.DetailArticle> {
-    const article = await this.articlesRepository
-      .createQueryBuilder('a')
-      .select(['a.id', 'a.contents'])
-      .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
-      .addSelect(['i.id', 'i.position', 'i.url', 'i.depth'])
-      .addSelect(['c.id', 'c.parentId', 'c.contents', 'c.xPosition', 'c.yPosition'])
-      .leftJoin('a.images', 'i', 'i.parentId IS NULL')
-      .leftJoin('a.comments', 'c')
-      .innerJoin('a.writer', 'w')
-      .where('a.id = :articleId', { articleId })
-      .getOne();
+    const [article, comments] = await Promise.all([
+      this.articlesRepository
+        .createQueryBuilder('a')
+        .select(['a.id', 'a.contents'])
+        .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
+        .addSelect(['i.id', 'i.position', 'i.url', 'i.depth'])
+        .leftJoin('a.images', 'i', 'i.parentId IS NULL')
+        .innerJoin('a.writer', 'w')
+        .where('a.id = :articleId', { articleId })
+        .getOne(),
+      this.commentsRepository.find({
+        select: { id: true, parentId: true, contents: true, xPosition: true, yPosition: true },
+        where: { articleId },
+        order: { createdAt: 'DESC' },
+        take: 10,
+      }),
+    ]);
 
     if (!article) {
       throw new BadRequestException(ERROR.CANNOT_FINDONE_ARTICLE);
     }
 
-    return article;
+    return (article.comments = comments), article;
   }
 
   async read(
