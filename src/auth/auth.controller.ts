@@ -43,7 +43,6 @@ export class AuthController {
   // })
 
   /**
-   * test3
    *
    * @param CreateUserDto
    */
