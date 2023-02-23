@@ -47,11 +47,9 @@ export class AuthController {
    *
    * @param CreateUserDto
    */
-  @TypedRoute.Post('sign-up')
-  async signUp(@TypedBody() createUserDto: CreateUserDto): Promise<DecodedUserToken> {
-    console.log('here');
+  @Post('sign-up')
+  async signUp(@Body() createUserDto: CreateUserDto): Promise<DecodedUserToken> {
     const { password, ...user } = await this.usersService.create(createUserDto);
-    console.log(user);
     return user;
   }
 

@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 const UNCHATCHED_ERROR = '서버에서 캐치되지 못한 에러입니다.';
 
 @Catch()
-export class HttpExceptionFilter implements ExceptionFilter {
+export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
   constructor(private readonly slackService: SlackService) {}
 
   /**
