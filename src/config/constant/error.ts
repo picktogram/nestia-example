@@ -33,11 +33,11 @@ export const createErrorSchemas = <T extends string[]>(errors: NTuple<T['length'
   return {
     type: 'array',
     items: {
-      anyOf: [...errors].map((error) => {
+      anyOf: [...errors].map((error: ValueOfError) => {
         return {
           properties: {
-            code: { type: 'number', example: error['code'] },
-            message: { type: 'string', example: error['message'] },
+            code: { type: 'number', example: error.code },
+            message: { type: 'string', example: error.message },
           },
         };
       }),

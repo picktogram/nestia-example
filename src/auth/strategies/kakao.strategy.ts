@@ -15,7 +15,13 @@ export class KakaoStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: Profile, done) {
-    done(null, profile);
+  async validate(accessToken: string, refreshToken: string, profile: Profile, done: any) {
+    /**
+     * If you don't know method ?. operator,
+     * just read below link.
+     *
+     * @link {https://stackoverflow.com/questions/56913963/cannot-invoke-an-object-which-is-possibly-undefined-ts2722}
+     */
+    done?.(null, profile);
   }
 }

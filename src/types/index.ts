@@ -80,3 +80,8 @@ export interface TestDto {
 
   email: string;
 }
+
+export interface Pagination {
+  page: number;
+  limit: number;
+}

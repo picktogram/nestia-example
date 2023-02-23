@@ -19,9 +19,16 @@ async function bootstrap() {
   app.enableCors();
 
   SwaggerSetting(app);
+
   await app.listen(3000, '0.0.0.0', () => {
     if (process.env.NODE_ENV === 'production') {
-      process.send('ready');
+      /**
+       * If you don't know method ?. operator,
+       * just read below link.
+       *
+       * @link {https://stackoverflow.com/questions/56913963/cannot-invoke-an-object-which-is-possibly-undefined-ts2722}
+       */
+      process.send?.('ready');
     }
   });
 }

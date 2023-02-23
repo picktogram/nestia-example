@@ -1,3 +1,4 @@
+import { TypedBody, TypedRoute } from '@nestia/core';
 import { Controller, Post, UseGuards, Body } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBody, ApiOperation, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -13,36 +14,44 @@ import { LocalGuard } from './guards/local.guard';
 export class AuthController {
   constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) {}
 
-  @ApiOperation({ summary: '230129 - Local 로그인을 위한 User 생성' })
-  @ApiOkResponse({
-    schema: {
-      type: 'object',
-      properties: {
-        id: {
-          type: 'number',
-        },
-        name: {
-          type: 'string',
-        },
-        nickname: {
-          type: 'string',
-        },
-        email: {
-          type: 'string',
-        },
-        birth: {
-          type: 'string',
-          example: new Date(),
-        },
-        gender: {
-          type: 'boolean',
-        },
-      },
-    },
-  })
-  @Post('sign-up')
-  async signUp(@Body() createUserDto: CreateUserDto): Promise<DecodedUserToken> {
+  // @ApiOperation({ summary: '230129 - Local 로그인을 위한 User 생성' })
+  // @ApiOkResponse({
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       id: {
+  //         type: 'number',
+  //       },
+  //       name: {
+  //         type: 'string',
+  //       },
+  //       nickname: {
+  //         type: 'string',
+  //       },
+  //       email: {
+  //         type: 'string',
+  //       },
+  //       birth: {
+  //         type: 'string',
+  //         example: new Date(),
+  //       },
+  //       gender: {
+  //         type: 'boolean',
+  //       },
+  //     },
+  //   },
+  // })
+
+  /**
+   * test3
+   *
+   * @param CreateUserDto
+   */
+  @TypedRoute.Post('sign-up')
+  async signUp(@TypedBody() createUserDto: CreateUserDto): Promise<DecodedUserToken> {
+    console.log('here');
     const { password, ...user } = await this.usersService.create(createUserDto);
+    console.log(user);
     return user;
   }
 
@@ -53,9 +62,8 @@ export class AuthController {
   })
   @ApiBody({ type: LoginUserDto })
   @UseGuards(LocalGuard)
-  @Post('login')
+  @TypedRoute.Post('login')
   login(@User() user: DecodedUserToken): string {
-    console.log('야호');
     return this.jwtService.sign({ ...user });
   }
 }

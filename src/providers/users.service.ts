@@ -33,7 +33,7 @@ export class UsersService {
     );
   }
 
-  async findOneByEmail(email: string): Promise<DecodedUserToken & { password: string }> {
+  async findOneByEmail(email: string): Promise<(DecodedUserToken & { password: string }) | null> {
     return await this.usersRepository.findOne({
       select: {
         id: true,
@@ -46,10 +46,6 @@ export class UsersService {
       },
       where: { email },
     });
-  }
-
-  async findOne(userId: number): Promise<UserEntity> {
-    return await this.usersRepository.findOne({ where: { id: userId } });
   }
 
   async unfollow(followerId: number, followeeId: number): Promise<true> {

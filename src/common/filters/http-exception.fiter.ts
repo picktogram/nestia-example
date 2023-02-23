@@ -47,7 +47,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
         slackMessageForm += `errorMessage: ${message}\n`;
         slackMessageForm += `errorStack: 아래 메시지 참고\n`;
-        exception.stack.split('\n').forEach((stackMessage) => {
+
+        exception?.stack?.split('\n').forEach((stackMessage) => {
           slackMessageForm += `\t${stackMessage}\n`;
         });
 
@@ -67,8 +68,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    console.log(exception);
     if (exception instanceof Error) {
+      console.log('exception', exception.stack);
+
       // TODO : 정리 필요
       response.status(400).json({
         statusCode: 400,

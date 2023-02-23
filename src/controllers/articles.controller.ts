@@ -6,11 +6,10 @@ import { UserId } from '../common/decorators/user-id.decorator';
 import { createErrorSchema, createErrorSchemas, ERROR } from '../config/constant/error';
 import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { CreateCommentDto } from '../models/dtos/create-comment.dto';
-import { PaginationDto } from '../models/dtos/pagination.dto';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
 import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
-import { CommentType } from '../types';
+import { CommentType, Pagination } from '../types';
 
 @ApiTags('Articles')
 @ApiBearerAuth('Bearer')
@@ -58,7 +57,7 @@ export class ArticlesController {
   @ApiOperation({ summary: '230129 - 게시글 리스트 조회 (incompleted)' })
   @ApiOkResponse({ type: GetAllArticlesResponseDto })
   @TypedRoute.Get()
-  public async getAllArticles(@UserId() userId: number, @Query() paginationDto: PaginationDto) {
+  public async getAllArticles(@UserId() userId: number, @Query() paginationDto: Pagination) {
     const articlesToRead = await this.articlesService.read(userId, paginationDto);
     return articlesToRead;
   }
