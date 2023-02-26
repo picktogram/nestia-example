@@ -45,6 +45,21 @@ export declare namespace ArticleType {
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export declare namespace CommentType {
   interface RootComment extends Pick<CommentEntity, 'id' | 'writerId' | 'contents' | 'xPosition' | 'yPosition'> {}
+
+  interface CreateResponse
+    extends Pick<
+      CommentEntity,
+      | 'id'
+      | 'articleId'
+      | 'writerId'
+      | 'contents'
+      | 'xPosition'
+      | 'yPosition'
+      // | 'deletedAt'
+      // | 'createdAt'
+      // | 'updatedAt'
+      | 'parentId'
+    > {}
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace

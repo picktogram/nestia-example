@@ -9,9 +9,16 @@ import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
 import { ArticleType, CommentType, PaginationDto } from '../types';
-import { createPaginationForm, PaginationForm, PaginationResponseType } from '../interceptors/transform.interceptor';
+import {
+  createPaginationForm,
+  createResponseForm,
+  PaginationForm,
+  PaginationResponseType,
+  ResponseForm,
+} from '../interceptors/transform.interceptor';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
 import typia from 'typia';
+import { CommentEntity } from '../models/tables/comment.entity';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')
@@ -51,9 +58,9 @@ export class ArticlesController {
     @UserId() writerId: number,
     @TypedParam('id', 'number') articleId: number,
     @TypedBody() createCommentDto: CreateCommentDto,
-  ) {
+  ): Promise<ResponseForm<CommentType.CreateResponse>> {
     const comment = await this.commentsService.write(writerId, articleId, createCommentDto);
-    return comment;
+    return createResponseForm(comment);
   }
 
   /**

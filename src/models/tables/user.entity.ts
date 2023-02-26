@@ -60,7 +60,7 @@ export class UserEntity extends CommonCloumns {
    * @pattern ^(19\d{2}|2\d{3})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$
    */
   @Column('timestamp with time zone', { nullable: true, select: false })
-  public birth?: string;
+  public birth?: string | null;
 
   /**
    * 사용자의 성별로 true면 남자라고 가정한다.

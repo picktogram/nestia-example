@@ -116,7 +116,7 @@ export class ArticlesService {
     return writedArticle;
   }
 
-  private checkIsSamePosition<T extends { position?: number | `${number}` }>(images?: T[]): T[] {
+  private checkIsSamePosition<T extends { position?: number | `${number}` | null }>(images?: T[]): T[] {
     if (!images || images.length === 0) {
       return [];
     }
@@ -144,7 +144,7 @@ export class ArticlesService {
     return this.sortImageByIndex(images);
   }
 
-  private sortImageByIndex<T extends { position?: number | `${number}` }>(images: T[]): T[] {
+  private sortImageByIndex<T extends { position?: number | `${number}` | null }>(images: T[]): T[] {
     return images.map((image, i) => {
       image.position = image.position || i;
       return image;
@@ -179,7 +179,6 @@ export class ArticlesService {
       }, 'cte')
       .getRawMany();
 
-    console.log(comments, 'comments');
     return comments;
   }
 }

@@ -1,7 +1,6 @@
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { ArticleEntity } from './article.entity';
 import { UserEntity } from './user.entity';
-import { IsOptionalNumber } from '../../decorators/is-optional-number.decorator';
 import { CommonCloumns } from '../common/common-columns';
 
 @Entity({ name: 'comment' })
@@ -21,9 +20,8 @@ export class CommentEntity extends CommonCloumns {
   /**
    * '부모 댓글이 있는 경우, 즉 답글인 경우에는 부모 댓글 아이디를 받는다.'
    */
-  @IsOptionalNumber()
   @Column({ nullable: true })
-  parentId?: number;
+  parentId?: number | null;
 
   /**
    * 게시글 내용
@@ -37,13 +35,13 @@ export class CommentEntity extends CommonCloumns {
    * 소수점을 포함한 좌표 값
    */
   @Column({ type: 'numeric', nullable: true })
-  xPosition?: number;
+  xPosition?: number | `${number}` | null;
 
   /**
    * 소수점을 포함한 좌표 값
    */
   @Column({ type: 'numeric', nullable: true })
-  yPosition?: number;
+  yPosition?: number | `${number}` | null;
 
   /**
    * below are relations
