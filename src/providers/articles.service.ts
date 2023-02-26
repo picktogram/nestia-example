@@ -7,11 +7,11 @@ import { CommentsRepository } from '../models/repositories/comments.repository';
 import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
 import { ArticleEntity } from '../models/tables/article.entity';
-import { CommentEntity } from '../models/tables/comment.entity';
 import { UserBridgeEntity } from '../models/tables/userBridge.entity';
 import { ArticleType, PaginationDto, UserBridgeType } from '../types';
 import { getOffset } from '../utils/getOffset';
 import { DataSource, In } from 'typeorm';
+import { CommentEntity } from '../models/tables/comment.entity';
 
 @Injectable()
 export class ArticlesService {
@@ -74,7 +74,7 @@ export class ArticlesService {
     ]);
 
     const [comments, userBridges] = await Promise.all([
-      this.commentsRepository.getRepresentCommentsByArticeIds(list.map((el) => el.id)),
+      this.getRepresentCommentsByArticeIds(list.map((el) => el.id)),
       this.userBridgesRepository.find({
         where: [
           {
@@ -161,5 +161,25 @@ export class ArticlesService {
     } else {
       return 'nothing';
     }
+  }
+
+  private async getRepresentCommentsByArticeIds(articleIds: number[]) {
+    if (articleIds.length === 0) {
+      return [];
+    }
+
+    const comments = await this.dataSource
+      .createQueryBuilder()
+      .from((qb) => {
+        return qb
+          .from(CommentEntity, 'c')
+          .select(['c.id AS "id"', 'c.contents AS "contents"', 'c.articleId AS "articleId"'])
+          .addSelect('ROW_NUMBER() OVER (PARTITION BY c."articleId" ORDER BY c."createdAt" DESC)::int4 AS "position"')
+          .where('c.articleId IN (:...articleIds)', { articleIds });
+      }, 'cte')
+      .getRawMany();
+
+    console.log(comments, 'comments');
+    return comments;
   }
 }

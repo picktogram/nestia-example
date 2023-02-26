@@ -33,7 +33,6 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-    console.log(createUserDto);
     return await this.usersRepository.save(
       UserEntity.create({
         ...createUserDto,

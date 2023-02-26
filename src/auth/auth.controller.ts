@@ -5,6 +5,7 @@ import { ApiBody } from '@nestjs/swagger';
 import { User } from '../common/decorators/user.decorator';
 import { createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
 import { CreateUserDto } from '../models/dtos/create-user.dto';
+import { LoginUserDto } from '../models/dtos/login-user.dto';
 import { DecodedUserToken } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
 import { LocalGuard } from './guards/local.guard';
@@ -50,7 +51,7 @@ export class AuthController {
     },
   })
   @TypedRoute.Post('login')
-  login(@User() user: DecodedUserToken): ResponseForm<string> {
+  login(@User() user: DecodedUserToken, @TypedBody() body: LoginUserDto): ResponseForm<string> {
     const token = this.jwtService.sign({ ...user });
     return createResponseForm(token);
   }

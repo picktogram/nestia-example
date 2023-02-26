@@ -20,6 +20,7 @@ export class ArticlesController {
 
   /**
    * 230223 - 게시글의 댓글을 최신 순으로 조회한다. (페이지네이션 형태로 변경할 예정)
+   * @tag articles
    * @param articleId 댓글을 조회하고자 하는 게시글의 id
    * @param paginationDto 페이지 정보
    * @returns 댓글의 리스트
@@ -36,6 +37,7 @@ export class ArticlesController {
 
   /**
    * 230130 - 게시글에 댓글 작성
+   * @tag articles
    * @param writerId 작성자의 아이디
    * @param articleId 게시글의 아이디
    * @param createCommentDto 작성하고자 하는 댓글의 정보
@@ -56,6 +58,7 @@ export class ArticlesController {
 
   /**
    * 230129 - 게시글 조회 (incompleted)
+   * @tag articles
    * @param userId 작성자의 아이디
    * @param articleId 조회하고자 하는 게시글의 id 값
    * @returns 조회한 게시글
@@ -72,6 +75,7 @@ export class ArticlesController {
 
   /**
    * 230129 - 게시글 리스트 조회 (incompleted)
+   * @tag articles
    * @param userId 조회를 하는 유저의 아이디
    * @param paginationDto 페이지의 정보
    * @returns 게시글 리스트
@@ -89,6 +93,7 @@ export class ArticlesController {
 
   /**
    * 230129 - 게시글 작성 / 임시저장 기능이 추가되어야 한다. (incompleted)
+   * @tag articles
    
    * @param userId 글을 쓰고자 하는 작성자의 id
    * @param createArticleDto 게시글의 정보
