@@ -2,37 +2,49 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { ArticleEntity } from './article.entity';
 import { UserEntity } from './user.entity';
-import { IsNotEmptyString } from '../../decorators/is-not-empty-string.decorator';
 import { IsOptionalNumber } from '../../decorators/is-optional-number.decorator';
 import { CommonCloumns } from '../common/common-columns';
 
 @Entity({ name: 'comment' })
 export class CommentEntity extends CommonCloumns {
+  /**
+   * 댓글이 달린 게시글의 아이디
+   */
   @Column({ select: false })
   articleId!: number;
 
+  /**
+   * 작성자의 아이디
+   */
   @Column({ select: false })
   writerId!: number;
 
-  @ApiProperty({ description: '부모 댓글이 있는 경우, 즉 답글인 경우에는 부모 댓글 아이디를 받는다.' })
+  /**
+   * '부모 댓글이 있는 경우, 즉 답글인 경우에는 부모 댓글 아이디를 받는다.'
+   */
   @IsOptionalNumber()
   @Column({ nullable: true })
-  parentId!: number;
+  parentId?: number;
 
-  @ApiProperty()
-  @IsNotEmptyString(0, 1000)
+  /**
+   * 게시글 내용
+   * @minLength 1
+   * @maxLength 1000
+   */
   @Column('text')
   contents!: string;
 
-  @ApiProperty({ description: '소수점을 포함한 좌표 값' })
-  @IsOptionalNumber()
+  /**
+   * 소수점을 포함한 좌표 값
+   */
   @Column({ type: 'numeric', nullable: true })
-  xPosition!: number;
+  xPosition?: number;
 
-  @ApiProperty({ description: '소수점을 포함한 좌표 값' })
-  @IsOptionalNumber()
+  /**
+   * 소수점을 포함한 좌표 값
+   */
   @Column({ type: 'numeric', nullable: true })
-  yPosition!: number;
+  yPosition?: number;
 
   /**
    * below are relations

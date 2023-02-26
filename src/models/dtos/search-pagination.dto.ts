@@ -1,8 +1,4 @@
-import { IntersectionType } from '@nestjs/swagger';
-import { PaginationDto } from './pagination.dto';
+import { PaginationDto } from '../../types';
 import { SearchDto } from './search.dto';
 
-export class SearchPaginationDto extends IntersectionType(
-  PaginationDto,
-  SearchDto,
-) {}
+export interface SearchPaginationDto extends PaginationDto, SearchDto {}

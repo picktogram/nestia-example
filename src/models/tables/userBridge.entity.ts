@@ -5,11 +5,15 @@ import { UserEntity } from './user.entity';
 
 @Entity({ name: 'user_bridge' })
 export class UserBridgeEntity extends CreatedAtColumn {
-  @ApiProperty()
+  /**
+   * 유저의 아이디
+   */
   @PrimaryColumn()
   firstUserId!: number;
 
-  @ApiProperty()
+  /**
+   * 유저의 아이디
+   */
   @PrimaryColumn()
   secondUserId!: number;
 

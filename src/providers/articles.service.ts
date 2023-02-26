@@ -9,7 +9,7 @@ import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-r
 import { ArticleEntity } from '../models/tables/article.entity';
 import { CommentEntity } from '../models/tables/comment.entity';
 import { UserBridgeEntity } from '../models/tables/userBridge.entity';
-import { ArticleType, Pagination, UserBridgeType } from '../types';
+import { ArticleType, PaginationDto, UserBridgeType } from '../types';
 import { getOffset } from '../utils/getOffset';
 import { DataSource, In } from 'typeorm';
 
@@ -46,12 +46,13 @@ export class ArticlesService {
       throw new BadRequestException(ERROR.CANNOT_FINDONE_ARTICLE);
     }
 
-    return (article.comments = comments), article;
+    article.comments = comments;
+    return article;
   }
 
   async read(
     userId: number,
-    { page, limit }: Pagination,
+    { page, limit }: PaginationDto,
   ): Promise<{
     list: GetAllArticlesResponseDto[];
     count: number;
@@ -124,9 +125,19 @@ export class ArticlesService {
     return writedArticle;
   }
 
-  private checkIsSamePosition<T extends { position: number }>(images: T[]): T[] {
+  private checkIsSamePosition<T extends { position?: number }>(images?: T[]): T[] {
+    if (!images || images.length === 0) {
+      return [];
+    }
+
     const isSamePositionImage = images
-      .map((el) => el.position)
+      .map((el, i, arr) => {
+        const previousPosition = (i - 1 >= 0 ? arr.at(i - 1)?.position : 0) || 0;
+        const nextPosition = (i + 1 === arr.length ? arr.at(i)?.position : arr.at(i + 1)?.position) || 0;
+        const averagePosition = (previousPosition + nextPosition) / 2;
+
+        return el.position || averagePosition;
+      })
       .filter((el) => el !== 0)
       .find((el, i, arr) => {
         const isSamePosition = (other: number, otherIdx: number) => {
@@ -142,7 +153,7 @@ export class ArticlesService {
     return this.sortImageByIndex(images);
   }
 
-  private sortImageByIndex<T extends { position: number }>(images: T[]): T[] {
+  private sortImageByIndex<T extends { position?: number }>(images: T[]): T[] {
     return images.map((image, i) => {
       image.position = image.position || i;
       return image;

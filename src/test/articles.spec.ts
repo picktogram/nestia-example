@@ -10,7 +10,6 @@ import { UserEntity } from '../models/tables/user.entity';
 import { generateRandomNumber } from '../utils/generate-random-number';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
 import { CommentEntity } from '../models/tables/comment.entity';
-import { IsNull } from 'typeorm';
 
 describe('Article Entity', () => {
   let controller: ArticlesController;
@@ -46,8 +45,8 @@ describe('Article Entity', () => {
       /**
        * response
        */
-      let list: GetAllArticlesResponseDto[];
-      let count: number;
+      let list: GetAllArticlesResponseDto[] = [];
+      let count: number = 0;
       beforeAll(async () => {
         const readerMetadata = generateRandomNumber(1000, 9999, true);
 
@@ -77,7 +76,11 @@ describe('Article Entity', () => {
       });
 
       it('게시글 리스트에서도 일정 개수(length) 이상의 댓글 배열이 포함되어 있어야 한다.', async () => {
-        expect(list.at(0)['commentMetadata']).toBeInstanceOf(Array);
+        const article = list.at(0);
+        expect(article).toBeDefined();
+        if (article) {
+          expect(article['commentMetadata']).toBeInstanceOf(Array);
+        }
       });
     });
 
@@ -100,7 +103,9 @@ describe('Article Entity', () => {
         const myArticle = response.list.find((el) => el.writer.id === writer.id);
 
         expect(myArticle).toBeDefined();
-        expect(myArticle['isMine']).toBeTruthy();
+        if (myArticle) {
+          expect(myArticle['isMine']).toBeTruthy();
+        }
       });
     });
 
@@ -161,8 +166,8 @@ describe('Article Entity', () => {
       try {
         const checkIsSame = service['checkIsSamePosition'](positions);
         expect(checkIsSame).toBe('This is to be failed.');
-      } catch (err) {
-        expect(err.message).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
+      } catch (err: any) {
+        expect(err?.message).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
       }
     });
 
@@ -216,11 +221,16 @@ describe('Article Entity', () => {
 
       expect(detailArticle.comments.length).toBeGreaterThan(0);
       expect(detailArticle.comments.length).toBe(3);
-      expect(detailArticle.comments.at(0).id).toBeDefined();
-      expect(detailArticle.comments.at(0).parentId).toBeDefined();
-      expect(detailArticle.comments.at(0).contents).toBeDefined();
-      expect(detailArticle.comments.at(0).xPosition).toBeDefined();
-      expect(detailArticle.comments.at(0).yPosition).toBeDefined();
+
+      const comment = detailArticle.comments.at(0);
+      expect(comment).toBeDefined();
+      if (comment) {
+        expect(comment.id).toBeDefined();
+        expect(comment.parentId).toBeDefined();
+        expect(comment.contents).toBeDefined();
+        expect(comment.xPosition).toBeDefined();
+        expect(comment.yPosition).toBeDefined();
+      }
     });
   });
 
@@ -254,14 +264,13 @@ describe('Article Entity', () => {
       const [comment2] = await controller.readComments(article.id, { page: 2, limit: 1 });
       const [comment3] = await controller.readComments(article.id, { page: 3, limit: 1 });
 
-      expect(comment1).toBeDefined();
-      expect(comment1.id).toBe(comments.at(1 - 1).id);
-
-      expect(comment2).toBeDefined();
-      expect(comment2.id).toBe(comments.at(2 - 1).id);
-
-      expect(comment3).toBeDefined();
-      expect(comment3.id).toBe(comments.at(3 - 1).id);
+      [comment1, comment2, comment3].forEach((comment, i) => {
+        expect(comment).toBeDefined();
+        const searchedComment = comments.at(i);
+        if (searchedComment) {
+          expect(comment.id).toBe(searchedComment.id);
+        }
+      });
     });
   });
 });

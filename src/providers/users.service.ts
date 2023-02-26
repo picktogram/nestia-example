@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import { CreateUserDto } from '../models/dtos/create-user.dto';
@@ -6,7 +6,6 @@ import { ERROR, ValueOfError } from '../config/constant/error';
 import { UsersRepository } from '../models/repositories/users.repository';
 import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
 import bcrypt from 'bcrypt';
-import { Stream } from 'stream';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +14,7 @@ export class UsersService {
     @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+  async create(createUserDto: CreateUserDto): Promise<CreateUserDto & { readonly id: number }> {
     const users = await this.usersRepository.find({
       where: [{ email: createUserDto.email }, { phoneNumber: createUserDto.phoneNumber }],
     });
@@ -50,7 +49,7 @@ export class UsersService {
   }
 
   async unfollow(followerId: number, followeeId: number): Promise<true> {
-    const { followee, bridge, reversedBridge } = await this.getFolloweeOrThrow(
+    const { bridge } = await this.getFolloweeOrThrow(
       followerId,
       followeeId,
       ERROR.CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW,
@@ -65,11 +64,7 @@ export class UsersService {
   }
 
   async follow(followerId: number, followeeId: number): Promise<true> {
-    const { followee, bridge, reversedBridge } = await this.getFolloweeOrThrow(
-      followerId,
-      followeeId,
-      ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
-    );
+    const { bridge } = await this.getFolloweeOrThrow(followerId, followeeId, ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW);
 
     if (bridge) {
       throw new BadRequestException(ERROR.ALREADY_FOLLOW_USER);
