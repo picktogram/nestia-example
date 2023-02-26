@@ -2,6 +2,13 @@ import { TypedBody, TypedParam, TypedRoute } from '@nestia/core';
 import { Controller } from '@nestjs/common';
 import { TestDto } from '../types';
 
+interface ABC {
+  /**
+   * abc
+   */
+  abc: boolean;
+}
+
 @Controller('nestia')
 export class NestiaController {
   constructor() {}
@@ -20,8 +27,7 @@ export class NestiaController {
   }
 
   @TypedRoute.Post()
-  async nestiaTest2(@TypedBody() dto: TestDto): Promise<TestDto> {
-    console.log(dto);
-    return dto;
+  async nestiaTest2(): Promise<ABC> {
+    return { abc: true };
   }
 }

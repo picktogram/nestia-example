@@ -2,9 +2,10 @@ import { Controller, UseGuards } from '@nestjs/common';
 import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
 import { User } from '../common/decorators/user.decorator';
-import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UserId } from '../common/decorators/user-id.decorator';
 import { TypedParam, TypedRoute } from '@nestia/core';
+import { JwtGuard } from '../auth/guards/jwt.guard';
+import typia from 'typia';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/users')
@@ -19,7 +20,7 @@ export class UsersController {
    * @returns 유저의 토큰을 디코딩한 것과 동일한 형태의 값들이 반환된다.
    */
   @TypedRoute.Get('profile')
-  async getProfile(@User() user: UserEntity): Promise<DecodedUserToken | null> {
+  async getProfile(@User() user: UserEntity): Promise<DecodedUserToken> {
     return user;
   }
 

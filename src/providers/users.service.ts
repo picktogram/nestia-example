@@ -15,16 +15,25 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<CreateUserDto & { readonly id: number }> {
-    const users = await this.usersRepository.find({
-      where: [{ email: createUserDto.email }, { phoneNumber: createUserDto.phoneNumber }],
+    const alreadyCreatedEmail = await this.usersRepository.findOne({
+      where: { email: createUserDto.email },
     });
 
-    if (users.length) {
+    if (alreadyCreatedEmail) {
       throw new BadRequestException(ERROR.ALREADY_CREATED_EMAIL);
+    }
+
+    const alreadyCreatedPhoneNumber = await this.usersRepository.findOne({
+      where: { phoneNumber: createUserDto.phoneNumber },
+    });
+
+    if (alreadyCreatedPhoneNumber) {
+      throw new BadRequestException(ERROR.ALREADY_CREATED_PHONE_NUMBER);
     }
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
+    console.log(createUserDto);
     return await this.usersRepository.save(
       UserEntity.create({
         ...createUserDto,

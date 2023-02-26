@@ -74,16 +74,7 @@ export class ArticlesService {
     ]);
 
     const [comments, userBridges] = await Promise.all([
-      this.dataSource
-        .createQueryBuilder()
-        .from((qb) => {
-          return qb
-            .from(CommentEntity, 'c')
-            .select(['c.id AS "id"', 'c.contents AS "contents"', 'c.articleId AS "articleId"'])
-            .addSelect('ROW_NUMBER() OVER (PARTITION BY c."articleId" ORDER BY c."createdAt" DESC)::int4 AS "position"')
-            .where('c.articleId IN (:...articleIds)', { articleIds: list.map((el) => el.id) });
-        }, 'cte')
-        .getRawMany(),
+      this.commentsRepository.getRepresentCommentsByArticeIds(list.map((el) => el.id)),
       this.userBridgesRepository.find({
         where: [
           {

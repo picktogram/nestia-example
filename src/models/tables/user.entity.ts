@@ -5,7 +5,7 @@ import { CommentEntity } from './comment.entity';
 import { UserBridgeEntity } from './userBridge.entity';
 import typia from 'typia';
 
-export type DecodedUserToken = Pick<UserEntity, 'id' | 'name' | 'nickname' | 'email' | 'birth' | 'gender'>;
+export type DecodedUserToken = Pick<UserEntity, 'id' | 'name' | 'nickname' | 'email' | 'birth'>;
 
 @Entity({ name: 'user' })
 export class UserEntity extends CommonCloumns {
@@ -37,7 +37,7 @@ export class UserEntity extends CommonCloumns {
    * @maxLength 13
    */
   @Column({ nullable: true, unique: true, select: false })
-  public phoneNumber?: string; // `${number}-${number}-${number}`;
+  public phoneNumber?: string; //`${number}-${number}-${number}`;
 
   /**
    * 사용자의 이메일 주소로 로그인 시 필요
@@ -58,7 +58,7 @@ export class UserEntity extends CommonCloumns {
    * 사용자의 생일을 의미하는 값
    */
   @Column('timestamp with time zone', { nullable: true, select: false })
-  public birth?: typia.Primitive<Date>;
+  public birth?: typia.Primitive<Date> | null;
 
   /**
    * 사용자의 성별로 true면 남자라고 가정한다.
