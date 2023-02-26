@@ -38,7 +38,7 @@ export declare namespace ArticleType {
   interface DetailArticle extends Pick<ArticleEntity, 'id' | 'contents'> {
     images?: Pick<BodyImageEntity, 'id' | 'position' | 'url' | 'depth'>[];
     writer: Pick<UserEntity, 'id' | 'nickname' | 'profileImage'>;
-    // comments: Pick<CommentEntity, 'id' | 'parentId' | 'contents' | 'xPosition' | 'yPosition'>[];
+    comments: Pick<CommentEntity, 'id' | 'parentId' | 'contents' | 'xPosition' | 'yPosition'>[];
   }
 }
 
