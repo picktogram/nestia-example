@@ -9,6 +9,8 @@ import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
 import { CommentType, PaginationDto } from '../types';
+import { createPaginationForm, PaginationForm, PaginationResponseType } from '../interceptors/transform.interceptor';
+import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')
@@ -73,9 +75,14 @@ export class ArticlesController {
    * @returns 게시글 리스트
    */
   @TypedRoute.Get()
-  public async getAllArticles(@UserId() userId: number, @TypedQuery() paginationDto: PaginationDto) {
+  public async getAllArticles(
+    @UserId() userId: number,
+    @TypedQuery() paginationDto: PaginationDto,
+  ): Promise<PaginationForm<{ list: GetAllArticlesResponseDto[]; count: number }>> {
     const articlesToRead = await this.articlesService.read(userId, paginationDto);
-    return articlesToRead;
+    const response = createPaginationForm(articlesToRead, paginationDto);
+
+    return response;
   }
 
   /**

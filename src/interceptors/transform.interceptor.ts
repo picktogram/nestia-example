@@ -43,8 +43,50 @@ export class TransformInterceptor<T> implements NestInterceptor<T, ExtendedRespo
           };
         }
 
-        return { result: true, code: 1000, requestToResponse, data: JSON.parse(value) };
+        return { result: true, code: 1000, requestToResponse, data: value };
       }),
     );
   }
+}
+
+export interface InitialPaginationResponseType {
+  list: any[];
+  count: number;
+}
+
+export interface PaginationForm<T extends InitialPaginationResponseType> {
+  result?: true;
+  code?: 1000;
+  requestToResponse?: `${number}ms`;
+  data?: PaginationResponseType<T>;
+}
+
+export interface PaginationResponseType<T extends InitialPaginationResponseType> {
+  list: T['list'];
+  count: T['count'];
+  totalResult: number;
+  totalPage: number;
+  search?: string;
+  page: number;
+}
+
+export function createPaginationForm<ResponseType extends InitialPaginationResponseType>(
+  responseData: ResponseType,
+  paginationInfo: { limit: number; page: number; search?: string },
+): PaginationForm<ResponseType> {
+  const { limit, page, search } = paginationInfo;
+  const { totalPage, totalResult } = calcListTotalCount(responseData.count, limit);
+  return {
+    result: true,
+    code: 1000,
+    requestToResponse: '10ms',
+    data: {
+      list: responseData.list,
+      count: responseData.count,
+      page,
+      totalResult,
+      totalPage,
+      search,
+    },
+  };
 }
