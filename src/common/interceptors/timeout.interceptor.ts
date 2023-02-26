@@ -1,5 +1,5 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler, RequestTimeoutException } from '@nestjs/common';
-import { Observable, TimeoutError } from 'rxjs';
+import { Observable, throwError, TimeoutError } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
 
 @Injectable()
@@ -9,9 +9,9 @@ export class TimeoutInterceptor implements NestInterceptor {
       timeout(5000),
       catchError((err) => {
         if (err instanceof TimeoutError) {
-          return new RequestTimeoutException();
+          return throwError(() => new RequestTimeoutException());
         }
-        return err;
+        return throwError(() => err);
       }),
     );
   }

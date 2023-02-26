@@ -18,7 +18,6 @@ export class TransformInterceptor<T> implements NestInterceptor<T, ExtendedRespo
 
     return next.handle().pipe(
       map((value) => {
-        console.log(value);
         const requestToResponse = `${Date.now() - request.now}ms`;
 
         if (value instanceof Object && 'count' in value && 'list' in value) {
@@ -48,4 +47,62 @@ export class TransformInterceptor<T> implements NestInterceptor<T, ExtendedRespo
       }),
     );
   }
+}
+
+export interface InitialPaginationResponseType {
+  list: any[];
+  count: number;
+}
+
+export interface PaginationForm<T extends InitialPaginationResponseType> {
+  result: true;
+  code: 1000;
+  requestToResponse: `${number}ms`;
+  data: PaginationResponseType<T>;
+}
+
+export interface PaginationResponseType<T extends InitialPaginationResponseType> {
+  list: T['list'];
+  count: T['count'];
+  totalResult: number;
+  totalPage: number;
+  search?: string;
+  page: number;
+}
+
+export function createPaginationForm<ResponseType extends InitialPaginationResponseType>(
+  responseData: ResponseType,
+  paginationInfo: { limit: number; page: number; search?: string },
+): PaginationForm<ResponseType> {
+  const { limit, page, search } = paginationInfo;
+  const { totalPage, totalResult } = calcListTotalCount(responseData.count, limit);
+  return {
+    result: true,
+    code: 1000,
+    requestToResponse: '0ms', // NOTE : logging transform에서 올바른 값으로 추가된다.
+    data: {
+      list: responseData.list,
+      count: responseData.count,
+      page,
+      totalResult,
+      totalPage,
+      search,
+    },
+  };
+}
+
+export interface ResponseForm<T> {
+  result: true;
+  code: 1000;
+  requestToResponse: `${number}ms`;
+  data: T;
+}
+
+export function createResponseForm<T>(data: T) {
+  return {
+    result: true,
+    code: 1000,
+    requestToResponse: `0ms`,
+    data,
+  } as const;
 }

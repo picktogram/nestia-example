@@ -68,6 +68,8 @@ export const NESTIA_CONFIG: SDK.INestiaConfig = {
     security: {
       bearer: {
         type: 'apiKey',
+        in: 'header',
+        name: 'Authorization',
       },
     },
   },

@@ -14,13 +14,21 @@ export class UsersService {
     @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const users = await this.usersRepository.find({
-      where: [{ email: createUserDto.email }, { phoneNumber: createUserDto.phoneNumber }],
+  async create(createUserDto: CreateUserDto): Promise<CreateUserDto & { readonly id: number }> {
+    const alreadyCreatedEmail = await this.usersRepository.findOne({
+      where: { email: createUserDto.email },
     });
 
-    if (users.length) {
+    if (alreadyCreatedEmail) {
       throw new BadRequestException(ERROR.ALREADY_CREATED_EMAIL);
+    }
+
+    const alreadyCreatedPhoneNumber = await this.usersRepository.findOne({
+      where: { phoneNumber: createUserDto.phoneNumber },
+    });
+
+    if (alreadyCreatedPhoneNumber) {
+      throw new BadRequestException(ERROR.ALREADY_CREATED_PHONE_NUMBER);
     }
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
@@ -33,7 +41,7 @@ export class UsersService {
     );
   }
 
-  async findOneByEmail(email: string): Promise<DecodedUserToken & { password: string }> {
+  async findOneByEmail(email: string): Promise<(DecodedUserToken & { password: string }) | null> {
     return await this.usersRepository.findOne({
       select: {
         id: true,
@@ -48,12 +56,8 @@ export class UsersService {
     });
   }
 
-  async findOne(userId: number): Promise<UserEntity> {
-    return await this.usersRepository.findOne({ where: { id: userId } });
-  }
-
   async unfollow(followerId: number, followeeId: number): Promise<true> {
-    const { followee, bridge, reversedBridge } = await this.getFolloweeOrThrow(
+    const { bridge } = await this.getFolloweeOrThrow(
       followerId,
       followeeId,
       ERROR.CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW,
@@ -68,11 +72,7 @@ export class UsersService {
   }
 
   async follow(followerId: number, followeeId: number): Promise<true> {
-    const { followee, bridge, reversedBridge } = await this.getFolloweeOrThrow(
-      followerId,
-      followeeId,
-      ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
-    );
+    const { bridge } = await this.getFolloweeOrThrow(followerId, followeeId, ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW);
 
     if (bridge) {
       throw new BadRequestException(ERROR.ALREADY_FOLLOW_USER);

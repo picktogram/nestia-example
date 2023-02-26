@@ -9,20 +9,31 @@ import { UserEntity } from './user.entity';
 
 @Entity({ name: 'article' })
 export class ArticleEntity extends CommonCloumns {
+  /**
+   * 게시글을 작성한 유저의 아이디
+   */
   @Column()
   public writerId!: number;
 
-  @ApiProperty({ description: '글의 내용물로, 최대 3,000자', minLength: 1, maxLength: 3000 })
+  /**
+   * 글의 내용물로, 최대 3,000자
+   *
+   * @minLength 1
+   * @maxLength 3000
+   */
   @Column('text')
-  @IsNotEmptyString(1, 3000)
   public contents!: string;
 
+  /**
+   * 신고당한 횟수를 의미한다.
+   */
   @Column({ default: 0, select: false })
   isReported!: number;
 
   /**
    * below are relations
    */
+
   @ManyToOne(() => UserEntity, (writer) => writer.articles)
   @JoinColumn({ name: 'writerId', referencedColumnName: 'id' })
   writer!: UserEntity;

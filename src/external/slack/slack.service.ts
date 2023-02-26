@@ -9,7 +9,7 @@ export class SlackService {
   async sendToServerErrorChannel(text: string) {
     try {
       const environment = this.configService.get<string>('NODE_ENV');
-      if (environment.toLocaleLowerCase() === 'local') {
+      if (!environment || environment.toLocaleLowerCase() === 'local') {
         return;
       }
 

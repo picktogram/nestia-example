@@ -19,9 +19,9 @@ export class CommentsService {
   async readByArticleId(
     articleId: number,
     { page, limit }: { page: number; limit: number },
-  ): Promise<CommentType.RootComment[]> {
+  ): Promise<{ list: CommentType.RootComment[]; count: number }> {
     const { skip, take } = getOffset({ page, limit });
-    const comments = await this.commentsRepository.find({
+    const [list, count] = await this.commentsRepository.findAndCount({
       select: {
         id: true,
         writerId: true,
@@ -36,7 +36,7 @@ export class CommentsService {
       take,
     });
 
-    return comments;
+    return { list, count };
   }
 
   async write(writerId: number, articleId: number, createCommentDto: CreateCommentDto): Promise<CommentEntity> {
@@ -66,7 +66,8 @@ export class CommentsService {
       throw new BadRequestException(ERROR.TOO_MANY_REPORTED_ARTICLE);
     }
 
-    const comment = await this.commentsRepository.save({ writerId, articleId, ...createCommentDto });
+    const entityToSave = CommentEntity.create({ writerId, articleId, ...createCommentDto });
+    const comment = await this.commentsRepository.save(entityToSave);
     return comment;
   }
 }

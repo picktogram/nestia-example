@@ -8,7 +8,7 @@ import { UsersService } from '../providers/users.service';
 export class AuthService {
   constructor(private readonly jwtService: JwtService, private readonly usersService: UsersService) {}
 
-  async validateUser(email: string, password: string): Promise<DecodedUserToken> {
+  async validateUser(email: string, password: string): Promise<DecodedUserToken | null> {
     const user = await this.usersService.findOneByEmail(email);
     if (user) {
       const isRightPassword = await bcrypt.compare(password, user.password);
@@ -22,6 +22,6 @@ export class AuthService {
 
   userLogin(user: UserEntity) {
     const token = this.jwtService.sign({ ...user });
-    return { token };
+    return token;
   }
 }
