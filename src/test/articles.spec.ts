@@ -260,15 +260,17 @@ describe('Article Entity', () => {
     });
 
     it('특정 게시글의 댓글을 조회하는, 페이지네이션 함수가 제공된다.', async () => {
-      const [comment1] = await controller.readComments(article.id, { page: 1, limit: 1 });
-      const [comment2] = await controller.readComments(article.id, { page: 2, limit: 1 });
-      const [comment3] = await controller.readComments(article.id, { page: 3, limit: 1 });
+      const comment1 = await controller.readComments(article.id, { page: 1, limit: 1 });
+      const comment2 = await controller.readComments(article.id, { page: 2, limit: 1 });
+      const comment3 = await controller.readComments(article.id, { page: 3, limit: 1 });
 
-      [comment1, comment2, comment3].forEach((comment, i) => {
+      [comment1.data?.list.at(0), comment2.data?.list.at(0), comment3.data?.list.at(0)].forEach((comment, i) => {
         expect(comment).toBeDefined();
-        const searchedComment = comments.at(i);
-        if (searchedComment) {
-          expect(comment.id).toBe(searchedComment.id);
+        if (comment) {
+          const searchedComment = comments.at(i);
+          if (searchedComment) {
+            expect(comment.id).toBe(searchedComment.id);
+          }
         }
       });
     });

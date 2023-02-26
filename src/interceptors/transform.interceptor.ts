@@ -55,10 +55,10 @@ export interface InitialPaginationResponseType {
 }
 
 export interface PaginationForm<T extends InitialPaginationResponseType> {
-  result?: true;
-  code?: 1000;
-  requestToResponse?: `${number}ms`;
-  data?: PaginationResponseType<T>;
+  result: true;
+  code: 1000;
+  requestToResponse: `${number}ms`;
+  data: PaginationResponseType<T>;
 }
 
 export interface PaginationResponseType<T extends InitialPaginationResponseType> {
@@ -79,7 +79,7 @@ export function createPaginationForm<ResponseType extends InitialPaginationRespo
   return {
     result: true,
     code: 1000,
-    requestToResponse: '10ms',
+    requestToResponse: '0ms', // NOTE : logging transform에서 올바른 값으로 추가된다.
     data: {
       list: responseData.list,
       count: responseData.count,
@@ -89,4 +89,20 @@ export function createPaginationForm<ResponseType extends InitialPaginationRespo
       search,
     },
   };
+}
+
+export interface ResponseForm<T> {
+  result: true;
+  code: 1000;
+  requestToResponse: `${number}ms`;
+  data: T;
+}
+
+export function createResponseForm<T>(data: T) {
+  return {
+    result: true,
+    code: 1000,
+    requestToResponse: `0ms`,
+    data,
+  } as const;
 }

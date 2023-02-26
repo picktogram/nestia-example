@@ -28,8 +28,8 @@ export class ArticlesService {
       this.articlesRepository
         .createQueryBuilder('a')
         .select(['a.id', 'a.contents'])
-        .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
         .addSelect(['i.id', 'i.position', 'i.url', 'i.depth'])
+        .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
         .leftJoin('a.images', 'i', 'i.parentId IS NULL')
         .innerJoin('a.writer', 'w')
         .where('a.id = :articleId', { articleId })
@@ -116,7 +116,7 @@ export class ArticlesService {
     return writedArticle;
   }
 
-  private checkIsSamePosition<T extends { position?: number }>(images?: T[]): T[] {
+  private checkIsSamePosition<T extends { position?: number | `${number}` }>(images?: T[]): T[] {
     if (!images || images.length === 0) {
       return [];
     }
@@ -125,9 +125,9 @@ export class ArticlesService {
       .map((el, i, arr) => {
         const previousPosition = (i - 1 >= 0 ? arr.at(i - 1)?.position : 0) || 0;
         const nextPosition = (i + 1 === arr.length ? arr.at(i)?.position : arr.at(i + 1)?.position) || 0;
-        const averagePosition = (previousPosition + nextPosition) / 2;
+        const averagePosition = (Number(previousPosition) + Number(nextPosition)) / 2;
 
-        return el.position || averagePosition;
+        return Number(el.position) || averagePosition;
       })
       .filter((el) => el !== 0)
       .find((el, i, arr) => {
@@ -144,7 +144,7 @@ export class ArticlesService {
     return this.sortImageByIndex(images);
   }
 
-  private sortImageByIndex<T extends { position?: number }>(images: T[]): T[] {
+  private sortImageByIndex<T extends { position?: number | `${number}` }>(images: T[]): T[] {
     return images.map((image, i) => {
       image.position = image.position || i;
       return image;

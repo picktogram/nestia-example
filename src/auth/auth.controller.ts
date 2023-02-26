@@ -3,6 +3,7 @@ import { Controller, Post, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBody } from '@nestjs/swagger';
 import { User } from '../common/decorators/user.decorator';
+import { createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
 import { CreateUserDto } from '../models/dtos/create-user.dto';
 import { DecodedUserToken } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
@@ -19,9 +20,9 @@ export class AuthController {
    * @param CreateUserDto 유저를 생성하기 위해 필요한 최소한의 값 정의
    */
   @TypedRoute.Post('sign-up')
-  async signUp(@TypedBody() createUserDto: CreateUserDto): Promise<DecodedUserToken> {
+  async signUp(@TypedBody() createUserDto: CreateUserDto): Promise<ResponseForm<DecodedUserToken>> {
     const { password, ...user } = await this.usersService.create(createUserDto);
-    return user;
+    return createResponseForm(user);
   }
 
   /**
@@ -49,8 +50,8 @@ export class AuthController {
     },
   })
   @TypedRoute.Post('login')
-  login(@User() user: DecodedUserToken): string {
+  login(@User() user: DecodedUserToken): ResponseForm<string> {
     const token = this.jwtService.sign({ ...user });
-    return token;
+    return createResponseForm(token);
   }
 }

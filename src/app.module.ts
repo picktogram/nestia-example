@@ -8,7 +8,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmModuleOptions } from './config/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
-import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { SlackModule } from './external/slack/slack.module';
 
@@ -38,10 +37,6 @@ import { SlackModule } from './external/slack/slack.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: TransformInterceptor,
     },
   ],
 })

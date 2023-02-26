@@ -8,9 +8,10 @@ import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
-import { CommentType, PaginationDto } from '../types';
+import { ArticleType, CommentType, PaginationDto } from '../types';
 import { createPaginationForm, PaginationForm, PaginationResponseType } from '../interceptors/transform.interceptor';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
+import typia from 'typia';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')
@@ -26,10 +27,11 @@ export class ArticlesController {
   @TypedRoute.Get(':id/comments')
   async readComments(
     @TypedParam('id', 'number') articleId: number,
-    @TypedQuery() paginationDto: { page: number; limit: number },
-  ): Promise<CommentType.RootComment[]> {
+    @TypedQuery() paginationDto: PaginationDto,
+  ): Promise<PaginationForm<{ list: CommentType.RootComment[]; count: number }>> {
     const comments = await this.commentsService.readByArticleId(articleId, paginationDto);
-    return comments;
+    const response = createPaginationForm(comments, paginationDto);
+    return response;
   }
 
   /**
@@ -97,7 +99,10 @@ export class ArticlesController {
     schema: createErrorSchema(ERROR.IS_SAME_POSITION),
   })
   @TypedRoute.Post()
-  public async writeArticle(@UserId() userId: number, @TypedBody() createArticleDto: CreateArticleDto) {
+  public async writeArticle(
+    @UserId() userId: number,
+    @TypedBody() createArticleDto: CreateArticleDto,
+  ): Promise<ArticleType.DetailArticle> {
     const savedArticle = await this.articlesService.write(userId, createArticleDto);
     const article = await this.articlesService.getOneDetailArticle(userId, savedArticle.id);
     return article;

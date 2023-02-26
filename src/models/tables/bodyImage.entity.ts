@@ -31,14 +31,13 @@ export class BodyImageEntity extends CommonCloumns {
    * @maxLength 2048
    */
   @Column({ length: 2048 })
-  @IsNotEmptyString(4, 2048)
   url!: string;
 
   /**
    * 이미지의 정렬 순서로, 오름차순 정렬된다.
    */
   @Column('decimal', { name: 'position', precision: 6, scale: 5, default: 0 })
-  position?: number;
+  position?: number | `${number}`;
 
   /**
    * below are relations
