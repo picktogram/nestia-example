@@ -21,7 +21,7 @@
       {
         "transform": "@nestia/core/lib/transform",
         "validate": "assert", // "assert", "is", "validate"
-        "stringify": "is" // "stringify", "assert", "is", "validate", null
+        "stringify": "assert" // "stringify", "assert", "is", "validate", null
       },
       {
         "transform": "typia/lib/transform"

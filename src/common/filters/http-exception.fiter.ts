@@ -39,6 +39,7 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
         return;
       } else if (!code) {
         // NOTE : validation 에러가 아니면서 서버에서 정의하지 않은 에러
+        console.log(exception);
         let slackMessageForm = `error\n`;
         slackMessageForm += `${request.method} ${path} ${exception}\n`;
         slackMessageForm += `user : ${JSON.stringify(user)}\n`;

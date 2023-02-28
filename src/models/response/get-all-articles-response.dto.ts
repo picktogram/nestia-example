@@ -16,7 +16,7 @@ export class GetAllArticlesResponseDto {
   @Exclude()
   private readonly nickname!: string;
   @Exclude()
-  private readonly profileImage!: string;
+  private readonly profileImage?: string | null;
 
   @Exclude()
   private readonly commentMetadata!: { id: number; contents: string }[];
