@@ -1,6 +1,8 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { SlackService } from '../../external/slack/slack.service';
 import { Request, Response } from 'express';
+import typia from 'typia';
+import { NestiaTypeErrorObject } from '../../types';
 
 const UNCHATCHED_ERROR = '서버에서 캐치되지 못한 에러입니다.';
 
@@ -39,19 +41,28 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
         return;
       } else if (!code) {
         // NOTE : validation 에러가 아니면서 서버에서 정의하지 않은 에러
-        console.log(exception);
+
         let slackMessageForm = `error\n`;
         slackMessageForm += `${request.method} ${path} ${exception}\n`;
         slackMessageForm += `user : ${JSON.stringify(user)}\n`;
         slackMessageForm += `query : ${JSON.stringify(query)}\n`;
         slackMessageForm += `date : ${new Date()}\n`;
 
-        slackMessageForm += `errorMessage: ${message}\n`;
-        slackMessageForm += `errorStack: 아래 메시지 참고\n`;
+        if (message === 'Response body data is not following the promised type.') {
+          // NOTE : validation error
+          const nestiaTypeError: NestiaTypeErrorObject = exception.getResponse() as NestiaTypeErrorObject;
+          slackMessageForm += `\tpath : ${nestiaTypeError.path}\n`;
+          slackMessageForm += `\treason : ${nestiaTypeError.reason}\n`;
+          slackMessageForm += `\texpected : ${nestiaTypeError.expected}\n`;
+          slackMessageForm += `\tvalue : ${nestiaTypeError.value}\n`;
+        } else {
+          slackMessageForm += `errorMessage: ${message}\n`;
+          slackMessageForm += `errorStack: 아래 메시지 참고\n`;
 
-        exception?.stack?.split('\n').forEach((stackMessage) => {
-          slackMessageForm += `\t${stackMessage}\n`;
-        });
+          exception?.stack?.split('\n').forEach((stackMessage) => {
+            slackMessageForm += `\t${stackMessage}\n`;
+          });
+        }
 
         console.error(slackMessageForm);
         this.slackService.sendToServerErrorChannel(slackMessageForm);

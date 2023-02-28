@@ -3,6 +3,14 @@ import { BodyImageEntity } from '../models/tables/bodyImage.entity';
 import { CommentEntity } from '../models/tables/comment.entity';
 import { UserEntity } from '../models/tables/user.entity';
 
+export interface NestiaTypeErrorObject {
+  path: string;
+  reason: string;
+  expected: string;
+  value: any;
+  message: string;
+}
+
 export type Push<T extends any[], U> = [...T, U];
 export type NTuple<N extends number, T extends any[] = []> = T['length'] extends N ? T : NTuple<N, Push<T, any>>;
 

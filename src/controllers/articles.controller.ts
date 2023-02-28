@@ -75,7 +75,10 @@ export class ArticlesController {
     schema: createErrorSchema(ERROR.CANNOT_FINDONE_ARTICLE),
   })
   @TypedRoute.Get(':id')
-  public async getOneDetailArticle(@UserId() userId: number, @TypedParam('id', 'number') articleId: number) {
+  public async getOneDetailArticle(
+    @UserId() userId: number,
+    @TypedParam('id', 'number') articleId: number,
+  ): Promise<ArticleType.DetailArticle> {
     const article = await this.articlesService.getOneDetailArticle(userId, articleId);
     return article;
   }
