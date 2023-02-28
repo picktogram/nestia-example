@@ -3,7 +3,6 @@ import { CommonCloumns } from '../common/common-columns';
 import { ArticleEntity } from './article.entity';
 import { CommentEntity } from './comment.entity';
 import { UserBridgeEntity } from './userBridge.entity';
-import typia from 'typia';
 
 export type DecodedUserToken = Pick<UserEntity, 'id' | 'name' | 'nickname' | 'email' | 'birth'>;
 
@@ -33,7 +32,7 @@ export class UserEntity extends CommonCloumns {
 
   /**
    * 사용자의 전화번호로 동일한 값은 없으며, 미입력된 계정 둘의 전화번호가 같을 경우 계정 통합을 요구할 예정
-   * @minLength 11ㄴ
+   * @minLength 11
    * @maxLength 13
    */
   @Column({ nullable: true, unique: true, select: false })
