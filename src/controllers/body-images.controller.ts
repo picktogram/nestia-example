@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiBadRequestResponse, ApiBody, ApiConsumes } from '@nes
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createErrorSchema, ERROR } from '../config/constant/error';
 import { CreateBodyImageMulterOptions } from '../config/multer-s3/multer-option';
+import { createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
 import { BodyImagesService } from '../providers/body-images.service';
 
 @ApiBearerAuth('Bearer')
@@ -40,10 +41,11 @@ export class BodyImagesController {
     },
   })
   @Post()
-  async upload(@UploadedFiles() files: Express.MulterS3.File[]): Promise<string[]> {
+  async upload(@UploadedFiles() files: Express.MulterS3.File[]): Promise<ResponseForm<string[]>> {
     if (!files?.length) {
       throw new BadRequestException(ERROR.SELECT_MORE_THAN_ONE_BODY_IMAGE);
     }
-    return files.map(({ location }) => location);
+    const locations = files.map(({ location }) => location);
+    return createResponseForm(locations);
   }
 }
