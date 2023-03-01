@@ -28,7 +28,9 @@
     "schema:sync:dev": "cross-env NODE_ENV=DEVELOPMENT ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:sync -d ./data-source.ts",
     "schema:sync:test": "cross-env NODE_ENV=TEST ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:sync -d ./data-source.ts",
     "schema:drop:test": "cross-env NODE_ENV=TEST ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:drop -d ./data-source.ts",
-    "prepare": "ts-patch install && ts-patch install && ts-patch install && ts-patch install && ts-patch install && ts-patch install && ts-patch install"
+    "prepare": "ts-patch install && ts-patch install && ts-patch install && ts-patch install && ts-patch install && ts-patch install && ts-patch install",
+    "sdk": "npx nestia sdk",
+    "swagger": "npx nestia swagger"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.276.0",
@@ -116,6 +118,7 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "allowJs": true
   }
 }

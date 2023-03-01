@@ -1,15 +1,15 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from '../models/tables/user.entity';
-import { TypeOrmModuleOptions } from '../config/typeorm';
-import { UsersController } from '../controllers/users.controller';
-import { UsersService } from '../providers/users.service';
-import { AuthModule } from '../auth/auth.module';
-import { UsersModule } from '../modules/users.module';
-import { AuthService } from '../auth/auth.service';
-import { generateRandomNumber } from '../utils/generate-random-number';
-import { UserBridgeEntity } from '../models/tables/userBridge.entity';
+import { UserEntity } from '../../models/tables/user.entity';
+import { TypeOrmModuleOptions } from '../../config/typeorm';
+import { UsersController } from '../../controllers/users.controller';
+import { UsersService } from '../../providers/users.service';
+import { AuthModule } from '../../auth/auth.module';
+import { UsersModule } from '../../modules/users.module';
+import { AuthService } from '../../auth/auth.service';
+import { generateRandomNumber } from '../../utils/generate-random-number';
+import { UserBridgeEntity } from '../../models/tables/userBridge.entity';
 
 describe('User Entity', () => {
   let controller: UsersController;
@@ -94,7 +94,7 @@ describe('User Entity', () => {
         where: { firstUserId: follower.id, secondUserId: followee.id },
       });
 
-      expect(response).toBe(true);
+      expect(response.data).toBe(true);
       expect(userBridge).toBeDefined();
       if (userBridge) {
         const { firstUserId, secondUserId } = userBridge;

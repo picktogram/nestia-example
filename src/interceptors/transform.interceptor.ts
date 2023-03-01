@@ -1,4 +1,4 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Req } from '@nestjs/common';
 import { NON_PAGINATION } from '../config/constant';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
@@ -66,20 +66,21 @@ export interface PaginationResponseType<T extends InitialPaginationResponseType>
 export interface PaginationForm<T extends InitialPaginationResponseType> {
   result: true;
   code: 1000;
-  requestToResponse: `${number}ms`;
+  requestToResponse?: `${number}ms`;
   data: PaginationResponseType<T>;
 }
 
 export function createPaginationForm<ResponseType extends InitialPaginationResponseType>(
   responseData: ResponseType,
   paginationInfo: { limit: number; page: number; search?: string },
+  requestToResponse?: `${number}ms`,
 ): PaginationForm<ResponseType> {
   const { limit, page, search } = paginationInfo;
   const { totalPage, totalResult } = calcListTotalCount(responseData.count, limit);
   return {
     result: true,
     code: 1000,
-    requestToResponse: '0ms', // NOTE : logging transform에서 올바른 값으로 추가된다.
+    requestToResponse,
     data: {
       list: responseData.list,
       count: responseData.count,
@@ -94,15 +95,15 @@ export function createPaginationForm<ResponseType extends InitialPaginationRespo
 export interface ResponseForm<T> {
   result: true;
   code: 1000;
-  requestToResponse: `${number}ms`;
+  requestToResponse?: `${number}ms`;
   data: T;
 }
 
-export function createResponseForm<T>(data: T): ResponseForm<T> {
+export function createResponseForm<T>(data: T, requestToResponse?: `${number}ms`): ResponseForm<T> {
   return {
     result: true,
     code: 1000,
-    requestToResponse: `0ms`,
+    requestToResponse,
     data,
   } as const;
 }

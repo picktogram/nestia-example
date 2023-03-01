@@ -25,6 +25,16 @@ export class ArticleEntity extends CommonCloumns {
   public contents!: string;
 
   /**
+   * 게시글 작성 시 디자이너님은 아래 4가지 중 하나를 반드시 골라야 한다.
+   * question은 질문하기 유형의 게시글,
+   * draw는 그림 그리기로, 그림 위 댓글을 달 수 있는 유형의 피그마 식 게시글,
+   * event는 모임이나 행사 등, 약속을 공유할 수 있도록 달력 기능을 제공하는 게시글,
+   * writing은 그 외 어떠한 글이든 포함되는 타입을 말한다.
+   */
+  @Column()
+  public type!: 'question' | 'draw' | 'event' | 'writing';
+
+  /**
    * 신고당한 횟수를 의미한다.
    */
   @Column({ default: 0, select: false })
