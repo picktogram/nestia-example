@@ -54,13 +54,6 @@ export interface InitialPaginationResponseType {
   count: number;
 }
 
-export interface PaginationForm<T extends InitialPaginationResponseType> {
-  result: true;
-  code: 1000;
-  requestToResponse: `${number}ms`;
-  data: PaginationResponseType<T>;
-}
-
 export interface PaginationResponseType<T extends InitialPaginationResponseType> {
   list: T['list'];
   count: T['count'];
@@ -68,6 +61,13 @@ export interface PaginationResponseType<T extends InitialPaginationResponseType>
   totalPage: number;
   search?: string;
   page: number;
+}
+
+export interface PaginationForm<T extends InitialPaginationResponseType> {
+  result: true;
+  code: 1000;
+  requestToResponse: `${number}ms`;
+  data: PaginationResponseType<T>;
 }
 
 export function createPaginationForm<ResponseType extends InitialPaginationResponseType>(
@@ -98,7 +98,7 @@ export interface ResponseForm<T> {
   data: T;
 }
 
-export function createResponseForm<T>(data: T) {
+export function createResponseForm<T>(data: T): ResponseForm<T> {
   return {
     result: true,
     code: 1000,

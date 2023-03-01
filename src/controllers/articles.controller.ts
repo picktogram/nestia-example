@@ -13,12 +13,9 @@ import {
   createPaginationForm,
   createResponseForm,
   PaginationForm,
-  PaginationResponseType,
   ResponseForm,
 } from '../interceptors/transform.interceptor';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
-import typia from 'typia';
-import { CommentEntity } from '../models/tables/comment.entity';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')
@@ -38,8 +35,7 @@ export class ArticlesController {
     @TypedQuery() paginationDto: PaginationDto,
   ): Promise<PaginationForm<{ list: CommentType.RootComment[]; count: number }>> {
     const comments = await this.commentsService.readByArticleId(articleId, paginationDto);
-    const response = createPaginationForm(comments, paginationDto);
-    return response;
+    return createPaginationForm(comments, paginationDto);
   }
 
   /**
@@ -78,9 +74,9 @@ export class ArticlesController {
   public async getOneDetailArticle(
     @UserId() userId: number,
     @TypedParam('id', 'number') articleId: number,
-  ): Promise<ArticleType.DetailArticle> {
+  ): Promise<ResponseForm<ArticleType.DetailArticle>> {
     const article = await this.articlesService.getOneDetailArticle(userId, articleId);
-    return article;
+    return createResponseForm(article);
   }
 
   /**
@@ -97,7 +93,6 @@ export class ArticlesController {
   ): Promise<PaginationForm<{ list: GetAllArticlesResponseDto[]; count: number }>> {
     const articlesToRead = await this.articlesService.read(userId, paginationDto);
     const response = createPaginationForm(articlesToRead, paginationDto);
-
     return response;
   }
 
@@ -117,9 +112,9 @@ export class ArticlesController {
   public async writeArticle(
     @UserId() userId: number,
     @TypedBody() createArticleDto: CreateArticleDto,
-  ): Promise<ArticleType.DetailArticle> {
+  ): Promise<ResponseForm<ArticleType.DetailArticle>> {
     const savedArticle = await this.articlesService.write(userId, createArticleDto);
     const article = await this.articlesService.getOneDetailArticle(userId, savedArticle.id);
-    return article;
+    return createResponseForm(article);
   }
 }
