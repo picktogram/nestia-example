@@ -8,9 +8,7 @@ config();
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
-  constructor(
-    private readonly configService: ConfigService,
-  ) {
+  constructor(private readonly configService: ConfigService) {
     super({
       clientID: configService.get('KAKAO_REST_API_KEY'),
       clientSecret: configService.get('KAKAO_CLIENT_SECRET'), // 이거 없어도 될것 같은데 없앨까요??
