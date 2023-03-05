@@ -8,8 +8,8 @@ import { UsersService } from '../providers/users.service';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../modules/users.module';
 import { AuthService } from '../auth/auth.service';
-import { generateRandomNumber } from '@root/utils/generate-random-number';
-import { UserBridgeEntity } from '@root/models/tables/userBridge.entity';
+import { generateRandomNumber } from '../utils/generate-random-number';
+import { UserBridgeEntity } from '../models/tables/userBridge.entity';
 
 describe('User Entity', () => {
   let controller: UsersController;
@@ -88,20 +88,19 @@ describe('User Entity', () => {
       });
     });
 
-    afterEach(async () => {
-      follower = null;
-      followee = null;
-    });
-
     it('디자이너 좋아요 시 좋아요 성공 시 현재 관계 상태를 리턴한다.', async () => {
       const response = await controller.follow(follower.id, followee.id);
-      const { firstUserId, secondUserId } = await UserBridgeEntity.findOne({
+      const userBridge = await UserBridgeEntity.findOne({
         where: { firstUserId: follower.id, secondUserId: followee.id },
       });
 
       expect(response).toBe(true);
-      expect(firstUserId).toBe(follower.id);
-      expect(secondUserId).toBe(followee.id);
+      expect(userBridge).toBeDefined();
+      if (userBridge) {
+        const { firstUserId, secondUserId } = userBridge;
+        expect(firstUserId).toBe(follower.id);
+        expect(secondUserId).toBe(followee.id);
+      }
     });
 
     it('이미 좋아요를 누른 디자이너에게 좋아요 시 에러를 발생시킨다.', async () => {
@@ -110,7 +109,7 @@ describe('User Entity', () => {
         await controller.follow(follower.id, followee.id);
 
         expect(1).toBe(2);
-      } catch (err) {
+      } catch (err: any) {
         expect(err.message).toBe('이미 좋아요를 누른 디자이너님입니다!');
       }
     });
@@ -119,7 +118,7 @@ describe('User Entity', () => {
       try {
         await controller.follow(follower.id, NON_EXIST);
         expect(1).toBe(2);
-      } catch (err) {
+      } catch (err: any) {
         expect(err.message).toBe('팔로우할 디자이너님을 찾지 못했습니다.');
       }
     });
@@ -157,11 +156,6 @@ describe('User Entity', () => {
       });
     });
 
-    afterEach(async () => {
-      follower = null;
-      followee = null;
-    });
-
     it('좋아요한 상대에게 좋아요를 받은 직후 좋아요를 끊을 경우, 좋아요 관계가 역전(reverse)으로 변경된다.', async () => {
       // NOTE : 맞팔로우한 관계를 생성
       const isCreated = await UserBridgeEntity.save({
@@ -181,8 +175,10 @@ describe('User Entity', () => {
       });
 
       expect(original).toBeDefined();
-      expect(isCreated.firstUserId).toBe(original.firstUserId);
-      expect(isCreated.secondUserId).toBe(original.secondUserId);
+      if (original) {
+        expect(isCreated.firstUserId).toBe(original.firstUserId);
+        expect(isCreated.secondUserId).toBe(original.secondUserId);
+      }
 
       expect(afterUnfollow).toBeNull();
     });

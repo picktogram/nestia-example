@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserEntity } from '../models/tables/user.entity';
+import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import * as bcrypt from 'bcrypt';
-import { UsersService } from '@root/providers/users.service';
-import { DecodedUserToken } from '@root/types';
+import { UsersService } from '../providers/users.service';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +11,7 @@ export class AuthService {
     private readonly usersService: UsersService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<DecodedUserToken> {
+  async validateUser(email: string, password: string): Promise<DecodedUserToken | null> {
     const user = await this.usersService.findOneByEmail(email);
     if (user) {
       const isRightPassword = await bcrypt.compare(password, user.password);
@@ -26,7 +25,7 @@ export class AuthService {
 
   userLogin(user: DecodedUserToken) {
     const token = this.jwtService.sign({ ...user });
-    return { token };
+    return token;
   }
 
   async findOrCreateGoogleUser(user: DecodedUserToken): Promise<{ jwt: string }> {

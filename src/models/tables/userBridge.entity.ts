@@ -5,13 +5,17 @@ import { UserEntity } from './user.entity';
 
 @Entity({ name: 'user_bridge' })
 export class UserBridgeEntity extends CreatedAtColumn {
-  @ApiProperty()
+  /**
+   * 유저의 아이디
+   */
   @PrimaryColumn()
-  firstUserId: number;
+  firstUserId!: number;
 
-  @ApiProperty()
+  /**
+   * 유저의 아이디
+   */
   @PrimaryColumn()
-  secondUserId: number;
+  secondUserId!: number;
 
   /**
    * below are relations
@@ -19,9 +23,9 @@ export class UserBridgeEntity extends CreatedAtColumn {
 
   @ManyToOne(() => UserEntity, (u) => u.firstUserBridges)
   @JoinColumn({ name: 'firstUserId', referencedColumnName: 'id' })
-  firstUser: UserEntity;
+  firstUser!: UserEntity;
 
   @ManyToOne(() => UserEntity, (u) => u.secondUserBridges)
   @JoinColumn({ name: 'secondUserId', referencedColumnName: 'id' })
-  secondUser: UserEntity;
+  secondUser!: UserEntity;
 }

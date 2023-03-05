@@ -1,22 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsOptionalDate } from '@root/decorators/is-optional-date.decorator';
+import typia from 'typia';
 
-export class DateRangeDto {
-  @ApiProperty({
-    name: 'startDate',
-    type: Date,
-    description: '시작 날짜로, 없을 경우에는 제한 없음이 된다.',
-    required: false,
-  })
-  @IsOptionalDate()
-  startDate?: Date;
+export interface DateRangeDto {
+  /**
+   * 시작 날짜로, 없을 경우에는 제한 없음이 된다.
+   */
+  startDate?: typia.Primitive<Date>;
 
-  @ApiProperty({
-    name: 'endDate',
-    type: Date,
-    description: '종료 날짜로, 없을 경우에는 제한 없음이 된다.',
-    required: false,
-  })
-  @IsOptionalDate()
-  endDate?: Date;
+  /**
+   * 종료 날짜로, 없을 경우에는 제한 없음이 된다.
+   */
+  endDate?: typia.Primitive<Date>;
 }

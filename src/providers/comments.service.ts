@@ -1,11 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ERROR } from '@root/config/constant/error';
-import { CreateCommentDto } from '@root/models/dtos/create-comment.dto';
-import { ArticlesRepository } from '@root/models/repositories/articles.repository';
-import { CommentsRepository } from '@root/models/repositories/comments.repository';
-import { ArticleEntity } from '@root/models/tables/article.entity';
-import { CommentEntity } from '@root/models/tables/comment.entity';
+import { ERROR } from '../config/constant/error';
+import { CreateCommentDto } from '../models/dtos/create-comment.dto';
+import { ArticlesRepository } from '../models/repositories/articles.repository';
+import { CommentsRepository } from '../models/repositories/comments.repository';
+import { ArticleEntity } from '../models/tables/article.entity';
+import { CommentEntity } from '../models/tables/comment.entity';
+import { CommentType } from '../types';
+import { getOffset } from '../utils/getOffset';
 
 @Injectable()
 export class CommentsService {
@@ -13,6 +15,29 @@ export class CommentsService {
     @InjectRepository(CommentsRepository) private readonly commentsRepository: CommentsRepository,
     @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
   ) {}
+
+  async readByArticleId(
+    articleId: number,
+    { page, limit }: { page: number; limit: number },
+  ): Promise<{ list: CommentType.RootComment[]; count: number }> {
+    const { skip, take } = getOffset({ page, limit });
+    const [list, count] = await this.commentsRepository.findAndCount({
+      select: {
+        id: true,
+        writerId: true,
+        parentId: true,
+        contents: true,
+        xPosition: true,
+        yPosition: true,
+      },
+      where: { articleId },
+      order: { createdAt: 'DESC' },
+      skip,
+      take,
+    });
+
+    return { list, count };
+  }
 
   async write(writerId: number, articleId: number, createCommentDto: CreateCommentDto): Promise<CommentEntity> {
     const article = await this.articlesRepository.findOne({
@@ -41,7 +66,8 @@ export class CommentsService {
       throw new BadRequestException(ERROR.TOO_MANY_REPORTED_ARTICLE);
     }
 
-    const comment = await this.commentsRepository.save({ writerId, articleId, ...createCommentDto });
+    const entityToSave = CommentEntity.create({ writerId, articleId, ...createCommentDto });
+    const comment = await this.commentsRepository.save(entityToSave);
     return comment;
   }
 }

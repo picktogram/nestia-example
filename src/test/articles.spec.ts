@@ -9,8 +9,7 @@ import { ArticlesModule } from '../modules/articles.module';
 import { UserEntity } from '../models/tables/user.entity';
 import { generateRandomNumber } from '../utils/generate-random-number';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
-import { CommentEntity } from '@root/models/tables/comment.entity';
-import { IsNull } from 'typeorm';
+import { CommentEntity } from '../models/tables/comment.entity';
 
 describe('Article Entity', () => {
   let controller: ArticlesController;
@@ -46,8 +45,8 @@ describe('Article Entity', () => {
       /**
        * response
        */
-      let list: GetAllArticlesResponseDto[];
-      let count: number;
+      let list: GetAllArticlesResponseDto[] = [];
+      let count: number = 0;
       beforeAll(async () => {
         const readerMetadata = generateRandomNumber(1000, 9999, true);
 
@@ -77,7 +76,11 @@ describe('Article Entity', () => {
       });
 
       it('게시글 리스트에서도 일정 개수(length) 이상의 댓글 배열이 포함되어 있어야 한다.', async () => {
-        expect(list.at(0)['commentMetadata']).toBeInstanceOf(Array);
+        const article = list.at(0);
+        expect(article).toBeDefined();
+        if (article) {
+          expect(article['commentMetadata']).toBeInstanceOf(Array);
+        }
       });
     });
 
@@ -100,7 +103,9 @@ describe('Article Entity', () => {
         const myArticle = response.list.find((el) => el.writer.id === writer.id);
 
         expect(myArticle).toBeDefined();
-        expect(myArticle['isMine']).toBeTruthy();
+        if (myArticle) {
+          expect(myArticle['isMine']).toBeTruthy();
+        }
       });
     });
 
@@ -161,8 +166,8 @@ describe('Article Entity', () => {
       try {
         const checkIsSame = service['checkIsSamePosition'](positions);
         expect(checkIsSame).toBe('This is to be failed.');
-      } catch (err) {
-        expect(err.message).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
+      } catch (err: any) {
+        expect(err?.message).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
       }
     });
 
@@ -177,15 +182,97 @@ describe('Article Entity', () => {
       }
     });
 
-    it('should ', async () => {
+    it('이미지의 정렬 값이 동일한 경우가 존재하면 안 된다.', async () => {
       const positions = [undefined, undefined, undefined].map((position) => ({ position }));
       const answer = [0, 1, 2].map((position) => ({ position }));
-      try {
-        const checkIsSame = service['checkIsSamePosition'](positions);
-        expect(JSON.stringify(checkIsSame)).toBe(JSON.stringify(answer));
-      } catch (err) {
-        expect(err.message).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
+
+      const checkIsSame = service['checkIsSamePosition'](positions);
+      expect(JSON.stringify(checkIsSame)).toBe(JSON.stringify(answer));
+    });
+  });
+
+  describe('GET api/v1/articles', () => {
+    let writer: UserEntity;
+    let article: ArticleEntity;
+    let comments: CommentEntity[];
+
+    beforeAll(async () => {
+      const writerMetadata = generateRandomNumber(1000, 9999, true);
+      writer = await UserEntity.save({
+        name: writerMetadata,
+        nickname: writerMetadata,
+        password: writerMetadata,
+      });
+
+      article = await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata });
+      comments = await CommentEntity.save(
+        [1, 2, 3].map((el) => {
+          return CommentEntity.create({
+            articleId: article.id,
+            writerId: writer.id,
+            contents: `test${el}`,
+          });
+        }),
+      );
+    });
+
+    it('게시글을 조회할 때, 게시글에 댓글이 있는 경우 댓글이 조회되어야 한다.', async () => {
+      const detailArticle = await controller.getOneDetailArticle(writer.id, article.id);
+
+      expect(detailArticle.comments.length).toBeGreaterThan(0);
+      expect(detailArticle.comments.length).toBe(3);
+
+      const comment = detailArticle.comments.at(0);
+      expect(comment).toBeDefined();
+      if (comment) {
+        expect(comment.id).toBeDefined();
+        expect(comment.parentId).toBeDefined();
+        expect(comment.contents).toBeDefined();
+        expect(comment.xPosition).toBeDefined();
+        expect(comment.yPosition).toBeDefined();
       }
+    });
+  });
+
+  describe('GET api/v1/articles/:id/comments', () => {
+    let writer: UserEntity;
+    let article: ArticleEntity;
+    let comments: CommentEntity[];
+
+    beforeAll(async () => {
+      const writerMetadata = generateRandomNumber(1000, 9999, true);
+      writer = await UserEntity.save({
+        name: writerMetadata,
+        nickname: writerMetadata,
+        password: writerMetadata,
+      });
+
+      article = await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata });
+      comments = await CommentEntity.save(
+        [1, 2, 3].map((el) => {
+          return CommentEntity.create({
+            articleId: article.id,
+            writerId: writer.id,
+            contents: `test${el}`,
+          });
+        }),
+      );
+    });
+
+    it('특정 게시글의 댓글을 조회하는, 페이지네이션 함수가 제공된다.', async () => {
+      const comment1 = await controller.readComments(article.id, { page: 1, limit: 1 });
+      const comment2 = await controller.readComments(article.id, { page: 2, limit: 1 });
+      const comment3 = await controller.readComments(article.id, { page: 3, limit: 1 });
+
+      [comment1.data?.list.at(0), comment2.data?.list.at(0), comment3.data?.list.at(0)].forEach((comment, i) => {
+        expect(comment).toBeDefined();
+        if (comment) {
+          const searchedComment = comments.at(i);
+          if (searchedComment) {
+            expect(comment.id).toBe(searchedComment.id);
+          }
+        }
+      });
     });
   });
 });

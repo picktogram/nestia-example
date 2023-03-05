@@ -1,27 +1,27 @@
+import { UserBridgeType } from '../../types';
 import { Exclude, Expose } from 'class-transformer';
-import { UserBridgeType } from '@root/types';
 
 export class GetAllArticlesResponseDto {
   @Expose()
-  private readonly id: number;
+  private readonly id!: number;
   @Expose()
-  private readonly contents: string;
+  private readonly contents!: string;
   @Expose()
-  private readonly createdAt: Date;
+  private readonly createdAt!: Date;
   @Expose()
-  private readonly isMine: boolean;
+  private readonly isMine!: boolean;
 
   @Exclude()
-  private readonly writerId: number;
+  private readonly writerId!: number;
   @Exclude()
-  private readonly nickname: string;
+  private readonly nickname!: string;
   @Exclude()
-  private readonly profileImage: string;
+  private readonly profileImage?: string | null;
 
   @Exclude()
-  private readonly commentMetadata: { id: number; contents: string }[];
+  private readonly commentMetadata!: { id: number; contents: string }[];
   @Exclude()
-  private readonly followStatus: UserBridgeType.FollowStatus;
+  private readonly followStatus!: UserBridgeType.FollowStatus;
 
   @Expose()
   get writer() {

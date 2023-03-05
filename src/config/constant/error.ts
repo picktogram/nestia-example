@@ -1,5 +1,5 @@
 import { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
-import { NTuple } from '@root/types';
+import { NTuple } from '../../types';
 
 export const ERROR = {
   ALREADY_CREATED_EMAIL: { code: 4001, message: '이미 생성된 이메일입니다.' },
@@ -14,6 +14,7 @@ export const ERROR = {
   STILL_UNFOLLOW_USER: { code: 4010, message: '아직 팔로우한 적 없는 디자이너님에요!' },
   CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW: { code: 4011, message: '언팔로우할 디자이너님을 찾지 못했습니다.' },
   CANNOT_FIND_ONE_REPLY_COMMENT: { code: 4012, message: '답글을 달 댓글을 찾지 못했어요.' },
+  ALREADY_CREATED_PHONE_NUMBER: { code: 4013, message: '이미 생성된 전화번호입니다.' },
 } as const;
 
 export type KeyOfError = keyof typeof ERROR;
@@ -33,11 +34,11 @@ export const createErrorSchemas = <T extends string[]>(errors: NTuple<T['length'
   return {
     type: 'array',
     items: {
-      anyOf: [...errors].map((error) => {
+      anyOf: [...errors].map((error: ValueOfError) => {
         return {
           properties: {
-            code: { type: 'number', example: error['code'] },
-            message: { type: 'string', example: error['message'] },
+            code: { type: 'number', example: error.code },
+            message: { type: 'string', example: error.message },
           },
         };
       }),
