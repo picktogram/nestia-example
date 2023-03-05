@@ -1,5 +1,5 @@
 import { TypedBody, TypedRoute } from '@nestia/core';
-import { Controller, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBody } from '@nestjs/swagger';
 import { User } from '../common/decorators/user.decorator';
@@ -9,10 +9,18 @@ import { LoginUserDto } from '../models/dtos/login-user.dto';
 import { DecodedUserToken } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
 import { LocalGuard } from './guards/local.guard';
+import { Request, Response } from 'express';
+import { AuthService } from './auth.service';
+import { GoogleGuard } from './guards/google.guard';
+import { KaKaoGuard } from '../auth/guards/kakao.guard';
 
 @Controller('api/v1/auth')
 export class AuthController {
-  constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   /**
    * 230129 - Local 로그인을 위한 User 생성
@@ -54,5 +62,28 @@ export class AuthController {
   login(@User() user: DecodedUserToken, @TypedBody() body: LoginUserDto): ResponseForm<string> {
     const token = this.jwtService.sign({ ...user });
     return createResponseForm(token);
+  }
+
+  @TypedRoute.Get('google')
+  @UseGuards(GoogleGuard)
+  async googleAuth(@Req() req: Request): Promise<void> {
+    // redirect google login page
+  }
+
+  @TypedRoute.Get('google/callback')
+  @UseGuards(GoogleGuard)
+  async googleAuthCallback(@Req() req: Request) {
+    console.log('googleAuthCallback:');
+    // this.authService.findOrCreateGoogleUser(req.user);
+  }
+
+  @TypedRoute.Get('kakao')
+  @UseGuards(KaKaoGuard)
+  async kakaoAuth() { }
+
+  @TypedRoute.Get('kakao/callback')
+  @UseGuards(KaKaoGuard)
+  async kakaoAuthCallback(@Req() req: Request) {
+    console.log('kakaoAuthCallback',req);
   }
 }
