@@ -6,7 +6,10 @@ import { UsersService } from '../providers/users.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService, private readonly usersService: UsersService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly usersService: UsersService,
+  ) {}
 
   async validateUser(email: string, password: string): Promise<DecodedUserToken | null> {
     const user = await this.usersService.findOneByEmail(email);
@@ -20,8 +23,15 @@ export class AuthService {
     return null;
   }
 
-  userLogin(user: UserEntity) {
+  userLogin(user: DecodedUserToken) {
     const token = this.jwtService.sign({ ...user });
     return token;
+  }
+
+  async findOrCreateGoogleUser(user: DecodedUserToken): Promise<{ jwt: string }> {
+    const { id, nickname, email } = user;
+    const payload = { sub: id, name: nickname, email };
+    const jwt = this.jwtService.sign(payload);
+    return { jwt };
   }
 }
