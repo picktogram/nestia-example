@@ -31,7 +31,7 @@ export class ArticleEntity extends CommonCloumns {
    * event는 모임이나 행사 등, 약속을 공유할 수 있도록 달력 기능을 제공하는 게시글,
    * writing은 그 외 어떠한 글이든 포함되는 타입을 말한다.
    */
-  @Column()
+  @Column({ default: 'writing' })
   public type!: 'question' | 'draw' | 'event' | 'writing';
 
   /**

@@ -14,6 +14,8 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { BodyImageModule } from '../modules/body-images.module';
 import { CommentsModule } from '../modules/comments.module';
 import { NestiaController } from '../controllers/nestia.controller';
+import { GoogleStrategy } from './strategies/google.strategy';
+import {KakaoStrategy} from "../auth/strategies/kakao.strategy";
 
 @Module({
   imports: [
@@ -35,8 +37,8 @@ import { NestiaController } from '../controllers/nestia.controller';
     BodyImageModule,
     CommentsModule,
   ],
-  controllers: [AuthController, NestiaController],
-  providers: [AuthService, JwtStrategy, LocalStrategy],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy, LocalStrategy, GoogleStrategy, KakaoStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

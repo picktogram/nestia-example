@@ -1,6 +1,8 @@
 import { TypedBody, TypedRoute } from '@nestia/core';
-import { Controller } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
+import { JwtGuard } from '../auth/guards/jwt.guard';
 
+@UseGuards(JwtGuard)
 @Controller('api/v1/calendar')
 export class CalendarController {
   constructor() {}
