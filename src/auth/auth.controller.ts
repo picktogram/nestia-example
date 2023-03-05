@@ -1,17 +1,25 @@
-import { Controller, Post, UseGuards, Body } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, Get, Req, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiOperation, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '@root/common/decorators/user.decorator';
 import { CreateUserDto } from '@root/models/dtos/create-user.dto';
 import { LoginUserDto } from '@root/models/dtos/login-user.dto';
 import { UsersService } from '@root/providers/users.service';
 import { DecodedUserToken } from '@root/types';
+import { GoogleGuard } from './guards/google.guard';
 import { LocalGuard } from './guards/local.guard';
+import { Request, Response } from 'express';
+import { AuthService } from './auth.service';
 
 @ApiTags('Auth')
 @Controller('api/v1/auth')
 export class AuthController {
-  constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @ApiOperation({ summary: '230129 - Local 로그인을 위한 User 생성' })
   @ApiOkResponse({
@@ -57,5 +65,20 @@ export class AuthController {
   login(@User() user: DecodedUserToken): string {
     console.log('야호');
     return this.jwtService.sign({ ...user });
+  }
+
+  @Get('google')
+  @UseGuards(GoogleGuard)
+  async googleAuth(@Req() req): Promise<void> {
+    // redirect google login page
+  }
+
+  @Get('google/callback')
+  @UseGuards(GoogleGuard)
+  async googleAuthCallback(
+    @Req() req: Request,
+  ) {
+    console.log('googleAuthCallback:',req);
+    // this.authService.findOrCreateGoogleUser(req.user);
   }
 }

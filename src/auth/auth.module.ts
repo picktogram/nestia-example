@@ -13,6 +13,7 @@ import { AuthController } from './auth.controller';
 import { LocalStrategy } from './strategies/local.strategy';
 import { BodyImageModule } from '@root/modules/body-images.module';
 import { CommentsModule } from '@root/modules/comments.module';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 @Module({
   imports: [
@@ -35,7 +36,7 @@ import { CommentsModule } from '@root/modules/comments.module';
     CommentsModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, LocalStrategy],
+  providers: [AuthService, JwtStrategy, LocalStrategy, GoogleStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

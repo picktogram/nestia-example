@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class GoogleGuard extends PassportStrategy(Strategy) {
+export class GoogleStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly configService: ConfigService,
   ) {
@@ -18,6 +18,8 @@ export class GoogleGuard extends PassportStrategy(Strategy) {
 
   async validate(accessToken: string, refreshToken: string, profile: any, done: VerifyCallback): Promise<any> {
     const { name, emails } = profile;
+    // const user = await this.authService.findOrCreateGoogleUser(profile);
+    // done(null, user);
     const user = {
       email: emails[0].value,
       firstName: name.givenName,
