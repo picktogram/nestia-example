@@ -15,6 +15,7 @@ import { BodyImageModule } from '../modules/body-images.module';
 import { CommentsModule } from '../modules/comments.module';
 import { NestiaController } from '../controllers/nestia.controller';
 import { GoogleStrategy } from './strategies/google.strategy';
+import {KakaoStrategy} from "../auth/strategies/kakao.strategy";
 
 @Module({
   imports: [
@@ -37,7 +38,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
     CommentsModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, LocalStrategy, GoogleStrategy],
+  providers: [AuthService, JwtStrategy, LocalStrategy, GoogleStrategy, KakaoStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

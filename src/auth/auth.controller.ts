@@ -12,6 +12,7 @@ import { LocalGuard } from './guards/local.guard';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleGuard } from './guards/google.guard';
+import { KaKaoGuard } from '../auth/guards/kakao.guard';
 
 @Controller('api/v1/auth')
 export class AuthController {
@@ -63,18 +64,26 @@ export class AuthController {
     return createResponseForm(token);
   }
 
-  @Get('google')
+  @TypedRoute.Get('google')
   @UseGuards(GoogleGuard)
   async googleAuth(@Req() req: Request): Promise<void> {
     // redirect google login page
   }
 
-  @Get('google/callback')
+  @TypedRoute.Get('google/callback')
   @UseGuards(GoogleGuard)
-  async googleAuthCallback(
-    @Req() req: Request,
-  ) {
+  async googleAuthCallback(@Req() req: Request) {
     console.log('googleAuthCallback:');
     // this.authService.findOrCreateGoogleUser(req.user);
+  }
+
+  @TypedRoute.Get('kakao')
+  @UseGuards(KaKaoGuard)
+  async kakaoAuth() { }
+
+  @TypedRoute.Get('kakao/callback')
+  @UseGuards(KaKaoGuard)
+  async kakaoAuthCallback(@Req() req: Request) {
+    console.log('kakaoAuthCallback',req);
   }
 }
