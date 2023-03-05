@@ -65,7 +65,7 @@ export class UserEntity extends CommonCloumns {
    * 사용자의 성별로 true면 남자라고 가정한다.
    */
   @Column('boolean', { nullable: true, select: false })
-  public gender!: boolean;
+  public gender?: boolean | null;
 
   /**
    * 회원 가입 시 받는 값으로 수신 거부 가능

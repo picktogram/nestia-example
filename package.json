@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "postbuild": "npx nestia swagger",
+    "postbuild": "npx nestia swagger && npx nestia sdk",
     "docker-compose": "docker-compose up",
     "docker-compose:build": "docker-compose -f docker-compose.local.yml up --build",
     "docker:build": "docker build -t picktogram/server:latest ./",
@@ -21,7 +21,7 @@
     "pm2:reload": "npm run build && pm2 reload main",
     "test": "jest",
     "test:watch": "cross-env NODE_ENV=TEST jest --watch --detectOpenHandles",
-    "test:cov": "jest --coverage",
+    "test:cov": "cross-env NODE_ENV=TEST jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "schema:drop:local": "cross-env NODE_ENV=LOCAL ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:drop -d ./data-source.ts",
     "schema:sync:local": "cross-env NODE_ENV=LOCAL ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:sync -d ./data-source.ts",
@@ -29,7 +29,7 @@
     "schema:sync:test": "cross-env NODE_ENV=TEST ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:sync -d ./data-source.ts",
     "schema:drop:test": "cross-env NODE_ENV=TEST ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:drop -d ./data-source.ts",
     "prepare": "ts-patch install && ts-patch install && ts-patch install && ts-patch install && ts-patch install && ts-patch install && ts-patch install",
-    "sdk": "npx nestia sdk",
+    "sdk": "npx nestia sdk && npx tsc -p tsconfig.api.json",
     "swagger": "npx nestia swagger"
   },
   "dependencies": {

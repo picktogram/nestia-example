@@ -5,7 +5,6 @@ import { User } from '../common/decorators/user.decorator';
 import { UserId } from '../common/decorators/user-id.decorator';
 import { TypedParam, TypedRoute } from '@nestia/core';
 import { JwtGuard } from '../auth/guards/jwt.guard';
-import typia from 'typia';
 import { createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
 
 @UseGuards(JwtGuard)

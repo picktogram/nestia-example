@@ -1,9 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../app.module';
 import { INestApplication } from '@nestjs/common';
-import * as AuthApis from '../../../packages/api/lib/dist/api/functional/api/v1/auth';
-import typia from 'typia';
+import * as AuthApis from '../../api/functional/api/v1/auth';
 import { CreateUserDto } from '../../models/dtos/create-user.dto';
+import typia from 'typia';
+
+// import * as Api from '../../api/functional';
+// import { PaginationDto } from '../../types';
+
+// GET api/v1/articles
+// Api.api.v1.articles.getAllArticles({host: '127.0.0.1:3000'}, typia.random<PaginationDto>())
 
 describe('E2E article test', () => {
   const host = 'http://localhost:3000';
