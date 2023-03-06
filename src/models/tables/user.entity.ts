@@ -1,4 +1,5 @@
 import { Entity, Column, ManyToMany, JoinTable, OneToMany, AfterLoad } from 'typeorm';
+import typia from 'typia';
 import { CommonCloumns } from '../common/common-columns';
 import { ArticleEntity } from './article.entity';
 import { CommentEntity } from './comment.entity';
@@ -55,8 +56,6 @@ export class UserEntity extends CommonCloumns {
 
   /**
    * 사용자의 생일을 의미하는 값
-   *
-   * @pattern ^(19\d{2}|2\d{3})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$
    */
   @Column('timestamp with time zone', { nullable: true, select: false })
   public birth?: string | null;

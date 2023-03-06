@@ -30,7 +30,24 @@ export class AuthController {
    */
   @TypedRoute.Post('sign-up')
   async signUp(@TypedBody() createUserDto: CreateUserDto): Promise<ResponseForm<DecodedUserToken>> {
-    const { password, ...user } = await this.usersService.create(createUserDto);
+    if (typeof createUserDto.birth === 'string') {
+      if (
+        createUserDto.birth
+          .split('-')
+          .map(Number)
+          .every((el) => !Number.isNaN(el))
+      ) {
+        const date = new Date(createUserDto.birth);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        createUserDto.birth = `${year}-${month}-${day}`;
+      } else {
+        createUserDto.birth = null;
+      }
+    }
+
+    const { password, createdAt, updatedAt, deletedAt, birth, ...user } = await this.usersService.create(createUserDto);
     return createResponseForm(user);
   }
 

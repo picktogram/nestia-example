@@ -65,7 +65,8 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
         }
 
         console.error(slackMessageForm);
-        this.slackService.sendToServerErrorChannel(slackMessageForm);
+
+        // this.slackService.sendToServerErrorChannel(slackMessageForm);
       }
 
       response.status(status).json({
@@ -81,7 +82,8 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
     }
 
     if (exception instanceof Error) {
-      console.log('exception', exception.stack);
+      console.error('exception', exception.message);
+      console.error('exception', exception.stack);
 
       // TODO : 정리 필요
       response.status(400).json({

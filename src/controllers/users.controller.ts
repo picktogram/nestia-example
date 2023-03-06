@@ -3,7 +3,7 @@ import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
 import { User } from '../common/decorators/user.decorator';
 import { UserId } from '../common/decorators/user-id.decorator';
-import { TypedParam, TypedRoute } from '@nestia/core';
+import { TypedBody, TypedParam, TypedRoute } from '@nestia/core';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
 
@@ -49,7 +49,11 @@ export class UsersController {
    * @returns 성공 시 true를 반환한다.
    */
   @TypedRoute.Post(':id/follow')
-  async follow(@UserId() userId: number, @TypedParam('id', 'number') followeeId: number): Promise<ResponseForm<true>> {
+  async follow(
+    @UserId() userId: number,
+    @TypedParam('id', 'number') followeeId: number,
+    @TypedBody() body: Record<string, never>,
+  ): Promise<ResponseForm<true>> {
     const response = await this.usersService.follow(userId, followeeId);
     return createResponseForm(response);
   }

@@ -11,8 +11,8 @@ import typia from 'typia';
 // GET api/v1/articles
 // Api.api.v1.articles.getAllArticles({host: '127.0.0.1:3000'}, typia.random<PaginationDto>())
 
-describe('E2E article test', () => {
-  const host = 'http://localhost:3000';
+describe('E2E articles test', () => {
+  const host = 'http://localhost:4000';
   let app: INestApplication;
   let testingModule: TestingModule;
 
@@ -22,7 +22,7 @@ describe('E2E article test', () => {
     }).compile();
 
     app = testingModule.createNestApplication();
-    await (await app.init()).listen(3000);
+    await (await app.init()).listen(4000);
   });
 
   afterAll(async () => {

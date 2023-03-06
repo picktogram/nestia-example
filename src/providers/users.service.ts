@@ -14,7 +14,7 @@ export class UsersService {
     @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<CreateUserDto & { readonly id: number }> {
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const alreadyCreatedEmail = await this.usersRepository.findOne({
       where: { email: createUserDto.email },
     });
