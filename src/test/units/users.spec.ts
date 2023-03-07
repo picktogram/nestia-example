@@ -89,7 +89,7 @@ describe('User Entity', () => {
     });
 
     it('디자이너 좋아요 시 좋아요 성공 시 현재 관계 상태를 리턴한다.', async () => {
-      const response = await controller.follow(follower.id, followee.id, {});
+      const response = await controller.follow(follower.id, followee.id);
       const userBridge = await UserBridgeEntity.findOne({
         where: { firstUserId: follower.id, secondUserId: followee.id },
       });
@@ -105,8 +105,8 @@ describe('User Entity', () => {
 
     it('이미 좋아요를 누른 디자이너에게 좋아요 시 에러를 발생시킨다.', async () => {
       try {
-        await controller.follow(follower.id, followee.id, {});
-        await controller.follow(follower.id, followee.id, {});
+        await controller.follow(follower.id, followee.id);
+        await controller.follow(follower.id, followee.id);
 
         expect(1).toBe(2);
       } catch (err: any) {
@@ -116,7 +116,7 @@ describe('User Entity', () => {
 
     it('존재하지 않는 디자이너에 대해서는 좋아요를 할 수 없어야 한다.', async () => {
       try {
-        await controller.follow(follower.id, NON_EXIST, {});
+        await controller.follow(follower.id, NON_EXIST);
         expect(1).toBe(2);
       } catch (err: any) {
         expect(err.message).toBe('팔로우할 디자이너님을 찾지 못했습니다.');
@@ -125,8 +125,8 @@ describe('User Entity', () => {
 
     // NOTE : deprecated
     // it.skip('좋아요한 상대에게 좋아요를 받은 경우 userBridge의 상태 값이 맞팔(followUp)으로 변경된다.', async () => {
-    //   await controller.follow(follower.id, followee.id, {});
-    //   await controller.follow(followee.id, follower.id, {});
+    //   await controller.follow(follower.id, followee.id);
+    //   await controller.follow(followee.id, follower.id);
     //   const response = await UserBridgeEntity.findOne({
     //     where: { firstUserId: follower.id, secondUserId: followee.id },
     //   });

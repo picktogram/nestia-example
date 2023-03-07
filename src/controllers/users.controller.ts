@@ -49,11 +49,7 @@ export class UsersController {
    * @returns 성공 시 true를 반환한다.
    */
   @TypedRoute.Post(':id/follow')
-  async follow(
-    @UserId() userId: number,
-    @TypedParam('id', 'number') followeeId: number,
-    @TypedBody() body: Record<string, never>,
-  ): Promise<ResponseForm<true>> {
+  async follow(@UserId() userId: number, @TypedParam('id', 'number') followeeId: number): Promise<ResponseForm<true>> {
     const response = await this.usersService.follow(userId, followeeId);
     return createResponseForm(response);
   }

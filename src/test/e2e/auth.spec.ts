@@ -30,41 +30,41 @@ describe('E2E calendars test', () => {
 
   describe('POST api/auth/sign-up', () => {
     // it('로컬 회원가입에 대한 검증', async () => {
-    //   const disigner = typia.random<CreateUserDto>();
-    //   const response = await AuthApis.sign_up.signUp({ host }, disigner);
+    //   const designer = typia.random<CreateUserDto>();
+    //   const response = await AuthApis.sign_up.signUp({ host }, designer);
 
     //   expect(response.data).toBeDefined();
     // });
 
     describe('로컬 회원가입 시 성별에 대한 검증', () => {
       it('만약 성별이 남성(true)인 경우', async () => {
-        const disigner = typia.random<CreateUserDto>();
-        disigner.gender = true;
-        const response = await AuthApis.sign_up.signUp({ host }, disigner);
+        const designer = typia.random<CreateUserDto>();
+        designer.gender = true;
+        const response = await AuthApis.sign_up.signUp({ host }, designer);
 
         expect(response.data).toBeDefined();
       });
 
       it('만약 성별이 여성(false)인 경우', async () => {
-        const disigner = typia.random<CreateUserDto>();
-        disigner.gender = false;
-        const response = await AuthApis.sign_up.signUp({ host }, disigner);
+        const designer = typia.random<CreateUserDto>();
+        designer.gender = false;
+        const response = await AuthApis.sign_up.signUp({ host }, designer);
 
         expect(response.data).toBeDefined();
       });
 
       it('만약 성별이 정의되어 있지 않은 (undefined) 경우', async () => {
-        const disigner = typia.random<CreateUserDto>();
-        disigner.gender = undefined;
-        const response = await AuthApis.sign_up.signUp({ host }, disigner);
+        const designer = typia.random<CreateUserDto>();
+        designer.gender = undefined;
+        const response = await AuthApis.sign_up.signUp({ host }, designer);
 
         expect(response.data).toBeDefined();
       });
 
       it('만약 성별이 없는 (null) 경우', async () => {
-        const disigner = typia.random<CreateUserDto>();
-        disigner.gender = null;
-        const response = await AuthApis.sign_up.signUp({ host }, disigner);
+        const designer = typia.random<CreateUserDto>();
+        designer.gender = null;
+        const response = await AuthApis.sign_up.signUp({ host }, designer);
 
         expect(response.data).toBeDefined();
       });
@@ -72,25 +72,25 @@ describe('E2E calendars test', () => {
 
     describe('로컬 회원가입 시 birth의 타입에 대한 검증', () => {
       it('만약 "YYYY-MM-DD" 형태의 문자열인 경우', async () => {
-        const disigner = typia.random<CreateUserDto>();
-        disigner.birth = `2023-02-05`;
-        const response = await AuthApis.sign_up.signUp({ host }, disigner);
+        const designer = typia.random<CreateUserDto>();
+        designer.birth = `2023-02-05`;
+        const response = await AuthApis.sign_up.signUp({ host }, designer);
 
         expect(response.data).toBeDefined();
       });
 
       it('만약 null인 경우', async () => {
-        const disigner = typia.random<CreateUserDto>();
-        disigner.birth = null;
-        const response = await AuthApis.sign_up.signUp({ host }, disigner);
+        const designer = typia.random<CreateUserDto>();
+        designer.birth = null;
+        const response = await AuthApis.sign_up.signUp({ host }, designer);
 
         expect(response.data).toBeDefined();
       });
 
       it('만약 undefined인 경우', async () => {
-        const disigner = typia.random<CreateUserDto>();
-        disigner.birth = undefined;
-        const response = await AuthApis.sign_up.signUp({ host }, disigner);
+        const designer = typia.random<CreateUserDto>();
+        designer.birth = undefined;
+        const response = await AuthApis.sign_up.signUp({ host }, designer);
 
         expect(response.data).toBeDefined();
       });

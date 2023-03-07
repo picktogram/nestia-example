@@ -67,11 +67,28 @@ describe('E2E users test', () => {
           },
         },
         follower.data.id,
-        {},
       );
 
-      console.log(response);
       expect(response.data).toBe(true);
+    });
+  });
+
+  /**
+   * 알 수도 있는 사람을 조회하는 API
+   */
+  describe('GET api/v1/users/acquaintance', () => {
+    it('', async () => {
+      expect(1).toBe(2);
+    });
+  });
+
+  /**
+   * 유저의 평판 조회하기 API
+   * 가리키는 아이디가 내 id일 경우, 내 평판 조회하는 것과 동일하게 된다.
+   */
+  describe('GET api/v1/uesrs/:id/reputation', () => {
+    it('', async () => {
+      expect(1).toBe(2);
     });
   });
 });
