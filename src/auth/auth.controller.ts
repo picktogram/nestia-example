@@ -1,5 +1,5 @@
 import { TypedBody, TypedRoute } from '@nestia/core';
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBody } from '@nestjs/swagger';
 import { User } from '../common/decorators/user.decorator';
@@ -73,8 +73,9 @@ export class AuthController {
   @UseGuards(GoogleGuard)
   async googleAuthCallback(
     @Req() req: Request,
+    @Res() res: Response,
   ) {
     console.log('googleAuthCallback:');
-    // this.authService.findOrCreateGoogleUser(req.user);
+    return res.status(200).json(req.user);
   }
 }
