@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { CreatedAtColumn } from '../common/created-at.column';
 import { UserEntity } from './user.entity';
@@ -6,13 +5,15 @@ import { UserEntity } from './user.entity';
 @Entity({ name: 'user_bridge' })
 export class UserBridgeEntity extends CreatedAtColumn {
   /**
-   * 유저의 아이디
+   * 유저의 아이디(from)로, 팔로우를 건 사람을 의미한다.
+   * 맞팔의 경우 서로가 서로에 대해 [from, to], [to, from]으로 존재한다.
    */
   @PrimaryColumn()
   firstUserId!: number;
 
   /**
-   * 유저의 아이디
+   * 유저의 아이디(to)로, 팔로우를 당한 사람을 의미한다.
+   * 맞팔의 경우 서로가 서로에 대해 [from, to], [to, from]으로 존재한다.
    */
   @PrimaryColumn()
   secondUserId!: number;

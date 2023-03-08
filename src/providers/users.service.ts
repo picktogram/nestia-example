@@ -6,6 +6,9 @@ import { ERROR, ValueOfError } from '../config/constant/error';
 import { UsersRepository } from '../models/repositories/users.repository';
 import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
 import bcrypt from 'bcrypt';
+import { PaginationDto, UserType } from '../types';
+import { UserBridgeEntity } from '../models/tables/userBridge.entity';
+import { getOffset } from '../utils/getOffset';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +16,35 @@ export class UsersService {
     @InjectRepository(UsersRepository) private readonly usersRepository: UsersRepository,
     @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
   ) {}
+
+  async getAcquaintance(
+    userId: number,
+    { page, limit }: PaginationDto,
+  ): Promise<{ list: UserType.Profile[]; count: number }> {
+    const { skip, take } = getOffset({ page, limit });
+    const query = this.userBridgesRepository
+      .createQueryBuilder('ub')
+      .select(['u.id AS "id"', 'u.nickname AS "nickname"', 'u.profileImage AS "profileImage"'])
+      .innerJoin('ub.secondUser', 'u', 'u.id = :userId', { userId })
+      .where((qb) => {
+        // NOTE : 내가 팔로우를 당했음에도 상대를 팔로우하지 않은 경우를 추천한다.
+        const subQuery = qb
+          .subQuery()
+          .select('COUNT(*)')
+          .from(UserBridgeEntity, 'sub')
+          .where('sub.firstUserId = :userId', { userId })
+          .andWhere('sub.secondUserId = ub.firstUserId')
+          .getQuery();
+
+        return `${subQuery} = 0`;
+      })
+      .offset(skip)
+      .limit(take);
+
+    const [list, count]: [UserType.Profile[], number] = await Promise.all([query.getRawMany(), query.getCount()]);
+
+    return { list, count };
+  }
 
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const alreadyCreatedEmail = await this.usersRepository.findOne({

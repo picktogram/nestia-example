@@ -3,9 +3,10 @@ import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
 import { User } from '../common/decorators/user.decorator';
 import { UserId } from '../common/decorators/user-id.decorator';
-import { TypedBody, TypedParam, TypedRoute } from '@nestia/core';
+import { TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import { JwtGuard } from '../auth/guards/jwt.guard';
-import { createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
+import { createPaginationForm, createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
+import { PaginationDto, UserType } from '../types';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/users')
@@ -13,7 +14,24 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   /**
-   * MVP : 디자이너 프로필 조회 & 토큰에 담긴 값 Parsing
+   *  친구 추천 기능
+   *  유저가 자신의 친구일 수 있는 사람, 유명인 등을 조회하는 API로, 일종의 친구 추천 기능을 의미한다.
+   *
+   * @tag users
+   * @param userId 유저 아이디
+   * @returns
+   */
+  @TypedRoute.Get('acquaintance')
+  async getAcquaintance(
+    @UserId() userId: number,
+    @TypedQuery() paginationDto: PaginationDto,
+  ): Promise<UserType.getAcquaintanceResponse> {
+    const acquaintances = await this.usersService.getAcquaintance(userId, paginationDto);
+    return createPaginationForm(acquaintances, paginationDto);
+  }
+
+  /**
+   * 디자이너 프로필 조회 & 토큰에 담긴 값 Parsing
    *
    * @tag users
    * @param user

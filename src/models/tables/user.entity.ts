@@ -1,5 +1,4 @@
 import { Entity, Column, ManyToMany, JoinTable, OneToMany, AfterLoad } from 'typeorm';
-import typia from 'typia';
 import { CommonCloumns } from '../common/common-columns';
 import { ArticleEntity } from './article.entity';
 import { CommentEntity } from './comment.entity';

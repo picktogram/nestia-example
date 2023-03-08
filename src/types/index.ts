@@ -1,7 +1,8 @@
-import { ArticleEntity } from '../models/tables/article.entity';
-import { BodyImageEntity } from '../models/tables/bodyImage.entity';
-import { CommentEntity } from '../models/tables/comment.entity';
-import { UserEntity } from '../models/tables/user.entity';
+import { PaginationForm } from '../interceptors/transform.interceptor';
+import type { ArticleEntity } from '../models/tables/article.entity';
+import type { BodyImageEntity } from '../models/tables/bodyImage.entity';
+import type { CommentEntity } from '../models/tables/comment.entity';
+import type { UserEntity } from '../models/tables/user.entity';
 
 export interface NestiaTypeErrorObject {
   path: string;
@@ -14,23 +15,29 @@ export interface NestiaTypeErrorObject {
 export type Push<T extends any[], U> = [...T, U];
 export type NTuple<N extends number, T extends any[] = []> = T['length'] extends N ? T : NTuple<N, Push<T, any>>;
 
-export type ListType = {
+export interface ListType {
   data: any[];
   count: number;
-};
+}
 
-export type ListOutputValue = {
+export interface ListOutputValue {
   totalPage: number;
   totalResult: number;
   list: any[];
-};
+}
 
-export type ExtendedResponse<T> = {
+export interface ExtendedResponse<T> {
   result: boolean;
   code: number;
   // data: T;
   data: T extends ListType ? ListOutputValue : T;
-};
+}
+
+export declare namespace UserType {
+  interface Profile extends Pick<UserEntity, 'id' | 'nickname' | 'profileImage'> {}
+
+  interface getAcquaintanceResponse extends PaginationForm<{ list: Profile[]; count: number }> {}
+}
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export declare namespace ArticleType {
@@ -45,7 +52,7 @@ export declare namespace ArticleType {
 
   interface DetailArticle extends Pick<ArticleEntity, 'id' | 'contents'> {
     images?: Pick<BodyImageEntity, 'id' | 'position' | 'url' | 'depth'>[];
-    writer: Pick<UserEntity, 'id' | 'nickname' | 'profileImage'>;
+    writer: UserType.Profile;
     comments: Pick<CommentEntity, 'id' | 'parentId' | 'contents' | 'xPosition' | 'yPosition'>[];
   }
 }
