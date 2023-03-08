@@ -138,7 +138,7 @@ describe('E2E users test', () => {
       expect(response.data.list.length).toBe(1);
     });
 
-    it('역으로 나도 팔로우를 하여, 서로 맞팔 상태가 되었을 때 친구 목록에서 나오지 말아야 한다.', async () => {
+    it('역으로 나도 팔로우를 하여, 서로 맞팔 상태가 되었을 때 친구 추천 목록에서 나오지 말아야 한다.', async () => {
       // NOTE : 나를 팔로우할 대상을 생성
       const userData = typia.random<CreateUserDto>();
       const followee = await AuthApis.sign_up.signUp({ host }, userData);
