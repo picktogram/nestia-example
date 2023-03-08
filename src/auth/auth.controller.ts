@@ -64,12 +64,6 @@ export class AuthController {
     return createResponseForm(token);
   }
 
-  @TypedRoute.Get('google')
-  @UseGuards(GoogleGuard)
-  async googleAuth(@Req() req: Request): Promise<void> {
-    // redirect google login page
-  }
-
   @TypedRoute.Get('google/callback')
   @UseGuards(GoogleGuard)
   async googleAuthCallback(@Req() req: Request) {
@@ -77,13 +71,19 @@ export class AuthController {
     // this.authService.findOrCreateGoogleUser(req.user);
   }
 
-  @TypedRoute.Get('kakao')
-  @UseGuards(KaKaoGuard)
-  async kakaoAuth() { }
+  @TypedRoute.Get('google')
+  @UseGuards(GoogleGuard)
+  async googleAuth(@Req() req: Request): Promise<void> {
+    // redirect google login page
+  }
 
   @TypedRoute.Get('kakao/callback')
   @UseGuards(KaKaoGuard)
   async kakaoAuthCallback(@Req() req: Request) {
-    console.log('kakaoAuthCallback',req);
+    console.log('kakaoAuthCallback', req);
   }
+
+  @TypedRoute.Get('kakao')
+  @UseGuards(KaKaoGuard)
+  async kakaoAuth() {}
 }
