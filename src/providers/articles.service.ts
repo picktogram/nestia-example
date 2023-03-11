@@ -50,7 +50,13 @@ export class ArticlesService {
     return article;
   }
 
-  async read(userId: number, { page, limit }: PaginationDto): Promise<ArticleType.GetAllArticlesReponse> {
+  async read(
+    userId: number,
+    { page, limit }: PaginationDto,
+  ): Promise<{
+    list: GetAllArticlesResponseDto[];
+    count: number;
+  }> {
     const { skip, take } = getOffset({ page, limit });
 
     const query = this.articlesRepository

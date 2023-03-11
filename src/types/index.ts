@@ -2,6 +2,7 @@
 
 import { PaginationForm } from '../interceptors/transform.interceptor';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
+import { AlarmEntity } from '../models/tables/alarm.entity';
 import type { ArticleEntity } from '../models/tables/article.entity';
 import type { BodyImageEntity } from '../models/tables/bodyImage.entity';
 import type { CommentEntity } from '../models/tables/comment.entity';
@@ -34,6 +35,12 @@ export interface ExtendedResponse<T> {
   code: number;
   // data: T;
   data: T extends ListType ? ListOutputValue : T;
+}
+
+export declare namespace AlarmType {
+  interface Element extends Pick<AlarmEntity, 'id' | 'userId' | 'resourceName' | 'resourceId' | 'redirectLink'> {}
+
+  interface ReadResponseType extends PaginationForm<{ list: Element[]; count: number }> {}
 }
 
 export declare namespace UserType {
@@ -85,10 +92,11 @@ export declare namespace ArticleType {
     comments: Pick<CommentEntity, 'id' | 'parentId' | 'contents' | 'xPosition' | 'yPosition'>[];
   }
 
-  interface GetAllArticlesReponse {
-    list: GetAllArticlesResponseDto[];
-    count: number;
-  }
+  interface GetAllArticlesReponse
+    extends PaginationForm<{
+      list: GetAllArticlesResponseDto[];
+      count: number;
+    }> {}
 }
 
 export declare namespace CommentType {

@@ -1,5 +1,6 @@
 import { Entity, Column, ManyToMany, JoinTable, OneToMany, AfterLoad } from 'typeorm';
 import { CommonCloumns } from '../common/common-columns';
+import { AlarmEntity } from './alarm.entity';
 import { ArticleEntity } from './article.entity';
 import { CommentEntity } from './comment.entity';
 import { UserBridgeEntity } from './userBridge.entity';
@@ -106,6 +107,9 @@ export class UserEntity extends CommonCloumns {
 
   @OneToMany(() => CommentEntity, (c) => c.writer)
   comments!: CommentEntity[];
+
+  @OneToMany(() => AlarmEntity, (a) => a.user)
+  alarms!: AlarmEntity[];
 
   /**
    * methods

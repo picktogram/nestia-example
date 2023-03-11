@@ -15,7 +15,6 @@ import {
   PaginationForm,
   ResponseForm,
 } from '../interceptors/transform.interceptor';
-import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')
@@ -90,7 +89,7 @@ export class ArticlesController {
   public async getAllArticles(
     @UserId() userId: number,
     @TypedQuery() paginationDto: PaginationDto,
-  ): Promise<PaginationForm<ArticleType.GetAllArticlesReponse>> {
+  ): Promise<ArticleType.GetAllArticlesReponse> {
     const articlesToRead = await this.articlesService.read(userId, paginationDto);
     const response = createPaginationForm(articlesToRead, paginationDto);
     return response;

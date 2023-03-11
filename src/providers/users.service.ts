@@ -39,7 +39,6 @@ export class UsersService {
       .where('u.id = :designerId', { designerId })
       .getRawOne();
 
-    console.log(reputation);
     return { ...reputation, adopted: 0, likes: 0 } as UserType.Retuation;
   }
 

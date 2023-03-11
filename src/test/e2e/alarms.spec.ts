@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../app.module';
 import { INestApplication } from '@nestjs/common';
+import * as AlarmApis from '../../api/functional/api/v1/alarms';
+import * as AuthApis from '../../api/functional/api/v1/auth';
+import typia from 'typia';
+import { CreateUserDto } from '../../models/dtos/create-user.dto';
 
 describe('E2E alarms test', () => {
   const host = 'http://localhost:4000';
@@ -25,8 +29,26 @@ describe('E2E alarms test', () => {
    * 각 알림은 아이디 값과, 그 아이디가 어떤 리소스의 PK인지, 논리적인 값을 가져야 한다.
    */
   describe('GET api/v1/alarms', () => {
+    let token: string = '';
+    beforeAll(async () => {
+      const designer = typia.random<CreateUserDto>();
+      await AuthApis.sign_up.signUp({ host }, designer);
+      const response = await AuthApis.login({ host }, designer);
+      token = response.data;
+    });
+
     it('조회 결과 값은 페이지네이션 가능한 배열의 형태여야 한다.', async () => {
-      expect(1).toBe(2);
+      const readResponse = await AlarmApis.read(
+        {
+          host,
+          headers: {
+            authorization: token,
+          },
+        },
+        { page: 1, limit: 10 },
+      );
+
+      expect(readResponse.data.list).toBeInstanceOf(Array);
     });
 
     it('각 알람에는 논리적 ID 값이 있어야 한다.', async () => {
