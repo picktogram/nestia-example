@@ -5,6 +5,7 @@ import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-r
 import { AlarmEntity } from '../models/tables/alarm.entity';
 import type { ArticleEntity } from '../models/tables/article.entity';
 import type { BodyImageEntity } from '../models/tables/bodyImage.entity';
+import { CategoryEntity } from '../models/tables/category.entity';
 import type { CommentEntity } from '../models/tables/comment.entity';
 import type { UserEntity } from '../models/tables/user.entity';
 
@@ -74,6 +75,15 @@ export declare namespace UserType {
      */
     likes: number;
   }
+}
+
+export declare namespace CategoryType {
+  interface Element extends Pick<CategoryEntity, 'id' | 'name'> {}
+
+  /**
+   * 카테고리 수가 많아지기 전까지는 굳이 페이지네이션이 없어도 된다고 판단하였음.
+   */
+  interface FindAllResponse extends PaginationForm<{ list: Element[]; count: number }> {}
 }
 
 export declare namespace ArticleType {

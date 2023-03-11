@@ -2,14 +2,13 @@ import { TypedRoute } from '@nestia/core';
 import { BadRequestException, Controller, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBadRequestResponse, ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createErrorSchema, ERROR } from '../config/constant/error';
 import { CreateBodyImageMulterOptions } from '../config/multer-s3/multer-option';
 import { createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
 import { BodyImagesService } from '../providers/body-images.service';
 
-@ApiBearerAuth('Bearer')
 @UseGuards(JwtGuard)
 @Controller('api/v1/body-image')
 export class BodyImagesController {

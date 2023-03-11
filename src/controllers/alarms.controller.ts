@@ -1,13 +1,11 @@
 import { TypedQuery, TypedRoute } from '@nestia/core';
 import { UseGuards, Controller } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UserId } from '../common/decorators/user-id.decorator';
-import { createPaginationForm, ResponseForm } from '../interceptors/transform.interceptor';
+import { createPaginationForm } from '../interceptors/transform.interceptor';
 import { AlarmsService } from '../providers/alarms.service';
 import { AlarmType, PaginationDto } from '../types';
 
-@ApiBearerAuth('Bearer')
 @UseGuards(JwtGuard)
 @Controller('api/v1/alarms')
 export class AlarmsController {
