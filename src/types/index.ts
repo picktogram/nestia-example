@@ -116,6 +116,8 @@ export declare namespace CommentType {
       // | 'updatedAt'
       | 'parentId'
     > {}
+
+  interface ReadCommentsResponse extends PaginationForm<{ list: RootComment[]; count: number }> {}
 }
 
 export declare namespace UserBridgeType {

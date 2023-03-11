@@ -9,12 +9,7 @@ import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
 import { ArticleType, CommentType, PaginationDto } from '../types';
-import {
-  createPaginationForm,
-  createResponseForm,
-  PaginationForm,
-  ResponseForm,
-} from '../interceptors/transform.interceptor';
+import { createPaginationForm, createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')
@@ -32,7 +27,7 @@ export class ArticlesController {
   async readComments(
     @TypedParam('id', 'number') articleId: number,
     @TypedQuery() paginationDto: PaginationDto,
-  ): Promise<PaginationForm<{ list: CommentType.RootComment[]; count: number }>> {
+  ): Promise<CommentType.ReadCommentsResponse> {
     const comments = await this.commentsService.readByArticleId(articleId, paginationDto);
     return createPaginationForm(comments, paginationDto);
   }
