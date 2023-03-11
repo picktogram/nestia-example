@@ -33,11 +33,14 @@ export class ArticlesController {
   }
 
   /**
-   * 230130 - 게시글에 댓글 작성
+   * 게시글에 댓글을 작성한다.
+   * 게시글에 댓글을 작성하는 API로, 본인의 게시글이든 아니든 상관 없이 동일한 기능을 수행한다.
    * @tag articles
    * @param writerId 작성자의 아이디
    * @param articleId 게시글의 아이디
    * @param createCommentDto 작성하고자 하는 댓글의 정보
+   * @throw 400 댓글을 작성할 게시글을 찾지 못했습니다.
+   * @throw 400 신고가 접수된 게시글이라 댓글 작성이 불가능합니다.
    * @returns 방금 작성된 댓글
    */
   @ApiBadRequestResponse({
@@ -54,7 +57,8 @@ export class ArticlesController {
   }
 
   /**
-   * 230129 - 게시글 조회 (incompleted)
+   * 게시글 조회
+   * 본문
    * @tag articles
    * @param userId 작성자의 아이디
    * @param articleId 조회하고자 하는 게시글의 id 값
@@ -74,7 +78,8 @@ export class ArticlesController {
   }
 
   /**
-   * 230129 - 게시글 리스트 조회 (incompleted)
+   * 게시글 리스트 조회
+   * 본문
    * @tag articles
    * @param userId 조회를 하는 유저의 아이디
    * @param paginationDto 페이지의 정보

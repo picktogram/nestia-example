@@ -18,6 +18,7 @@ export class CategoriesController {
    * 점점 늘려가는 식으로 구현된다.
    * 단, 중복이 발생해서는 안 된다.
    *
+   * @tag categories
    * @param param0 검색어
    */
   @TypedRoute.Get()

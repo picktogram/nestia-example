@@ -33,7 +33,7 @@
     "swagger": "npx nestia swagger"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.288.0",
+    "@aws-sdk/client-s3": "^3.289.0",
     "@nestia/core": "^1.0.16",
     "@nestia/fetcher": "^1.0.1",
     "@nestjs/common": "^9.3.9",
@@ -47,7 +47,7 @@
     "@nestjs/throttler": "^4.0.0",
     "@nestjs/typeorm": "^9.0.1",
     "@types/passport-google-oauth20": "^2.0.11",
-    "aws-sdk": "^2.1332.0",
+    "aws-sdk": "^2.1333.0",
     "axios": "^1.3.4",
     "bcrypt": "^5.1.0",
     "cache-manager": "^5.1.7",
@@ -67,10 +67,10 @@
     "rxjs": "^7.8.0",
     "swagger-ui-express": "^4.6.2",
     "typeorm": "^0.3.12",
-    "typia": "^3.6.6"
+    "typia": "^3.6.7"
   },
   "devDependencies": {
-    "@nestia/sdk": "^1.0.14",
+    "@nestia/sdk": "^1.0.15",
     "@nestjs/cli": "^9.2.0",
     "@nestjs/schematics": "^9.0.4",
     "@nestjs/testing": "^9.3.9",
@@ -85,7 +85,7 @@
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
-    "eslint": "^8.35.0",
+    "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.7.0",
     "eslint-plugin-prettier": "^4.2.1",
     "inquirer": "^9.1.4",
