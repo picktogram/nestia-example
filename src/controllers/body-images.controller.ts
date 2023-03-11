@@ -1,4 +1,5 @@
-import { BadRequestException, Controller, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { TypedRoute } from '@nestia/core';
+import { BadRequestException, Controller, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBadRequestResponse, ApiBody, ApiConsumes } from '@nestjs/swagger';
@@ -40,7 +41,7 @@ export class BodyImagesController {
       },
     },
   })
-  @Post()
+  @TypedRoute.Post()
   async upload(@UploadedFiles() files: Express.MulterS3.File[]): Promise<ResponseForm<string[]>> {
     if (!files?.length) {
       throw new BadRequestException(ERROR.SELECT_MORE_THAN_ONE_BODY_IMAGE);

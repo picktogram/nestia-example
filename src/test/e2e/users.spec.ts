@@ -215,6 +215,6 @@ describe('E2E users test', () => {
       expect(myReputation.data).toBeDefined();
     });
 
-    it.todo('조회한 유저가 자기 자신일 경우에는 그걸 의미하는 값을 전달해야 한다.', async () => {});
+    it.todo('조회한 유저가 자기 자신일 경우에는 그걸 의미하는 값을 전달해야 한다.');
   });
 });

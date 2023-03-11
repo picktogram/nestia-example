@@ -47,6 +47,7 @@ export class UsersController {
    *
    * 유저의 상세 페이지에서 호출되기도 하며, 또한 홈 페이지에서 자기 평판을 조회하기도 한다.
    *
+   * @tag users
    * @param userId 유저의 아이디
    * @param designerId 조회하고자 하는 유저의 아이디
    */

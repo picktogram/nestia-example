@@ -29,17 +29,18 @@ export class UsersService {
           .from(ArticleEntity, 'a')
           .where('a.writerId = u.id')
           .andWhere('a.type = :type', { type: 'question' });
-      }, 'article')
+      }, 'question')
       .addSelect((qb) => {
         return qb.select('COUNT(*)::int4').from(CommentEntity, 'c').where('c.writerId = u.id');
       }, 'answer')
       .addSelect((qb) => {
         return qb.select('COUNT(*)::int4').from(ArticleEntity, 'a').where('a.writerId = u.id');
-      }, 'article')
+      }, 'writing')
       .where('u.id = :designerId', { designerId })
       .getRawOne();
 
-    return { ...reputation, adopted: 0, like: 0 } as UserType.Retuation;
+    console.log(reputation);
+    return { ...reputation, adopted: 0, likes: 0 } as UserType.Retuation;
   }
 
   async getAcquaintance(
