@@ -1,14 +1,9 @@
-import 'source-map-support/register';
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../app.module';
 import { INestApplication } from '@nestjs/common';
 import * as AuthApis from '../../api/functional/api/v1/auth';
-
-import * as Apis from '../../api/functional';
-
-import typia from 'typia';
 import { CreateUserDto } from '../../models/dtos/create-user.dto';
+import typia from 'typia';
 
 describe('E2E calendars test', () => {
   const host = 'http://localhost:4000';

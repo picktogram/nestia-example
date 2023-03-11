@@ -90,7 +90,7 @@ export class ArticlesController {
   public async getAllArticles(
     @UserId() userId: number,
     @TypedQuery() paginationDto: PaginationDto,
-  ): Promise<PaginationForm<{ list: GetAllArticlesResponseDto[]; count: number }>> {
+  ): Promise<PaginationForm<ArticleType.GetAllArticlesReponse>> {
     const articlesToRead = await this.articlesService.read(userId, paginationDto);
     const response = createPaginationForm(articlesToRead, paginationDto);
     return response;

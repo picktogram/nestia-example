@@ -190,8 +190,31 @@ describe('E2E users test', () => {
    * 가리키는 아이디가 내 id일 경우, 내 평판 조회하는 것과 동일하게 된다.
    */
   describe('GET api/v1/uesrs/:id/reputation', () => {
-    it('', async () => {
-      expect(1).toBe(2);
+    let token: string = '';
+    let decodedToken: DecodedUserToken;
+    beforeEach(async () => {
+      const designer = typia.random<CreateUserDto>();
+      const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      decodedToken = signUpResponse.data;
+
+      const response = await AuthApis.login({ host }, designer);
+      token = response.data;
     });
+
+    it('유저의 평판 조회에 성공한다.', async () => {
+      const myReputation = await UserApis.reputation.checkReputation(
+        {
+          host,
+          headers: {
+            authorization: token,
+          },
+        },
+        decodedToken.id,
+      );
+
+      expect(myReputation.data).toBeDefined();
+    });
+
+    it.todo('조회한 유저가 자기 자신일 경우에는 그걸 의미하는 값을 전달해야 한다.', async () => {});
   });
 });

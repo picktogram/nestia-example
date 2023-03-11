@@ -1,4 +1,4 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, Param, UseGuards } from '@nestjs/common';
 import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
 import { User } from '../common/decorators/user.decorator';
@@ -40,6 +40,23 @@ export class UsersController {
   @TypedRoute.Get('profile')
   async getProfile(@User() user: UserEntity): Promise<ResponseForm<DecodedUserToken>> {
     return createResponseForm(user);
+  }
+
+  /**
+   * 유저의 평판을 조회하는 API
+   *
+   * 유저의 상세 페이지에서 호출되기도 하며, 또한 홈 페이지에서 자기 평판을 조회하기도 한다.
+   *
+   * @param userId 유저의 아이디
+   * @param designerId 조회하고자 하는 유저의 아이디
+   */
+  @TypedRoute.Get(':id/reputation')
+  async checkReputation(
+    @UserId() userId: number,
+    @TypedParam('id', 'number') designerId: number,
+  ): Promise<ResponseForm<UserType.Retuation>> {
+    const response = await this.usersService.checkReputation(designerId);
+    return createResponseForm(response);
   }
 
   /**

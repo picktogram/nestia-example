@@ -1,6 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../app.module';
 import { INestApplication } from '@nestjs/common';
+import * as ArticleApis from '../../api/functional/api/v1/articles';
+import * as AuthApis from '../../api/functional/api/v1/auth';
+import typia from 'typia';
+import { CreateUserDto } from '../../models/dtos/create-user.dto';
+import { CreateArticleDto } from '../../models/dtos/create-article.dto';
 
 describe('E2E articles test', () => {
   const host = 'http://localhost:4000';
@@ -21,8 +26,26 @@ describe('E2E articles test', () => {
   });
 
   describe('POST api/v1/articles', () => {
-    it('', async () => {
-      expect(1).toBe(2);
+    let token: string = '';
+    beforeAll(async () => {
+      const designer = typia.random<CreateUserDto>();
+      await AuthApis.sign_up.signUp({ host }, designer);
+      const response = await AuthApis.login({ host }, designer);
+      token = response.data;
+    });
+
+    it('게시글이 생성되는 것을 확인한다.', async () => {
+      const writeArticleResponse = await ArticleApis.writeArticle(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        typia.random<CreateArticleDto>(),
+      );
+
+      expect(writeArticleResponse.data).toBeDefined();
     });
   });
 

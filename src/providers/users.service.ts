@@ -9,6 +9,8 @@ import bcrypt from 'bcrypt';
 import { PaginationDto, UserType } from '../types';
 import { UserBridgeEntity } from '../models/tables/userBridge.entity';
 import { getOffset } from '../utils/getOffset';
+import { ArticleEntity } from '../models/tables/article.entity';
+import { CommentEntity } from '../models/tables/comment.entity';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +18,29 @@ export class UsersService {
     @InjectRepository(UsersRepository) private readonly usersRepository: UsersRepository,
     @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
   ) {}
+
+  async checkReputation(designerId: number): Promise<UserType.Retuation> {
+    const reputation = await this.usersRepository
+      .createQueryBuilder('u')
+      .select('u.id AS "id"')
+      .addSelect((qb) => {
+        return qb
+          .select('COUNT(*)::int4')
+          .from(ArticleEntity, 'a')
+          .where('a.writerId = u.id')
+          .andWhere('a.type = :type', { type: 'question' });
+      }, 'article')
+      .addSelect((qb) => {
+        return qb.select('COUNT(*)::int4').from(CommentEntity, 'c').where('c.writerId = u.id');
+      }, 'answer')
+      .addSelect((qb) => {
+        return qb.select('COUNT(*)::int4').from(ArticleEntity, 'a').where('a.writerId = u.id');
+      }, 'article')
+      .where('u.id = :designerId', { designerId })
+      .getRawOne();
+
+    return { ...reputation, adopted: 0, like: 0 } as UserType.Retuation;
+  }
 
   async getAcquaintance(
     userId: number,

@@ -33,8 +33,8 @@
     "swagger": "npx nestia swagger"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.282.0",
-    "@nestia/core": "^1.0.15",
+    "@aws-sdk/client-s3": "^3.288.0",
+    "@nestia/core": "^1.0.16",
     "@nestia/fetcher": "^1.0.1",
     "@nestjs/common": "^9.3.9",
     "@nestjs/config": "^2.3.1",
@@ -47,7 +47,7 @@
     "@nestjs/throttler": "^4.0.0",
     "@nestjs/typeorm": "^9.0.1",
     "@types/passport-google-oauth20": "^2.0.11",
-    "aws-sdk": "^2.1329.0",
+    "aws-sdk": "^2.1332.0",
     "axios": "^1.3.4",
     "bcrypt": "^5.1.0",
     "cache-manager": "^5.1.7",
@@ -63,14 +63,14 @@
     "passport-local": "^1.0.0",
     "pg": "^8.10.0",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^4.3.1",
+    "rimraf": "^4.4.0",
     "rxjs": "^7.8.0",
     "swagger-ui-express": "^4.6.2",
     "typeorm": "^0.3.12",
-    "typia": "^3.6.4"
+    "typia": "^3.6.6"
   },
   "devDependencies": {
-    "@nestia/sdk": "^1.0.12",
+    "@nestia/sdk": "^1.0.14",
     "@nestjs/cli": "^9.2.0",
     "@nestjs/schematics": "^9.0.4",
     "@nestjs/testing": "^9.3.9",
@@ -78,7 +78,7 @@
     "@types/express": "^4.17.17",
     "@types/jest": "^29.4.0",
     "@types/multer-s3": "^3.0.0",
-    "@types/node": "^18.14.6",
+    "@types/node": "^18.15.0",
     "@types/passport-jwt": "^3.0.8",
     "@types/passport-kakao": "^1.0.0",
     "@types/passport-local": "^1.0.35",
