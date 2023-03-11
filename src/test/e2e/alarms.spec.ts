@@ -51,15 +51,6 @@ describe('E2E alarms test', () => {
       expect(readResponse.data.list).toBeInstanceOf(Array);
     });
 
-    it('각 알람에는 논리적 ID 값이 있어야 한다.', async () => {
-      /**
-       * list.at(0).logicalId === 'article-1'
-       *
-       * article 리소스의 1번 글이라는 의미
-       */
-
-      const list = [] as any;
-      expect(list.at(0).logicalId).toBeDefined();
-    });
+    it.todo('각 알람에는 논리적 ID 값이 있어야 한다.');
   });
 });
