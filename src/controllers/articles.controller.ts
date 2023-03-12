@@ -17,7 +17,22 @@ export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService, private readonly commentsService: CommentsService) {}
 
   /**
-   * 230223 - 게시글의 댓글을 최신 순으로 조회한다. (페이지네이션 형태로 변경할 예정)
+   * @summary 230312 - 댓글이 달리지 않는 게시글 리스트를 조회한다.
+   * @param paginationDto 페이지 정보
+   * @returns 답변이 없는 글들의 리스트
+   */
+  @TypedRoute.Get('no-reply')
+  async getAllWithNoReply(
+    @UserId() userId: number,
+    @TypedQuery() paginationDto: PaginationDto,
+  ): Promise<ArticleType.GetAllArticlesReponse> {
+    const articlesToRead = await this.articlesService.read(userId, paginationDto, { isNoReply: true });
+    const response = createPaginationForm(articlesToRead, paginationDto);
+    return response;
+  }
+
+  /**
+   * @summary 230223 - 게시글의 댓글을 최신 순으로 조회한다. (페이지네이션 형태로 변경할 예정)
    * @tag articles
    * @param articleId 댓글을 조회하고자 하는 게시글의 id
    * @param paginationDto 페이지 정보
@@ -90,7 +105,7 @@ export class ArticlesController {
     @UserId() userId: number,
     @TypedQuery() paginationDto: PaginationDto,
   ): Promise<ArticleType.GetAllArticlesReponse> {
-    const articlesToRead = await this.articlesService.read(userId, paginationDto);
+    const articlesToRead = await this.articlesService.read(userId, paginationDto, {});
     const response = createPaginationForm(articlesToRead, paginationDto);
     return response;
   }

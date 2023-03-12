@@ -53,6 +53,7 @@ export class ArticlesService {
   async read(
     userId: number,
     { page, limit }: PaginationDto,
+    { isNoReply }: { isNoReply?: boolean },
   ): Promise<{
     list: GetAllArticlesResponseDto[];
     count: number;
@@ -64,9 +65,25 @@ export class ArticlesService {
       .select(['a.id AS "id"', 'a.contents AS "contents"', 'a.createdAt AS "createdAt"'])
       .addSelect(['w.id AS "writerId"', 'w.nickname AS "nickname"', 'w.profileImage AS "profileImage"'])
       .leftJoin('a.writer', 'w')
+      .where('1=1')
       .orderBy('a.createdAt', 'DESC')
       .offset(skip)
       .limit(take);
+
+    if (isNoReply === true) {
+      query
+        .andWhere((qb) => {
+          const subQuery = qb
+            .subQuery()
+            .select('COUNT(*)')
+            .from(CommentEntity, 'c')
+            .where('c.articleId = a.id')
+            .getQuery();
+
+          return `${subQuery} = 0`;
+        })
+        .andWhere('a.type = :type', { type: 'question' });
+    }
 
     const [list, count]: [ArticleType.ReadArticleResponse[], number] = await Promise.all([
       query.getRawMany(),

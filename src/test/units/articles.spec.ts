@@ -56,7 +56,7 @@ describe('Article Entity', () => {
           password: readerMetadata,
         });
 
-        const response = await service.read(reader.id, { page: 1, limit: 10 });
+        const response = await service.read(reader.id, { page: 1, limit: 10 }, {});
         list = response.list;
         count = response.count;
       });
@@ -99,7 +99,7 @@ describe('Article Entity', () => {
       });
 
       it('본인이 게시글의 작성자인 경우에는 본인인 줄 알 수 있게 표기가 되어야 한다.', async () => {
-        const response = await service.read(writer.id, { page: 1, limit: 10 });
+        const response = await service.read(writer.id, { page: 1, limit: 10 }, {});
         const myArticle = response.list.find((el) => el.writer.id === writer.id);
 
         expect(myArticle).toBeDefined();
@@ -139,7 +139,7 @@ describe('Article Entity', () => {
           }),
         );
 
-        const response = await service.read(writer.id, { page: 1, limit: 100 });
+        const response = await service.read(writer.id, { page: 1, limit: 100 }, {});
         list = response.list;
       });
 

@@ -49,7 +49,7 @@ describe('E2E articles test', () => {
     });
   });
 
-  describe.only('GET api/v1/articles', () => {
+  describe('GET api/v1/articles', () => {
     let token: string = '';
     beforeAll(async () => {
       const designer = typia.random<CreateUserDto>();
@@ -69,17 +69,36 @@ describe('E2E articles test', () => {
         { page: 1, limit: 10 },
       );
 
-      console.log(response.data);
       expect(response.data.list).toBeInstanceOf(Array);
     });
+
+    it.todo('각 게시글 타입 별 프로퍼티에 대한 검증 필요');
   });
 
   /**
    * 답변을 기다리는 질문
    */
   describe('GET api/v1/articles/no-reply', () => {
-    it('', async () => {
-      expect(1).toBe(2);
+    let token: string = '';
+    beforeAll(async () => {
+      const designer = typia.random<CreateUserDto>();
+      await AuthApis.sign_up.signUp({ host }, designer);
+      const response = await AuthApis.login({ host }, designer);
+      token = response.data;
+    });
+
+    it('질문 게시글 조회', async () => {
+      const getAllWithNoReplyResponse = await ArticleApis.no_reply.getAllWithNoReply(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        { page: 1, limit: 10 },
+      );
+
+      expect(getAllWithNoReplyResponse.data.list).toBeInstanceOf(Array);
     });
   });
 
