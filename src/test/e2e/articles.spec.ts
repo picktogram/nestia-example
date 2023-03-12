@@ -49,9 +49,28 @@ describe('E2E articles test', () => {
     });
   });
 
-  describe('GET api/v1/articles', () => {
-    it('', async () => {
-      expect(1).toBe(2);
+  describe.only('GET api/v1/articles', () => {
+    let token: string = '';
+    beforeAll(async () => {
+      const designer = typia.random<CreateUserDto>();
+      await AuthApis.sign_up.signUp({ host }, designer);
+      const response = await AuthApis.login({ host }, designer);
+      token = response.data;
+    });
+
+    it('게시글 조회 테스트', async () => {
+      const response = await ArticleApis.getAllArticles(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        { page: 1, limit: 10 },
+      );
+
+      console.log(response.data);
+      expect(response.data.list).toBeInstanceOf(Array);
     });
   });
 
