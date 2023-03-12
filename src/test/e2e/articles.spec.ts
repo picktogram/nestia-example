@@ -6,7 +6,6 @@ import * as AuthApis from '../../api/functional/api/v1/auth';
 import typia from 'typia';
 import { CreateUserDto } from '../../models/dtos/create-user.dto';
 import { CreateArticleDto } from '../../models/dtos/create-article.dto';
-import { ArticleEntity } from '../../models/tables/article.entity';
 import { CreateCommentDto } from '../../models/dtos/create-comment.dto';
 import { CommentEntity } from '../../models/tables/comment.entity';
 import { DecodedUserToken } from '../../models/tables/user.entity';

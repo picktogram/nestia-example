@@ -24,13 +24,6 @@ describe('E2E calendars test', () => {
   });
 
   describe('POST api/auth/sign-up', () => {
-    // it('로컬 회원가입에 대한 검증', async () => {
-    //   const designer = typia.random<CreateUserDto>();
-    //   const response = await AuthApis.sign_up.signUp({ host }, designer);
-
-    //   expect(response.data).toBeDefined();
-    // });
-
     describe('로컬 회원가입 시 성별에 대한 검증', () => {
       it('만약 성별이 남성(true)인 경우', async () => {
         const designer = typia.random<CreateUserDto>();
