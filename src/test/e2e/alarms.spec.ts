@@ -51,6 +51,8 @@ describe('E2E alarms test', () => {
       expect(readResponse.data.list).toBeInstanceOf(Array);
     });
 
-    it.todo('각 알람에는 논리적 ID 값이 있어야 한다.');
+    it.todo('각 알람에는 논리적 ID (logicalId) 값이 있읋 수 있다.');
+    it.todo('각 알림의 논리적 ID가 있는 경우에는 그 아이디를 토대로 리다이렉션이 가능하다.');
+    it.todo('외부 링크 등 절대 경로로 저장되는 리다이렉션 링크를 우리 측 redirectUrl로 확인 가능하다.');
   });
 });
