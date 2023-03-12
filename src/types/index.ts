@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
 import { PaginationForm } from '../interceptors/transform.interceptor';
+import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
 import { AlarmEntity } from '../models/tables/alarm.entity';
 import type { ArticleEntity } from '../models/tables/article.entity';
@@ -98,6 +99,8 @@ export declare namespace ArticleType {
     nickname: string;
     profileImage: string;
   }
+
+  interface UpdateArticleDto extends Omit<Partial<CreateArticleDto>, 'images'> {}
 
   interface DetailArticle extends Pick<ArticleEntity, 'id' | 'contents'> {
     images?: Pick<BodyImageEntity, 'id' | 'position' | 'url' | 'depth'>[];

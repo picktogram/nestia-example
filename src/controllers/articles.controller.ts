@@ -1,5 +1,5 @@
 import { TypedBody, TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
-import { Controller, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UserId } from '../common/decorators/user-id.decorator';
@@ -23,7 +23,7 @@ export class ArticlesController {
    * @returns 답변이 없는 글들의 리스트
    */
   @TypedRoute.Get('no-reply')
-  async getAllWithNoReply(
+  public async getAllWithNoReply(
     @UserId() userId: number,
     @TypedQuery() paginationDto: PaginationDto,
   ): Promise<ArticleType.GetAllArticlesReponse> {
@@ -39,7 +39,8 @@ export class ArticlesController {
    * @param articleId 신고할 대상인 게시글의 아이디
    * @returns 성공 시 true를 데이터로 반환
    */
-  async report(
+  @TypedRoute.Post(':id/reports')
+  public async report(
     @UserId() userId: number,
     @TypedParam('id', 'number') articleId: number,
     @TypedBody() { reason }: ArticleType.ReportReason,
@@ -57,7 +58,7 @@ export class ArticlesController {
    * @returns 댓글의 리스트
    */
   @TypedRoute.Get(':id/comments')
-  async readComments(
+  public async readComments(
     @TypedParam('id', 'number') articleId: number,
     @TypedQuery() paginationDto: PaginationDto,
   ): Promise<CommentType.ReadCommentsResponse> {
@@ -87,6 +88,28 @@ export class ArticlesController {
   ): Promise<ResponseForm<CommentType.CreateResponse>> {
     const comment = await this.commentsService.write(writerId, articleId, createCommentDto);
     return createResponseForm(comment);
+  }
+
+  /**
+   * @summary 게시글 수정으로 작성자만이 가능하다.
+   * @tag articles
+   * @param writerId 수정할 사람의 아이디로, 반드시 게시글 작성자의 아이디와 일치해야 한다.
+   * @param articleId 수정할 게시글의 아이디
+   * @param updateArticleDto 수정 후에 반영될 데이터
+   */
+  @TypedRoute.Put(':id')
+  public async modify(
+    @UserId() writerId: number,
+    @TypedParam('id', 'number') articleId: number,
+    @TypedBody() updateArticleDto: ArticleType.UpdateArticleDto,
+  ) {
+    const articleToUpdate = await this.articlesService.getOneDetailArticle(writerId, articleId);
+    if (writerId !== articleToUpdate.writer.id) {
+      throw new BadRequestException(ERROR.IS_NOT_WRITER_OF_THIS_ARTICLE);
+    }
+
+    await this.articlesService.modify(articleId, updateArticleDto);
+    return createResponseForm(true);
   }
 
   /**

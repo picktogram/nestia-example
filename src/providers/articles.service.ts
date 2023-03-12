@@ -25,6 +25,10 @@ export class ArticlesService {
     private readonly dataSource: DataSource,
   ) {}
 
+  async modify(articleId: number, updateArticleDto: ArticleType.UpdateArticleDto) {
+    await this.articlesRepository.update({ id: articleId }, updateArticleDto);
+  }
+
   async report(userId: number, articleId: number, reason?: string) {
     const report = await this.reportArticlesRepository.findOneBy({ userId, articleId });
     if (!report) {

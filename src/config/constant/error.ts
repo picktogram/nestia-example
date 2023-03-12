@@ -16,6 +16,7 @@ export const ERROR = {
   CANNOT_FIND_ONE_REPLY_COMMENT: { code: 4012, message: '답글을 달 댓글을 찾지 못했어요.' },
   ALREADY_CREATED_PHONE_NUMBER: { code: 4013, message: '이미 생성된 전화번호입니다.' },
   ARLEADY_REPORTED_ARTICLE: { code: 4014, message: '이미 신고한 게시글입니다.' },
+  IS_NOT_WRITER_OF_THIS_ARTICLE: { code: 4015, message: '이 게시글의 작성자만이 수정할 수 있습니다.' },
 } as const;
 
 export type KeyOfError = keyof typeof ERROR;
