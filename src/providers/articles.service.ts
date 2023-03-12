@@ -13,17 +13,39 @@ import { getOffset } from '../utils/getOffset';
 import { DataSource, In } from 'typeorm';
 import { CommentEntity } from '../models/tables/comment.entity';
 import { ReportArticlesRepository } from '../models/repositories/report-articles.repository';
+import { UserLikeArticlesRepository } from '../models/repositories/user-like-articles.repository';
 
 @Injectable()
 export class ArticlesService {
   constructor(
-    @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
-    @InjectRepository(CommentsRepository) private readonly commentsRepository: CommentsRepository,
-    @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
-    @InjectRepository(ReportArticlesRepository) private readonly reportArticlesRepository: ReportArticlesRepository,
+    @InjectRepository(ArticlesRepository)
+    private readonly articlesRepository: ArticlesRepository,
+    @InjectRepository(CommentsRepository)
+    private readonly commentsRepository: CommentsRepository,
+    @InjectRepository(UserBridgesRepository)
+    private readonly userBridgesRepository: UserBridgesRepository,
+    @InjectRepository(ReportArticlesRepository)
+    private readonly reportArticlesRepository: ReportArticlesRepository,
+    @InjectRepository(UserLikeArticlesRepository)
+    private readonly userLikeArticlesRepository: UserLikeArticlesRepository,
 
     private readonly dataSource: DataSource,
   ) {}
+
+  async likeOrUnLike(userId: number, articleId: number): Promise<boolean> {
+    const like = await this.userLikeArticlesRepository.findOneBy({
+      userId,
+      articleId,
+    });
+
+    if (like) {
+      await this.userLikeArticlesRepository.remove(like);
+    } else {
+      await this.userLikeArticlesRepository.save({ userId, articleId });
+    }
+
+    return !like;
+  }
 
   async modify(articleId: number, updateArticleDto: ArticleType.UpdateArticleDto) {
     await this.articlesRepository.update({ id: articleId }, updateArticleDto);

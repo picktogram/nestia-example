@@ -7,6 +7,7 @@ import { CommentsModule } from './comments.module';
 import { CommentsRepository } from '../models/repositories/comments.repository';
 import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
 import { ReportArticlesRepository } from '../models/repositories/report-articles.repository';
+import { UserLikeArticlesRepository } from '../models/repositories/user-like-articles.repository';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ReportArticlesRepository } from '../models/repositories/report-articles
       CommentsRepository,
       UserBridgesRepository,
       ReportArticlesRepository,
+      UserLikeArticlesRepository,
     ]),
     CommentsModule,
   ],

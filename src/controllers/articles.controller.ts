@@ -73,13 +73,10 @@ export class ArticlesController {
    * @param writerId 작성자의 아이디
    * @param articleId 게시글의 아이디
    * @param createCommentDto 작성하고자 하는 댓글의 정보
-   * @throw 400-a 댓글을 작성할 게시글을 찾지 못했습니다.
-   * @throw 400-b 신고가 접수된 게시글이라 댓글 작성이 불가능합니다.
+   * @throw 4006 댓글을 작성할 게시글을 찾지 못했습니다.
+   * @throw 4007 신고가 접수된 게시글이라 댓글 작성이 불가능합니다.
    * @returns 방금 작성된 댓글
    */
-  @ApiBadRequestResponse({
-    schema: createErrorSchemas([ERROR.NOT_FOUND_ARTICLE_TO_COMMENT, ERROR.TOO_MANY_REPORTED_ARTICLE]),
-  })
   @TypedRoute.Post(':id/comments')
   public async writeComment(
     @UserId() writerId: number,
@@ -91,7 +88,23 @@ export class ArticlesController {
   }
 
   /**
-   * @summary 게시글 수정으로 작성자만이 가능하다.
+   * @summary 게시글에 대한 좋아요/좋아요 취소를 설정하는 기능 (리턴 형식에 주의)
+   * @param userId 좋아요/좋아요 취소를 하는 사람
+   * @param articleId 좋아요/좋아요 취소를 당한 게시글
+   * @retruns 좋아요 성공 시 true, 실패 시 false 에는 에러 상황
+   */
+  @TypedRoute.Patch(':id')
+  public async likeOrUnlike(
+    @UserId() userId: number,
+    @TypedParam('id', 'number') articleId: number,
+  ): Promise<ResponseForm<boolean>> {
+    const articleToPatch = await this.articlesService.getOneDetailArticle(userId, articleId);
+    const response = await this.articlesService.likeOrUnLike(userId, articleToPatch.id);
+    return createResponseForm(response);
+  }
+
+  /**
+   * @summary 게시글 수정으로 작성자만이 가능하다 ( 각 게시글 타입에 맞게 기능 추가 필요 )
    * @tag articles
    * @param writerId 수정할 사람의 아이디로, 반드시 게시글 작성자의 아이디와 일치해야 한다.
    * @param articleId 수정할 게시글의 아이디
