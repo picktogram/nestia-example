@@ -12,8 +12,7 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   /**
-   * @summary 카테고리를 조회하는 API로, 글 작성 시 카테고리 선택을 위해 사용한다.
-   *
+   * 카테고리를 조회하는 API로, 글 작성 시 카테고리 선택을 위해 사용한다.
    * where, andWhere 식의 검색어를 중첩해나가면서 검색 대상을 좁히는 게 아니라,
    * 점점 늘려가는 식으로 구현된다.
    * 단, 중복이 발생해서는 안 된다.

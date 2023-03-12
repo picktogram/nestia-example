@@ -9,7 +9,7 @@ import { LoginUserDto } from '../models/dtos/login-user.dto';
 import { DecodedUserToken } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
 import { LocalGuard } from './guards/local.guard';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleGuard } from './guards/google.guard';
 import { KaKaoGuard } from '../auth/guards/kakao.guard';
@@ -23,7 +23,7 @@ export class AuthController {
   ) {}
 
   /**
-   * 230129 - Local 로그인을 위한 User 생성
+   * @summary 230129 - Local 로그인을 위한 User 생성
    *
    * @tag auth
    * @param CreateUserDto 유저를 생성하기 위해 필요한 최소한의 값 정의
@@ -52,7 +52,7 @@ export class AuthController {
   }
 
   /**
-   * 230129 - 이메일과 패스워드를 이용한 로그인
+   * @summary 230129 - 이메일과 패스워드를 이용한 로그인
    *
    * @tag auth
    * @param email string

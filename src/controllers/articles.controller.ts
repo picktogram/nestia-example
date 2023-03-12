@@ -18,6 +18,7 @@ export class ArticlesController {
 
   /**
    * @summary 230312 - 댓글이 달리지 않는 게시글 리스트를 조회한다.
+   * @tag articles
    * @param paginationDto 페이지 정보
    * @returns 답변이 없는 글들의 리스트
    */
@@ -48,7 +49,7 @@ export class ArticlesController {
   }
 
   /**
-   * @summary 게시글에 댓글을 작성한다.
+   * 게시글에 댓글을 작성한다.
    * 게시글에 댓글을 작성하는 API로, 본인의 게시글이든 아니든 상관 없이 동일한 기능을 수행한다.
    * @tag articles
    * @param writerId 작성자의 아이디
