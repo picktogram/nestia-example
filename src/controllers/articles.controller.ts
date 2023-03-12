@@ -34,6 +34,7 @@ export class ArticlesController {
 
   /**
    * @summary 230312 - 게시글 신고하기
+   * @tag articles
    * @param userId
    * @param articleId 신고할 대상인 게시글의 아이디
    * @returns 성공 시 true를 데이터로 반환

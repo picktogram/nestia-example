@@ -202,24 +202,60 @@ describe('E2E articles test', () => {
   /**
    * 게시글에 대한 좋아요/좋아요 취소
    */
-  describe('PATCH api/v1/articles/:id', () => {});
+  describe('PATCH api/v1/articles/:id', () => {
+    /**
+     * 만약 유저가 빠르게 눌러서 좋아요가 2번 눌릴 경우,
+     * 좋아요 취소 대신 에러를 뱉는 게 옳다면 좋아요/좋아요 취소 API는 분리한다.
+     */
+    it.todo('게시글에 좋아요가 가능하다.');
+    it.todo('이미 좋아요한 게시글에 대해서 해당 API 재호출 시 좋아요가 취소된다.');
+    it.todo('사라진 글에 대해서 좋아요는 불가능해야 한다.');
+
+    /**
+     * 추후 마이페이지나 그 외 페이지에서 좋아요를 모아보게 될 경우, 사라진 글들은 디자이너가 확인 후 취소가 가능해야 하기 때문
+     */
+    it.todo('사라진 글에 대해서 좋아요 취소는 가능해야 한다.');
+  });
 
   /**
    * 게시글 신고
    */
   describe('POST api/v1/articles/:id/reports', () => {
-    it('', async () => {
-      expect(1).toBe(2);
-    });
+    /**
+     * article.isReported는 1이 올라가며, ReportArcticle table에 row 1개 생성
+     */
+    it.todo('게시글을 신고한다.');
+    it.todo('신고 사유가 명시되어야 한다.');
+    it.todo('동일 유저는 하나의 게시글을 2회 이상 신고할 수 없다.');
+
+    /**
+     * 아래의 TODO는 신고 철회 API에서 검증할 것
+     */
+    // it.todo('동일 유저가 게시글을 신고 후 취소한 경우 isReported는 감소, ReportArticle table는 상태 변경');
+
+    /**
+     * isReported는 다시 증가, 그리고 ReportArticle table의 row는 상태 변경
+     */
+    it.todo('신고가 철회된 게시글에 대해서 다시 신고하는 것이 가능해야 한다.');
   });
 
   /**
    * 게시글 중 그리기에 해당하는 글에 대한 수정
    */
-  describe('PUT api/v1/articles/:id/drawing', () => {
-    it('', async () => {
-      expect(1).toBe(2);
-    });
+  describe('PUT api/v1/articles/:id', () => {
+    /**
+     * 이미지를 수정하는 경우, 해당 이미지를 저장하고 그 이력을 남겨야 한다.
+     * 서비스 내 이미지는 개발자의 커밋 이력처럼, 이미지 이력이 남아야 한다.
+     * 언젠가 이미지는 블록체인을 이용해서 저장
+     */
+    it.todo('그리기(drawing) 타입의 게시글 수정 시, 만약 이미지를 수정하는 경우');
+
+    /**
+     * 그 외 수정 사항에 대해서는 다른 게시글 타입과 마찬가지로 동작해야 한다.
+     */
+    it.todo('그리기(drawing) 타입의 게시글 수정 시, 이미지를 제외한 나머지를 수정하는 경우');
+
+    it.todo('그 외 나머지 타입에 대한 게시글 수정이 올바르게 되는지에 대한 검증');
   });
 
   /**
@@ -227,36 +263,42 @@ describe('E2E articles test', () => {
    * 그리기 타입 글에 대해서는 댓글에 좌표 값이 반드시 있어야 한다.
    */
   describe('POST api/v1/articles/:id/comments', () => {
-    it('', async () => {
-      expect(1).toBe(2);
-    });
+    it.todo('게시글에 댓글 남기기');
   });
 
   /**
    * 답글 달기
    */
   describe('POST api/v1/articles/:articleId/comments/:commentId', () => {
-    it('', async () => {
-      expect(1).toBe(2);
-    });
+    it.todo('게시글의 댓글에 답변을 남기기');
   });
 
   /**
    * 댓글에 대한 좋아요/좋아요 취소
    */
   describe('PATCH api/v1/articles/:articleId/comments/:commentId', () => {
-    it('', async () => {
-      expect(1).toBe(2);
-    });
+    it.todo('댓글에 좋아요 하기');
+    it.todo('이미 좋아요한 댓글에 대해 좋아요를 할 경우 취소가 된다.');
+
+    it.todo('삭제된 댓글에 대해서 좋아요를 할 수는 없다.');
+
+    /**
+     * 추후 마이페이지나 그 외 페이지에서 좋아요를 모아보게 될 경우, 사라진 글들은 디자이너가 확인 후 취소가 가능해야 하기 때문
+     */
+    it.todo('삭제된 댓글에 대해서는 좋아요 취소가 가능해야 한다.');
   });
 
   /**
    * 댓글 삭제
    */
   describe('DELETE api/v1/articles/:articleId/comments/:commentId', () => {
-    it('', async () => {
-      expect(1).toBe(2);
-    });
+    it.todo('작성자는 댓글을 삭제할 수 있어야 한다.');
+    it.todo('본인의 댓글이 아닌 경우에는 에러를 뱉어야 한다.');
+
+    /**
+     * 추후 필요한 기능
+     */
+    it.todo('신고 당한 댓글이 삭제될 경우, 관리자 채널로 알림을 보내야 한다.');
   });
 
   /**
@@ -264,9 +306,13 @@ describe('E2E articles test', () => {
    * 수정 시에는, 이전 내역이 욕설이나 그 외 상대의 기분을 해칠 수 있는 댓글인지를 확인해야 한다.
    */
   describe('PUT api/v1/articles/:articleId/comments/:commentId', () => {
-    it('', async () => {
-      expect(1).toBe(2);
-    });
+    it.todo('댓글을 수정할 수 있다.');
+
+    /**
+     * 수정을 여러 차례에 나눠서 할 경우, 그 이력을 알 수 없기 때문에 모두 저장해야 한다.
+     * 당장 급한 스펙은 아니다.
+     */
+    it.todo('신고당한 글을 수정할 때에는 그 수정 이력을 저장해야 한다.');
   });
 
   /**
@@ -274,8 +320,9 @@ describe('E2E articles test', () => {
    * 댓글이 신고된 경우, 해당 댓글의 내역을, 유저가 수정할 경우를 대비해 따로 저장해두어야 한다.
    */
   describe('POST api/v1/articles/:articleid/comments/:commentId', () => {
-    it('', async () => {
-      expect(1).toBe(2);
-    });
+    /**
+     * ReportComment에 칼럼을 두고, 신고 당시의 글 내용을 저장해두는 걸 추천한다.
+     */
+    it.todo('댓글이 신고될 때, 신고 당시의 내용을 저장해야 한다.');
   });
 });
