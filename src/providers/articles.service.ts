@@ -60,7 +60,7 @@ export class ArticlesService {
   }> {
     const { skip, take } = getOffset({ page, limit });
 
-    const query = this.articlesRepository
+    let query = this.articlesRepository
       .createQueryBuilder('a')
       .select(['a.id AS "id"', 'a.contents AS "contents"', 'a.createdAt AS "createdAt"'])
       .addSelect(['w.id AS "writerId"', 'w.nickname AS "nickname"', 'w.profileImage AS "profileImage"'])
@@ -71,7 +71,7 @@ export class ArticlesService {
       .limit(take);
 
     if (isNoReply === true) {
-      query
+      query = query
         .andWhere((qb) => {
           const subQuery = qb
             .subQuery()
@@ -118,13 +118,14 @@ export class ArticlesService {
     };
   }
 
-  async write(userId: number, { contents, images }: CreateArticleDto): Promise<ArticleEntity> {
+  async write(userId: number, { contents, images, type }: CreateArticleDto): Promise<ArticleEntity> {
     const checkedImages = this.checkIsSamePosition(images);
     const writedArticle = await this.articlesRepository.save(
       ArticleEntity.create({
         writerId: userId,
         contents,
         images: checkedImages,
+        type,
       }),
     );
 
