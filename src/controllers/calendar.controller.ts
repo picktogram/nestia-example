@@ -8,7 +8,7 @@ export class CalendarController {
   constructor() {}
 
   /**
-   * 달력을 조회한다. (미완성)
+   * @summary 달력을 조회한다. (미완성)
    *
    * 아래 내 일정, 이벤트 등을
    * 어떻게 구현할지에 따라 body는 달리 작성해도 되며, 작성 후에는 types/index.ts에 옮겨줄 것

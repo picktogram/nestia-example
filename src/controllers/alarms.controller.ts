@@ -11,6 +11,13 @@ import { AlarmType, PaginationDto } from '../types';
 export class AlarmsController {
   constructor(private readonly alarmsService: AlarmsService) {}
 
+  /**
+   * @summary 유저가 지금까지 받은 알람을 제공하는 API
+   * @tag alarms
+   * @param userId
+   * @param paginationDto
+   * @returns 알람
+   */
   @TypedRoute.Get()
   async read(
     @UserId() userId: number,

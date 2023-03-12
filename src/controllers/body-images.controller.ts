@@ -15,7 +15,7 @@ export class BodyImagesController {
   constructor(private readonly bodyImagesService: BodyImagesService, private readonly configService: ConfigService) {}
 
   /**
-   * 230129 - 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 10개이다.
+   * @summary 230129 - 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 10개이다.
    * @tag body-images
    * @param files 저장할 이미지
    * @returns 이미지가 저장되고 난 후의 경로의 배열
