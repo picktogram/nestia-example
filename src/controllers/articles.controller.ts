@@ -3,7 +3,7 @@ import { BadRequestException, Controller, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UserId } from '../common/decorators/user-id.decorator';
-import { createErrorSchema, createErrorSchemas, ERROR } from '../config/constant/error';
+import { createErrorSchema, ERROR } from '../config/constant/error';
 import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { CommentsService } from '../providers/comments.service';
