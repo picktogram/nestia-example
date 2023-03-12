@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryEntity } from '../models/tables/category.entity';
 import { ILike, Repository } from 'typeorm';
-import { ArticleHasCategoryEntity } from '../models/tables/articleHasCategory.entity';
+import { ArticleHasCategoryEntity } from '../models/tables/article-has-category.entity';
 import { SearchPaginationDto } from '../models/dtos/search-pagination.dto';
 import { getOffset } from '../utils/getOffset';
 import { CategoryType } from '../types';

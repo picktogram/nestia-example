@@ -7,7 +7,7 @@ import { CommentsRepository } from '../models/repositories/comments.repository';
 import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
 import { ArticleEntity } from '../models/tables/article.entity';
-import { UserBridgeEntity } from '../models/tables/userBridge.entity';
+import { UserBridgeEntity } from '../models/tables/user-bridge.entity';
 import { ArticleType, PaginationDto, UserBridgeType } from '../types';
 import { getOffset } from '../utils/getOffset';
 import { DataSource, In } from 'typeorm';

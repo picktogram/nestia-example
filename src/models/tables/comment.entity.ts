@@ -2,6 +2,7 @@ import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { ArticleEntity } from './article.entity';
 import { UserEntity } from './user.entity';
 import { CommonCloumns } from '../common/common-columns';
+import { UserLikeCommentEntity } from './user-like-comment.entity';
 
 @Entity({ name: 'comment' })
 export class CommentEntity extends CommonCloumns {
@@ -61,4 +62,7 @@ export class CommentEntity extends CommonCloumns {
 
   @OneToMany(() => CommentEntity, (children) => children.parent)
   children!: CommentEntity[];
+
+  @OneToMany(() => UserLikeCommentEntity, (ulc) => ulc.comment)
+  commentLikedByUsers?: UserLikeCommentEntity[];
 }

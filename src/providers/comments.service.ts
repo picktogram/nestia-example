@@ -4,6 +4,7 @@ import { ERROR } from '../config/constant/error';
 import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { ArticlesRepository } from '../models/repositories/articles.repository';
 import { CommentsRepository } from '../models/repositories/comments.repository';
+import { UserLikeCommentsRepository } from '../models/repositories/user-like-comments.repository';
 import { ArticleEntity } from '../models/tables/article.entity';
 import { CommentEntity } from '../models/tables/comment.entity';
 import { CommentType } from '../types';
@@ -12,9 +13,33 @@ import { getOffset } from '../utils/getOffset';
 @Injectable()
 export class CommentsService {
   constructor(
-    @InjectRepository(CommentsRepository) private readonly commentsRepository: CommentsRepository,
-    @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
+    @InjectRepository(CommentsRepository)
+    private readonly commentsRepository: CommentsRepository,
+    @InjectRepository(ArticlesRepository)
+    private readonly articlesRepository: ArticlesRepository,
+    @InjectRepository(UserLikeCommentsRepository)
+    private readonly userLikeCommentsRepository: UserLikeCommentsRepository,
   ) {}
+
+  async likeOrUnlike(userId: number, commentId: number) {
+    const like = await this.userLikeCommentsRepository.findOneBy({ userId, commentId });
+
+    if (like) {
+      await this.userLikeCommentsRepository.remove(like);
+    } else {
+      await this.userLikeCommentsRepository.save({ userId, commentId });
+    }
+
+    return !like;
+  }
+
+  async getOne(userId: number, articleId: number, commentId: number) {
+    const comment = await this.commentsRepository.findOne({ where: { id: commentId, articleId } });
+    if (!comment) {
+      throw new BadRequestException(ERROR.CANNOT_FIND_ONE_COMMENT);
+    }
+    return comment;
+  }
 
   async readByArticleId(
     articleId: number,

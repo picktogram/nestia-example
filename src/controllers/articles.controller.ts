@@ -51,6 +51,24 @@ export class ArticlesController {
   }
 
   /**
+   * @summary 230312 - 댓글 좋아요/좋아요 취소 기능
+   * @tag articles
+   * @param userId 좋아요/좋아요 취소를 할 사람
+   * @param articleId 좋아요/좋아요 취소를 당하는 댓글의 게시글
+   * @param commentId 좋아요/좋아요 취소를 당하는 댓글
+   */
+  @TypedRoute.Patch(':articleId/comments/:commentId')
+  public async likeOrUnLikeComment(
+    @UserId() userId: number,
+    @TypedParam('articleId', 'number') articleId: number,
+    @TypedParam('commentId', 'number') commentId: number,
+  ): Promise<ResponseForm<boolean>> {
+    const comment = await this.commentsService.getOne(userId, articleId, commentId);
+    const response = await this.commentsService.likeOrUnlike(userId, comment.id);
+    return createResponseForm(response);
+  }
+
+  /**
    * @summary 230223 - 게시글의 댓글을 최신 순으로 조회한다. (페이지네이션 형태로 변경할 예정)
    * @tag articles
    * @param articleId 댓글을 조회하고자 하는 게시글의 id

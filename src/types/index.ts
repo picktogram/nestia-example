@@ -5,7 +5,7 @@ import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
 import { AlarmEntity } from '../models/tables/alarm.entity';
 import type { ArticleEntity } from '../models/tables/article.entity';
-import type { BodyImageEntity } from '../models/tables/bodyImage.entity';
+import type { BodyImageEntity } from '../models/tables/body-image.entity';
 import { CategoryEntity } from '../models/tables/category.entity';
 import type { CommentEntity } from '../models/tables/comment.entity';
 import { ReportArticleEntity } from '../models/tables/report-article.entity';

@@ -7,7 +7,7 @@ import { UsersRepository } from '../models/repositories/users.repository';
 import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
 import bcrypt from 'bcrypt';
 import { PaginationDto, UserType } from '../types';
-import { UserBridgeEntity } from '../models/tables/userBridge.entity';
+import { UserBridgeEntity } from '../models/tables/user-bridge.entity';
 import { getOffset } from '../utils/getOffset';
 import { ArticleEntity } from '../models/tables/article.entity';
 import { CommentEntity } from '../models/tables/comment.entity';

@@ -1,9 +1,10 @@
 import { Entity, Column, ManyToOne, OneToMany, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
 import { CommonCloumns } from '../common/common-columns';
-import { BodyImageEntity } from './bodyImage.entity';
+import { BodyImageEntity } from './body-image.entity';
 import { CategoryEntity } from './category.entity';
 import { CommentEntity } from './comment.entity';
 import { ReportArticleEntity } from './report-article.entity';
+import { UserLikeArticleEntity } from './user-like-article.entity';
 import { UserEntity } from './user.entity';
 
 @Entity({ name: 'article' })
@@ -68,6 +69,9 @@ export class ArticleEntity extends CommonCloumns {
 
   @OneToMany(() => ReportArticleEntity, (ra) => ra.article)
   articleReportedByUser!: ReportArticleEntity[];
+
+  @OneToMany(() => UserLikeArticleEntity, (ula) => ula.article)
+  articleLikedByUsers?: UserLikeArticleEntity[];
 
   /**
    * method( subscriber ) area
