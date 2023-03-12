@@ -12,6 +12,7 @@ import { ArticleType, PaginationDto, UserBridgeType } from '../types';
 import { getOffset } from '../utils/getOffset';
 import { DataSource, In } from 'typeorm';
 import { CommentEntity } from '../models/tables/comment.entity';
+import { ReportArticlesRepository } from '../models/repositories/report-articles.repository';
 
 @Injectable()
 export class ArticlesService {
@@ -19,9 +20,24 @@ export class ArticlesService {
     @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
     @InjectRepository(CommentsRepository) private readonly commentsRepository: CommentsRepository,
     @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
+    @InjectRepository(ReportArticlesRepository) private readonly reportArticlesRepository: ReportArticlesRepository,
 
     private readonly dataSource: DataSource,
   ) {}
+
+  async report(userId: number, articleId: number, reason?: string) {
+    const report = await this.reportArticlesRepository.findOneBy({ userId, articleId });
+    if (!report) {
+      await this.reportArticlesRepository.save({ userId, articleId, reason });
+      return true;
+    }
+
+    if (report.status === 'canceled') {
+      await this.reportArticlesRepository.update({ userId, articleId }, { status: 'reported' });
+    }
+
+    throw new BadRequestException(ERROR.ARLEADY_REPORTED_ARTICLE);
+  }
 
   async getOneDetailArticle(userId: number, articleId: number): Promise<ArticleType.DetailArticle> {
     const [article, comments] = await Promise.all([

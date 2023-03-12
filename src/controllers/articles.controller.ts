@@ -33,6 +33,22 @@ export class ArticlesController {
   }
 
   /**
+   * @summary 230312 - 게시글 신고하기
+   * @param userId
+   * @param articleId 신고할 대상인 게시글의 아이디
+   * @returns 성공 시 true를 데이터로 반환
+   */
+  async report(
+    @UserId() userId: number,
+    @TypedParam('id', 'number') articleId: number,
+    @TypedBody() { reason }: ArticleType.ReportReason,
+  ): Promise<ResponseForm<true>> {
+    const articleToReport = await this.articlesService.getOneDetailArticle(userId, articleId);
+    await this.articlesService.report(userId, articleToReport.id, reason);
+    return createResponseForm(true);
+  }
+
+  /**
    * @summary 230223 - 게시글의 댓글을 최신 순으로 조회한다. (페이지네이션 형태로 변경할 예정)
    * @tag articles
    * @param articleId 댓글을 조회하고자 하는 게시글의 id

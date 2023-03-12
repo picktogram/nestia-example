@@ -3,6 +3,7 @@ import { CommonCloumns } from '../common/common-columns';
 import { BodyImageEntity } from './bodyImage.entity';
 import { CategoryEntity } from './category.entity';
 import { CommentEntity } from './comment.entity';
+import { ReportArticleEntity } from './report-article.entity';
 import { UserEntity } from './user.entity';
 
 @Entity({ name: 'article' })
@@ -64,6 +65,9 @@ export class ArticleEntity extends CommonCloumns {
 
   @OneToMany(() => CommentEntity, (c) => c.article)
   comments!: CommentEntity[];
+
+  @OneToMany(() => ReportArticleEntity, (ra) => ra.article)
+  articleReportedByUser!: ReportArticleEntity[];
 
   /**
    * method( subscriber ) area

@@ -3,6 +3,7 @@ import { CommonCloumns } from '../common/common-columns';
 import { AlarmEntity } from './alarm.entity';
 import { ArticleEntity } from './article.entity';
 import { CommentEntity } from './comment.entity';
+import { ReportArticleEntity } from './report-article.entity';
 import { UserBridgeEntity } from './userBridge.entity';
 
 export type DecodedUserToken = Pick<UserEntity, 'id' | 'name' | 'nickname' | 'email' | 'birth'>;
@@ -110,6 +111,9 @@ export class UserEntity extends CommonCloumns {
 
   @OneToMany(() => AlarmEntity, (a) => a.user)
   alarms!: AlarmEntity[];
+
+  @OneToMany(() => ReportArticleEntity, (ra) => ra.user)
+  userReportArticle!: ReportArticleEntity[];
 
   /**
    * methods

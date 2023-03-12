@@ -7,6 +7,7 @@ import type { ArticleEntity } from '../models/tables/article.entity';
 import type { BodyImageEntity } from '../models/tables/bodyImage.entity';
 import { CategoryEntity } from '../models/tables/category.entity';
 import type { CommentEntity } from '../models/tables/comment.entity';
+import { ReportArticleEntity } from '../models/tables/report-article.entity';
 import type { UserEntity } from '../models/tables/user.entity';
 
 export interface NestiaTypeErrorObject {
@@ -87,6 +88,8 @@ export declare namespace CategoryType {
 }
 
 export declare namespace ArticleType {
+  interface ReportReason extends Pick<ReportArticleEntity, 'reason'> {}
+
   interface ReadArticleResponse {
     id: number;
     contents: string;
