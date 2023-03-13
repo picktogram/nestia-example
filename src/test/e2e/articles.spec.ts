@@ -37,7 +37,8 @@ describe('E2E articles test', () => {
       token = response.data;
     });
 
-    it('게시글이 생성되는 것을 확인한다.', async () => {
+    it('이미지 없이 게시글이 생성되는 것을 확인한다.', async () => {
+      const articleToSave = typia.random<CreateArticleDto>();
       const writeArticleResponse = await ArticleApis.writeArticle(
         {
           host,
@@ -45,11 +46,14 @@ describe('E2E articles test', () => {
             Authorization: token,
           },
         },
-        typia.random<CreateArticleDto>(),
+        { contents: articleToSave.contents, type: 'writing' },
       );
 
       expect(writeArticleResponse.data).toBeDefined();
     });
+
+    it.todo('이미지가 있는 경우에는 이미지의 경로가 모두 달라야 한다.');
+    it.todo('이미지가 있을 때, 이미지의 포지션이 동일해서는 안 된다.');
   });
 
   describe('GET api/v1/articles', () => {
@@ -134,7 +138,7 @@ describe('E2E articles test', () => {
       expect(getAllWithNoReplyResponse.data.list.some((el) => el.id === writing.data.id)).toBeFalsy();
     });
 
-    it.only('"댓글이 없는 질문 타입의 게시글"만 나오는지에 대한 검증', async () => {
+    it('"댓글이 없는 질문 타입의 게시글"만 나오는지에 대한 검증', async () => {
       // NOTE : 질문이면서 댓글이 없는 경우는 조회되어야 한다.
       const dummyQuestion = typia.random<CreateArticleDto>();
       dummyQuestion.type = 'question';
@@ -202,12 +206,59 @@ describe('E2E articles test', () => {
    * 게시글에 대한 좋아요/좋아요 취소
    */
   describe('PATCH api/v1/articles/:id', () => {
+    let token: string = '';
+    let decodedToken: DecodedUserToken;
+    beforeEach(async () => {
+      const designer = typia.random<CreateUserDto>();
+      const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      decodedToken = signUpResponse.data;
+
+      const response = await AuthApis.login({ host }, designer);
+      token = response.data;
+    });
+
     /**
      * 만약 유저가 빠르게 눌러서 좋아요가 2번 눌릴 경우,
      * 좋아요 취소 대신 에러를 뱉는 게 옳다면 좋아요/좋아요 취소 API는 분리한다.
      */
-    it.todo('게시글에 좋아요가 가능하다.');
-    it.todo('이미 좋아요한 게시글에 대해서 해당 API 재호출 시 좋아요가 취소된다.');
+    it('게시글에 좋아요/좋아요 취소가 가능하다.', async () => {
+      // NOTE : 테스트 대상인 게시글을 생성
+      const writeArticleResponse = await ArticleApis.writeArticle(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        typia.random<CreateArticleDto>(),
+      );
+
+      // NOTE : 좋아요 테스트
+      const likeResponse = await ArticleApis.likeOrUnlike(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        writeArticleResponse.data.id,
+      );
+
+      // NOTE : 좋아요 취소 테스트
+      const unlikeResponse = await ArticleApis.likeOrUnlike(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        writeArticleResponse.data.id,
+      );
+
+      expect(likeResponse.data).toBe(true); // NOTE : 실행 후 결과가 좋아요인 경우 true를 반환한다.
+      expect(unlikeResponse.data).toBe(false); // NOTE : 실행 후 결과가 좋아요가 취소된 경우 false를 반환한다.
+    });
+
     it.todo('사라진 글에 대해서 좋아요는 불가능해야 한다.');
 
     /**

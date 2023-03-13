@@ -7,6 +7,7 @@ import { TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createPaginationForm, createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
 import { PaginationDto, UserType } from '../types';
+import typia from 'typia';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/users')
@@ -25,7 +26,7 @@ export class UsersController {
   async getAcquaintance(
     @UserId() userId: number,
     @TypedQuery() paginationDto: PaginationDto,
-  ): Promise<UserType.getAcquaintanceResponse> {
+  ): Promise<UserType.GetAcquaintanceResponse> {
     const acquaintances = await this.usersService.getAcquaintance(userId, paginationDto);
     return createPaginationForm(acquaintances, paginationDto);
   }
@@ -58,6 +59,36 @@ export class UsersController {
   ): Promise<ResponseForm<UserType.Retuation>> {
     const response = await this.usersService.checkReputation(designerId);
     return createResponseForm(response);
+  }
+
+  /**
+   * @summary 230313 - 해당 디자이너님의 팔로워 ( 누구를 팔로우하고 있는지 ) 를 조회한다.
+   * @tag users
+   * @param userId 조회를 요청한 사람, 즉 유저
+   * @param designerId 조회를 당하는 사람, 즉 해당 디자이너
+   * @returns 팔로워 목록의 페이지네이션 값
+   */
+  @TypedRoute.Get(':id/followers')
+  async checkFollowers(
+    @UserId() userId: number,
+    @TypedParam('id', 'number') designerId: number,
+  ): Promise<UserType.GetAcquaintanceResponse> {
+    return typia.random<UserType.GetAcquaintanceResponse>();
+  }
+
+  /**
+   * @summary 230313 - 해당 디자이너님의 팔로이 ( 누구를 팔로우하고 있는지 ) 를 조회한다.
+   * @tag users
+   * @param userId 조회를 요청한 사람, 즉 유저
+   * @param designerId 조회를 당하는 사람, 즉 해당 디자이너
+   * @returns 팔로이 목록의 페이지네이션 값
+   */
+  @TypedRoute.Get(':id/followees')
+  async checkFollowees(
+    @UserId() userId: number,
+    @TypedParam('id', 'number') designerId: number,
+  ): Promise<UserType.GetAcquaintanceResponse> {
+    return typia.random<UserType.GetAcquaintanceResponse>();
   }
 
   /**

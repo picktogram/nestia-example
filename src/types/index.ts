@@ -49,7 +49,7 @@ export declare namespace AlarmType {
 export declare namespace UserType {
   interface Profile extends Pick<UserEntity, 'id' | 'nickname' | 'profileImage'> {}
 
-  interface getAcquaintanceResponse extends PaginationForm<{ list: Profile[]; count: number }> {}
+  interface GetAcquaintanceResponse extends PaginationForm<{ list: Profile[]; count: number }> {}
 
   interface Retuation extends Pick<UserEntity, 'id'> {
     /**

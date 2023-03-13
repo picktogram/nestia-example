@@ -74,6 +74,8 @@ describe('E2E users test', () => {
 
       expect(response.data).toBe(true);
     });
+
+    it.todo('나 자신을 팔로우하는 것은 불가능하다.');
   });
 
   /**
@@ -138,6 +140,9 @@ describe('E2E users test', () => {
       expect(response.data.list.length).toBe(1);
     });
 
+    /**
+     * 해당 로직에 문제가 있는 것으로 보인다.
+     */
     it('역으로 나도 팔로우를 하여, 서로 맞팔 상태가 되었을 때 친구 추천 목록에서 나오지 말아야 한다.', async () => {
       // NOTE : 나를 팔로우할 대상을 생성
       const userData = typia.random<CreateUserDto>();
@@ -180,9 +185,24 @@ describe('E2E users test', () => {
       expect(response.data.list.length).toBe(0);
     });
 
+    /**
+     * 위에서 에러가 발생했기 때문에 다른 방식으로 한 번 더 테스트 진행할 것
+     */
+    it.todo('역으로 나도 팔로우를 하여, 서로 맞팔 상태가 되었을 때 친구 추천 목록에서 나오지 말아야 한다.');
+
+    it.todo('나 자신은 친구 추천 목록에서 나와서는 안 된다.');
+
     it.todo('친구의 친구들을 추천해야 하며, 사유를 말해야 한다.');
     it.todo('유명인들을 추천해주어야 하며, 사유를 말해야 한다.');
     it.todo('내가 좋아요를 누른 게시글과 댓글이 우연히 n 번 이상 동일 인물인 경우 추천해주며, 사유를 말해줘야 한다.');
+  });
+
+  describe('GET api/v1/users/:id/follwers', () => {
+    it.todo('해당 유저가 팔로우한 사람들이 조회된다.');
+  });
+
+  describe('GET api/v1/users/:id/followee', () => {
+    it.todo('해당 유저를 팔로우한 사람들이 조회된다.');
   });
 
   /**

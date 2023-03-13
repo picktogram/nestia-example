@@ -9,7 +9,7 @@ import { AuthModule } from '../../auth/auth.module';
 import { UsersModule } from '../../modules/users.module';
 import { AuthService } from '../../auth/auth.service';
 import { generateRandomNumber } from '../../utils/generate-random-number';
-import { UserBridgeEntity } from '../../models/tables/userBridge.entity';
+import { UserBridgeEntity } from '../../models/tables/user-bridge.entity';
 
 describe('User Entity', () => {
   let controller: UsersController;
