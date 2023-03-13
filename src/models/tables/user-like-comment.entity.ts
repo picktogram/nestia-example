@@ -7,12 +7,14 @@ import { UserEntity } from './user.entity';
 export class UserLikeCommentEntity extends CreatedAtColumn {
   /**
    * 유저의 아이디
+   * @type int
    */
   @PrimaryColumn()
   public readonly userId!: number;
 
   /**
    * 유저가 좋아요를 클릭한 댓글의 아이디
+   * @type int
    */
   @PrimaryColumn()
   public readonly commentId!: number;

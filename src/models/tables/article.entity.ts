@@ -11,6 +11,7 @@ import { UserEntity } from './user.entity';
 export class ArticleEntity extends CommonCloumns {
   /**
    * 게시글을 작성한 유저의 아이디
+   * @type int
    */
   @Column()
   public writerId!: number;

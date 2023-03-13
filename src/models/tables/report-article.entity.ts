@@ -5,9 +5,17 @@ import { UserEntity } from './user.entity';
 
 @Entity({ name: 'report_article' })
 export class ReportArticleEntity extends CreatedAtColumn {
+  /**
+   * 유저의 아이디
+   * @type int
+   */
   @PrimaryGeneratedColumn()
   public userId!: number;
 
+  /**
+   * 게시글의 아이디
+   * @type int
+   */
   @PrimaryGeneratedColumn()
   public articleId!: number;
 

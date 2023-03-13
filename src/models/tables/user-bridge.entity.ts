@@ -7,6 +7,7 @@ export class UserBridgeEntity extends CreatedAtColumn {
   /**
    * 유저의 아이디(from)로, 팔로우를 건 사람을 의미한다.
    * 맞팔의 경우 서로가 서로에 대해 [from, to], [to, from]으로 존재한다.
+   * @type int
    */
   @PrimaryColumn()
   firstUserId!: number;
@@ -14,6 +15,7 @@ export class UserBridgeEntity extends CreatedAtColumn {
   /**
    * 유저의 아이디(to)로, 팔로우를 당한 사람을 의미한다.
    * 맞팔의 경우 서로가 서로에 대해 [from, to], [to, from]으로 존재한다.
+   * @type int
    */
   @PrimaryColumn()
   secondUserId!: number;
