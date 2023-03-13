@@ -18,6 +18,7 @@ export const ERROR = {
   ARLEADY_REPORTED_ARTICLE: { code: 4014, message: '이미 신고한 게시글입니다.' },
   IS_NOT_WRITER_OF_THIS_ARTICLE: { code: 4015, message: '이 게시글의 작성자만이 수정할 수 있습니다.' },
   CANNOT_FIND_ONE_COMMENT: { code: 4016, message: '해당 댓글을 찾지 못했습니다.' },
+  CANNOT_FOLLOW_MYSELF: { code: 4017, message: '설마 자기 자신을 팔로우하려고 했어요?!' },
 } as const;
 
 export type KeyOfError = keyof typeof ERROR;

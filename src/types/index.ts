@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import { PaginationForm } from '../interceptors/transform.interceptor';
-import { CreateArticleDto } from '../models/dtos/create-article.dto';
-import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
-import { AlarmEntity } from '../models/tables/alarm.entity';
+import type { PaginationForm } from '../interceptors/transform.interceptor';
+import type { CreateArticleDto } from '../models/dtos/create-article.dto';
+import type { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
+import type { AlarmEntity } from '../models/tables/alarm.entity';
 import type { ArticleEntity } from '../models/tables/article.entity';
 import type { BodyImageEntity } from '../models/tables/body-image.entity';
-import { CategoryEntity } from '../models/tables/category.entity';
+import type { CategoryEntity } from '../models/tables/category.entity';
 import type { CommentEntity } from '../models/tables/comment.entity';
-import { ReportArticleEntity } from '../models/tables/report-article.entity';
+import type { ReportArticleEntity } from '../models/tables/report-article.entity';
 import type { UserEntity } from '../models/tables/user.entity';
 
 export interface NestiaTypeErrorObject {

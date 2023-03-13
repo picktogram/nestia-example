@@ -1,4 +1,4 @@
-import { Controller, Param, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, Param, UseGuards } from '@nestjs/common';
 import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
 import { User } from '../common/decorators/user.decorator';
@@ -8,6 +8,7 @@ import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createPaginationForm, createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
 import { PaginationDto, UserType } from '../types';
 import typia from 'typia';
+import { ERROR } from '../config/constant/error';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/users')
@@ -117,6 +118,9 @@ export class UsersController {
    */
   @TypedRoute.Post(':id/follow')
   async follow(@UserId() userId: number, @TypedParam('id', 'number') followeeId: number): Promise<ResponseForm<true>> {
+    if (userId === followeeId) {
+      throw new BadRequestException(ERROR.CANNOT_FOLLOW_MYSELF);
+    }
     const response = await this.usersService.follow(userId, followeeId);
     return createResponseForm(response);
   }
