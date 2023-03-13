@@ -83,5 +83,7 @@ describe('E2E calendars test', () => {
         expect(response.data).toBeDefined();
       });
     });
+
+    it.todo('회원 가입 시 자기 자신이 팔로우한 상태여야 한다.');
   });
 });

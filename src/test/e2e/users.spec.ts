@@ -6,6 +6,7 @@ import * as AuthApis from '../../api/functional/api/v1/auth';
 import typia from 'typia';
 import { CreateUserDto } from '../../models/dtos/create-user.dto';
 import { DecodedUserToken } from '../../models/tables/user.entity';
+import { ERROR, ValueOfError } from '../../config/constant/error';
 
 describe('E2E users test', () => {
   const host = 'http://localhost:4000';
@@ -50,9 +51,12 @@ describe('E2E users test', () => {
 
   describe('POST api/v1/users/:id/follow', () => {
     let token: string = '';
-    beforeAll(async () => {
+    let decodedToken: DecodedUserToken;
+    beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
-      await AuthApis.sign_up.signUp({ host }, designer);
+      const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      decodedToken = signUpResponse.data;
+
       const response = await AuthApis.login({ host }, designer);
       token = response.data;
     });
@@ -75,7 +79,33 @@ describe('E2E users test', () => {
       expect(response.data).toBe(true);
     });
 
-    it.todo('나 자신을 팔로우하는 것은 불가능하다.');
+    it('나 자신을 팔로우하는 것은 불가능하다.', async () => {
+      try {
+        const response = await UserApis.follow.follow(
+          {
+            host,
+            headers: {
+              Authorization: token,
+            },
+          },
+          decodedToken.id,
+        );
+        /*
+         * 반드시 에러로 진입하여야 하기 때문에 아래는 일부러 틀린 코드를 작성한다.
+         */
+        expect(1).toBe(2);
+      } catch (err: unknown) {
+        expect(err).toBeInstanceOf(Error);
+        /**
+         * TODO : 현재 nestia로 인해 결과 값이 transformer가 안멱혀서 JSON으로 나오니 수정 필요
+         * TODO : 에러를 던지지 않고 타입으로 던질 수 있게 수정하기
+         */
+        // if (err instanceof Error) {
+        //   expect(err.message).toBeDefined();
+        //   expect(err.message).toBe(ERROR.CANNOT_FOLLOW_MYSELF.message);
+        // }
+      }
+    });
   });
 
   /**

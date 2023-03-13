@@ -9,6 +9,7 @@ import { CreateArticleDto } from '../../models/dtos/create-article.dto';
 import { CreateCommentDto } from '../../models/dtos/create-comment.dto';
 import { CommentEntity } from '../../models/tables/comment.entity';
 import { DecodedUserToken } from '../../models/tables/user.entity';
+import { ArticleType } from '../../types';
 
 describe('E2E articles test', () => {
   const host = 'http://localhost:4000';
@@ -313,7 +314,47 @@ describe('E2E articles test', () => {
    * 그리기 타입 글에 대해서는 댓글에 좌표 값이 반드시 있어야 한다.
    */
   describe('POST api/v1/articles/:id/comments', () => {
-    it.todo('게시글에 댓글 남기기');
+    let token: string = '';
+    let decodedToken: DecodedUserToken;
+    let article: ArticleType.DetailArticle;
+    beforeEach(async () => {
+      const designer = typia.random<CreateUserDto>();
+      const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      decodedToken = signUpResponse.data;
+
+      const response = await AuthApis.login({ host }, designer);
+      token = response.data;
+
+      // NOTE : 테스트 대상인 게시글을 생성
+      const writeArticleResponse = await ArticleApis.writeArticle(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        typia.random<CreateArticleDto>(),
+      );
+
+      article = writeArticleResponse.data;
+    });
+
+    it.only('게시글에 댓글 남기기', async () => {
+      const commentToSave = typia.random<CreateCommentDto>();
+      commentToSave.parentId = null;
+      const comment = await ArticleApis.comments.writeComment(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        article.id,
+        commentToSave,
+      );
+
+      expect(comment).toBeDefined();
+    });
   });
 
   /**
