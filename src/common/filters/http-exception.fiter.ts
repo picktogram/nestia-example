@@ -48,7 +48,10 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
         slackMessageForm += `query : ${JSON.stringify(query)}\n`;
         slackMessageForm += `date : ${new Date()}\n`;
 
-        if (message === 'Response body data is not following the promised type.') {
+        if (
+          message === 'Response body data is not following the promised type.' ||
+          message === 'Request body data is not following the promised type.'
+        ) {
           // NOTE : validation error
           const nestiaTypeError: NestiaTypeErrorObject = exception.getResponse() as NestiaTypeErrorObject;
           slackMessageForm += `\tpath : ${nestiaTypeError.path}\n`;
@@ -75,7 +78,7 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
         path: request.url,
 
         errorCode: code ?? 4000,
-        errorMessage: code ? message : UNCHATCHED_ERROR,
+        errorMessage: message ? message : UNCHATCHED_ERROR,
         requestToResponse,
       });
       return;

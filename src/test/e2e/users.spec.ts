@@ -79,6 +79,9 @@ describe('E2E users test', () => {
       expect(response.data).toBe(true);
     });
 
+    /**
+     * 단 회원 가입 시 이미 자기 자신을 팔로우한 상태로 되어 있다.
+     */
     it('나 자신을 팔로우하는 것은 불가능하다.', async () => {
       try {
         const response = await UserApis.follow.follow(
