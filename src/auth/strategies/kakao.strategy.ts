@@ -11,7 +11,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
   constructor(private readonly configService: ConfigService) {
     super({
       clientID: configService.get('KAKAO_REST_API_KEY'),
-      clientSecret: configService.get('KAKAO_CLIENT_SECRET'), // 이거 없어도 될것 같은데 없앨까요??
+      clientSecret: configService.get('KAKAO_CLIENT_SECRET'),
       callbackURL: 'http://127.0.0.1:3000/api/v1/auth/kakao/callback',
     });
   }
