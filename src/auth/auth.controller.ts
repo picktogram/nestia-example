@@ -1,18 +1,19 @@
 import { TypedBody, TypedRoute } from '@nestia/core';
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Req, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBody } from '@nestjs/swagger';
 import { User } from '../common/decorators/user.decorator';
-import { createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
+import { createResponseForm } from '../interceptors/transform.interceptor';
 import { CreateUserDto } from '../models/dtos/create-user.dto';
 import { LoginUserDto } from '../models/dtos/login-user.dto';
 import { DecodedUserToken } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
 import { LocalGuard } from './guards/local.guard';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleGuard } from './guards/google.guard';
 import { KaKaoGuard } from '../auth/guards/kakao.guard';
+import { Try } from '../types';
 
 @Controller('api/v1/auth')
 export class AuthController {
@@ -23,19 +24,36 @@ export class AuthController {
   ) {}
 
   /**
-   * 230129 - Local 로그인을 위한 User 생성
+   * @summary 230129 - Local 로그인을 위한 User 생성
    *
    * @tag auth
    * @param CreateUserDto 유저를 생성하기 위해 필요한 최소한의 값 정의
    */
   @TypedRoute.Post('sign-up')
-  async signUp(@TypedBody() createUserDto: CreateUserDto): Promise<ResponseForm<DecodedUserToken>> {
-    const { password, ...user } = await this.usersService.create(createUserDto);
+  async signUp(@TypedBody() createUserDto: CreateUserDto): Promise<Try<DecodedUserToken>> {
+    if (typeof createUserDto.birth === 'string') {
+      if (
+        createUserDto.birth
+          .split('-')
+          .map(Number)
+          .every((el) => !Number.isNaN(el))
+      ) {
+        const date = new Date(createUserDto.birth);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        createUserDto.birth = `${year}-${month}-${day}`;
+      } else {
+        createUserDto.birth = null;
+      }
+    }
+
+    const { password, createdAt, updatedAt, deletedAt, birth, ...user } = await this.usersService.create(createUserDto);
     return createResponseForm(user);
   }
 
   /**
-   * 230129 - 이메일과 패스워드를 이용한 로그인
+   * @summary 230129 - 이메일과 패스워드를 이용한 로그인
    *
    * @tag auth
    * @param email string
@@ -59,7 +77,7 @@ export class AuthController {
     },
   })
   @TypedRoute.Post('login')
-  login(@User() user: DecodedUserToken, @TypedBody() body: LoginUserDto): ResponseForm<string> {
+  login(@User() user: DecodedUserToken, @TypedBody() body: LoginUserDto): Try<string> {
     const token = this.jwtService.sign({ ...user });
     return createResponseForm(token);
   }

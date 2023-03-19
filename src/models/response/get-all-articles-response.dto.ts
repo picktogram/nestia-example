@@ -3,25 +3,25 @@ import { Exclude, Expose } from 'class-transformer';
 
 export class GetAllArticlesResponseDto {
   @Expose()
-  private readonly id!: number;
+  public readonly id!: number;
   @Expose()
-  private readonly contents!: string;
+  public readonly contents!: string;
   @Expose()
-  private readonly createdAt!: Date;
+  public readonly createdAt!: Date;
   @Expose()
-  private readonly isMine!: boolean;
+  public readonly isMine!: boolean;
 
   @Exclude()
-  private readonly writerId!: number;
+  public readonly writerId!: number;
   @Exclude()
-  private readonly nickname!: string;
+  public readonly nickname!: string;
   @Exclude()
-  private readonly profileImage?: string | null;
+  public readonly profileImage?: string | null;
 
   @Exclude()
-  private readonly commentMetadata!: { id: number; contents: string }[];
+  public readonly commentMetadata!: { id: number; contents: string }[];
   @Exclude()
-  private readonly followStatus!: UserBridgeType.FollowStatus;
+  public readonly followStatus!: UserBridgeType.FollowStatus;
 
   @Expose()
   get writer() {

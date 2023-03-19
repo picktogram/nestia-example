@@ -7,21 +7,63 @@ import { CommentsRepository } from '../models/repositories/comments.repository';
 import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
 import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
 import { ArticleEntity } from '../models/tables/article.entity';
-import { UserBridgeEntity } from '../models/tables/userBridge.entity';
+import { UserBridgeEntity } from '../models/tables/user-bridge.entity';
 import { ArticleType, PaginationDto, UserBridgeType } from '../types';
 import { getOffset } from '../utils/getOffset';
 import { DataSource, In } from 'typeorm';
 import { CommentEntity } from '../models/tables/comment.entity';
+import { ReportArticlesRepository } from '../models/repositories/report-articles.repository';
+import { UserLikeArticlesRepository } from '../models/repositories/user-like-articles.repository';
 
 @Injectable()
 export class ArticlesService {
   constructor(
-    @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
-    @InjectRepository(CommentsRepository) private readonly commentsRepository: CommentsRepository,
-    @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
+    @InjectRepository(ArticlesRepository)
+    private readonly articlesRepository: ArticlesRepository,
+    @InjectRepository(CommentsRepository)
+    private readonly commentsRepository: CommentsRepository,
+    @InjectRepository(UserBridgesRepository)
+    private readonly userBridgesRepository: UserBridgesRepository,
+    @InjectRepository(ReportArticlesRepository)
+    private readonly reportArticlesRepository: ReportArticlesRepository,
+    @InjectRepository(UserLikeArticlesRepository)
+    private readonly userLikeArticlesRepository: UserLikeArticlesRepository,
 
     private readonly dataSource: DataSource,
   ) {}
+
+  async likeOrUnLike(userId: number, articleId: number): Promise<boolean> {
+    const like = await this.userLikeArticlesRepository.findOneBy({
+      userId,
+      articleId,
+    });
+
+    if (like) {
+      await this.userLikeArticlesRepository.remove(like);
+    } else {
+      await this.userLikeArticlesRepository.save({ userId, articleId });
+    }
+
+    return !like;
+  }
+
+  async modify(articleId: number, updateArticleDto: ArticleType.UpdateArticleDto) {
+    await this.articlesRepository.update({ id: articleId }, updateArticleDto);
+  }
+
+  async report(userId: number, articleId: number, reason?: string) {
+    const report = await this.reportArticlesRepository.findOneBy({ userId, articleId });
+    if (!report) {
+      await this.reportArticlesRepository.save({ userId, articleId, reason });
+      return true;
+    }
+
+    if (report.status === 'canceled') {
+      await this.reportArticlesRepository.update({ userId, articleId }, { status: 'reported' });
+    }
+
+    throw new BadRequestException(ERROR.ARLEADY_REPORTED_ARTICLE);
+  }
 
   async getOneDetailArticle(userId: number, articleId: number): Promise<ArticleType.DetailArticle> {
     const [article, comments] = await Promise.all([
@@ -53,20 +95,37 @@ export class ArticlesService {
   async read(
     userId: number,
     { page, limit }: PaginationDto,
+    { isNoReply }: { isNoReply?: boolean },
   ): Promise<{
     list: GetAllArticlesResponseDto[];
     count: number;
   }> {
     const { skip, take } = getOffset({ page, limit });
 
-    const query = this.articlesRepository
+    let query = this.articlesRepository
       .createQueryBuilder('a')
       .select(['a.id AS "id"', 'a.contents AS "contents"', 'a.createdAt AS "createdAt"'])
       .addSelect(['w.id AS "writerId"', 'w.nickname AS "nickname"', 'w.profileImage AS "profileImage"'])
       .leftJoin('a.writer', 'w')
+      .where('1=1')
       .orderBy('a.createdAt', 'DESC')
       .offset(skip)
       .limit(take);
+
+    if (isNoReply === true) {
+      query = query
+        .andWhere((qb) => {
+          const subQuery = qb
+            .subQuery()
+            .select('COUNT(*)')
+            .from(CommentEntity, 'c')
+            .where('c.articleId = a.id')
+            .getQuery();
+
+          return `${subQuery} = 0`;
+        })
+        .andWhere('a.type = :type', { type: 'question' });
+    }
 
     const [list, count]: [ArticleType.ReadArticleResponse[], number] = await Promise.all([
       query.getRawMany(),
@@ -101,13 +160,14 @@ export class ArticlesService {
     };
   }
 
-  async write(userId: number, { contents, images }: CreateArticleDto): Promise<ArticleEntity> {
+  async write(userId: number, { contents, images, type }: CreateArticleDto): Promise<ArticleEntity> {
     const checkedImages = this.checkIsSamePosition(images);
     const writedArticle = await this.articlesRepository.save(
       ArticleEntity.create({
         writerId: userId,
         contents,
         images: checkedImages,
+        type,
       }),
     );
 

@@ -1,11 +1,11 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CategoryEntity } from '../models/tables/category.entity';
-import { TypeOrmModuleOptions } from '../config/typeorm';
-import { CategoriesController } from '../controllers/categories.controller';
-import { CategoriesService } from '../providers/categories.service';
-import { CategoriesModule } from '../modules/categories.module';
+import { CategoryEntity } from '../../models/tables/category.entity';
+import { TypeOrmModuleOptions } from '../../config/typeorm';
+import { CategoriesController } from '../../controllers/categories.controller';
+import { CategoriesService } from '../../providers/categories.service';
+import { CategoriesModule } from '../../modules/categories.module';
 
 describe('CategoryEntity Entity', () => {
   let controller: CategoriesController;

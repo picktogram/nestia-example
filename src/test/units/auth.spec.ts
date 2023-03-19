@@ -1,10 +1,10 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from '../models/tables/user.entity';
-import { TypeOrmModuleOptions } from '../config/typeorm';
-import { AuthModule } from '../auth/auth.module';
-import { AuthController } from '../auth/auth.controller';
+import { UserEntity } from '../../models/tables/user.entity';
+import { TypeOrmModuleOptions } from '../../config/typeorm';
+import { AuthModule } from '../../auth/auth.module';
+import { AuthController } from '../../auth/auth.controller';
 
 describe('Auth Entity', () => {
   let controller: AuthController;
