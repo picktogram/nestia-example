@@ -113,33 +113,41 @@ export class UsersService {
     });
   }
 
-  async unfollow(followerId: number, followeeId: number): Promise<true> {
-    const { bridge } = await this.getFolloweeOrThrow(
-      followerId,
-      followeeId,
-      ERROR.CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW,
-    );
+  async unfollow(
+    followerId: number,
+    followeeId: number,
+  ): Promise<true | typeof ERROR.STILL_UNFOLLOW_USER | typeof ERROR.CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW> {
+    const response = await this.getFolloweeOrThrow(followerId, followeeId, ERROR.CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW);
+    if (!response.result) {
+      return response;
+    }
 
-    if (!bridge) {
-      throw new BadRequestException(ERROR.STILL_UNFOLLOW_USER);
+    if (!response.bridge) {
+      return ERROR.STILL_UNFOLLOW_USER;
     }
 
     await this.userBridgesRepository.delete({ firstUserId: followerId, secondUserId: followeeId });
     return true;
   }
 
-  async follow(followerId: number, followeeId: number): Promise<true> {
-    const { bridge } = await this.getFolloweeOrThrow(followerId, followeeId, ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW);
+  async follow(
+    followerId: number,
+    followeeId: number,
+  ): Promise<true | typeof ERROR.ALREADY_FOLLOW_USER | typeof ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW> {
+    const response = await this.getFolloweeOrThrow(followerId, followeeId, ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW);
+    if (!response.result) {
+      return response;
+    }
 
-    if (bridge) {
-      throw new BadRequestException(ERROR.ALREADY_FOLLOW_USER);
+    if (response.bridge) {
+      return ERROR.ALREADY_FOLLOW_USER;
     }
 
     await this.userBridgesRepository.save({ firstUserId: followerId, secondUserId: followeeId });
     return true;
   }
 
-  private async getFolloweeOrThrow(followerId: number, followeeId: number, customError: ValueOfError) {
+  private async getFolloweeOrThrow<T extends ValueOfError>(followerId: number, followeeId: number, customError: T) {
     const [followee, bridge, reversedBridge] = await Promise.all([
       this.usersRepository.findOne({ where: { id: followeeId } }),
       this.userBridgesRepository.findOne({ where: { firstUserId: followerId, secondUserId: followeeId } }),
@@ -147,9 +155,9 @@ export class UsersService {
     ]);
 
     if (!followee) {
-      throw new BadRequestException(customError);
+      return customError;
     }
 
-    return { followee, bridge, reversedBridge };
+    return { result: true as const, followee, bridge, reversedBridge };
   }
 }

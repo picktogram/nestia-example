@@ -104,23 +104,14 @@ describe('User Entity', () => {
     });
 
     it('이미 좋아요를 누른 디자이너에게 좋아요 시 에러를 발생시킨다.', async () => {
-      try {
-        await controller.follow(follower.id, followee.id);
-        await controller.follow(follower.id, followee.id);
-
-        expect(1).toBe(2);
-      } catch (err: any) {
-        expect(err.message).toBe('이미 좋아요를 누른 디자이너님입니다!');
-      }
+      await controller.follow(follower.id, followee.id);
+      const response = await controller.follow(follower.id, followee.id);
+      expect(response.data).toBe('이미 좋아요를 누른 디자이너님입니다!');
     });
 
     it('존재하지 않는 디자이너에 대해서는 좋아요를 할 수 없어야 한다.', async () => {
-      try {
-        await controller.follow(follower.id, NON_EXIST);
-        expect(1).toBe(2);
-      } catch (err: any) {
-        expect(err.message).toBe('팔로우할 디자이너님을 찾지 못했습니다.');
-      }
+      const response = await controller.follow(follower.id, NON_EXIST);
+      expect(response.data).toBe('팔로우할 디자이너님을 찾지 못했습니다.');
     });
 
     // NOTE : deprecated

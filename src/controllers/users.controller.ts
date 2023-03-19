@@ -5,7 +5,7 @@ import { User } from '../common/decorators/user.decorator';
 import { UserId } from '../common/decorators/user-id.decorator';
 import { TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import { JwtGuard } from '../auth/guards/jwt.guard';
-import { createPaginationForm, createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
+import { createPaginationForm, createResponseForm, ResponseForm, Try } from '../interceptors/transform.interceptor';
 import { PaginationDto, UserType } from '../types';
 import typia from 'typia';
 import { ERROR } from '../config/constant/error';
@@ -98,14 +98,16 @@ export class UsersController {
    * @param userId
    * @param followeeId
    * @returns 성공 시 true를 반환한다.
+   * @throws 4010 아직 팔로우한 적 없는 디자이너님에요!
+   * @throws 4011 언팔로우할 디자이너님을 찾지 못했습니다.
    */
   @TypedRoute.Delete(':id/follow')
   async unfollow(
     @UserId() userId: number,
     @TypedParam('id', 'number') followeeId: number,
-  ): Promise<ResponseForm<true>> {
+  ): Promise<Try<true, typeof ERROR.STILL_UNFOLLOW_USER | typeof ERROR.CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW>> {
     const response = await this.usersService.unfollow(userId, followeeId);
-    return createResponseForm(response);
+    return response === true ? createResponseForm(response) : response;
   }
 
   /**
@@ -115,13 +117,26 @@ export class UsersController {
    * @param userId
    * @param followeeId
    * @returns 성공 시 true를 반환한다.
+   * @throws 4008 이미 좋아요를 누른 디자이너님입니다!
+   * @throws 4009 팔로우할 디자이너님을 찾지 못했습니다.
+   * @throws 4017 설마 자기 자신을 팔로우하려고 했어요?!
    */
   @TypedRoute.Post(':id/follow')
-  async follow(@UserId() userId: number, @TypedParam('id', 'number') followeeId: number): Promise<ResponseForm<true>> {
+  async follow(
+    @UserId() userId: number,
+    @TypedParam('id', 'number') followeeId: number,
+  ): Promise<
+    Try<
+      true,
+      | typeof ERROR.ALREADY_FOLLOW_USER
+      | typeof ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW
+      | typeof ERROR.CANNOT_FOLLOW_MYSELF
+    >
+  > {
     if (userId === followeeId) {
-      throw new BadRequestException(ERROR.CANNOT_FOLLOW_MYSELF);
+      return ERROR.CANNOT_FOLLOW_MYSELF;
     }
     const response = await this.usersService.follow(userId, followeeId);
-    return createResponseForm(response);
+    return response === true ? createResponseForm(response) : response;
   }
 }

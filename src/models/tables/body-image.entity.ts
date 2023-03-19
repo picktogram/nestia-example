@@ -37,7 +37,7 @@ export class BodyImageEntity extends CommonCloumns {
   /**
    * 이미지의 정렬 순서로, 오름차순 정렬된다.
    */
-  @Column('decimal', { name: 'position', precision: 6, scale: 5, default: 0 })
+  @Column('numeric', { name: 'position', default: 0 })
   position?: number | `${number}` | null;
 
   /**

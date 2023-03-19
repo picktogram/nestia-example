@@ -4,6 +4,7 @@ import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ExtendedResponse, ListOutputValue } from '../types';
+import { ValueOfError } from '../config/constant/error';
 
 export const calcListTotalCount = (totalCount = 0, limit = 0): { totalResult: number; totalPage: number } => {
   const totalResult = totalCount;
@@ -107,3 +108,8 @@ export function createResponseForm<T>(data: T, requestToResponse?: `${number}ms`
     data,
   } as const;
 }
+
+export type Try<T, E extends ValueOfError> = ResponseForm<T> | E;
+// export type Try<T, E extends ValueOfError> = ResponseForm<T> | E;
+// export type Try<T, E extends ValueOfError | null> = E extends ValueOfError ? ResponseForm<T> | E : ResponseForm<T>;
+// export type Try<T, E extends ValueOfError | null> = E extends null ? ResponseForm<T> : ResponseForm<T> | E;

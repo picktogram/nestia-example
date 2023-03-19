@@ -7,6 +7,7 @@ import typia from 'typia';
 import { CreateUserDto } from '../../models/dtos/create-user.dto';
 import { DecodedUserToken } from '../../models/tables/user.entity';
 import { ERROR, ValueOfError } from '../../config/constant/error';
+import { ResponseForm } from '../../interceptors/transform.interceptor';
 
 describe('E2E users test', () => {
   const host = 'http://localhost:4000';
@@ -76,6 +77,15 @@ describe('E2E users test', () => {
         follower.data.id,
       );
 
+      if (response.code === 1000) {
+        response.data;
+      } else if (response.code === 4008) {
+        response.data;
+      } else {
+        // 아직 명시되지 않았지만 에러가 추가될 수 있다.
+        response.data;
+      }
+
       expect(response.data).toBe(true);
     });
 
@@ -83,31 +93,20 @@ describe('E2E users test', () => {
      * 단 회원 가입 시 이미 자기 자신을 팔로우한 상태로 되어 있다.
      */
     it('나 자신을 팔로우하는 것은 불가능하다.', async () => {
-      try {
-        const response = await UserApis.follow.follow(
-          {
-            host,
-            headers: {
-              Authorization: token,
-            },
+      const response = await UserApis.follow.follow(
+        {
+          host,
+          headers: {
+            Authorization: token,
           },
-          decodedToken.id,
-        );
-        /*
-         * 반드시 에러로 진입하여야 하기 때문에 아래는 일부러 틀린 코드를 작성한다.
-         */
-        expect(1).toBe(2);
-      } catch (err: unknown) {
-        expect(err).toBeInstanceOf(Error);
-        /**
-         * TODO : 현재 nestia로 인해 결과 값이 transformer가 안멱혀서 JSON으로 나오니 수정 필요
-         * TODO : 에러를 던지지 않고 타입으로 던질 수 있게 수정하기
-         */
-        // if (err instanceof Error) {
-        //   expect(err.message).toBeDefined();
-        //   expect(err.message).toBe(ERROR.CANNOT_FOLLOW_MYSELF.message);
-        // }
-      }
+        },
+        decodedToken.id,
+      );
+      /*
+       * 반드시 에러로 진입하여야 하기 때문에 아래는 일부러 틀린 코드를 작성한다.
+       */
+
+      expect(response.code).toBe(4017);
     });
   });
 
@@ -225,6 +224,10 @@ describe('E2E users test', () => {
 
     it.todo('나 자신은 친구 추천 목록에서 나와서는 안 된다.');
     it.todo('친구의 친구들을 추천해야 하며, 사유를 말해야 한다.');
+
+    /**
+     * 유명인의 기준은 팔로우가 100명 이상인 사람이다.
+     */
     it.todo('유명인들을 추천해주어야 하며, 사유를 말해야 한다.');
     it.todo('내가 좋아요를 누른 게시글과 댓글이 우연히 n 번 이상 동일 인물인 경우 추천해주며, 사유를 말해줘야 한다.');
   });
@@ -278,5 +281,56 @@ describe('E2E users test', () => {
     });
 
     it.todo('조회한 유저가 자기 자신일 경우에는 그걸 의미하는 값을 전달해야 한다.');
+  });
+
+  /**
+   * 유저가 다른 유저를 언팔로우하는 상황
+   */
+  describe('DELETE api/v1/users/:id/follow', () => {
+    let token: string = '';
+    let decodedToken: DecodedUserToken;
+
+    let userToBeFollowed: ResponseForm<DecodedUserToken>;
+
+    beforeEach(async () => {
+      // NOTE : 팔로우를 하는 쪽
+      const designer = typia.random<CreateUserDto>();
+      const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      decodedToken = signUpResponse.data;
+
+      // NOTE : 팔로우하는 쪽에서는 로그인까지 진행
+      const response = await AuthApis.login({ host }, designer);
+      token = response.data;
+
+      // NOTE : 팔로우를 당하는 쪽
+      const designer2 = typia.random<CreateUserDto>();
+      userToBeFollowed = await AuthApis.sign_up.signUp({ host }, designer);
+
+      await UserApis.follow.follow(
+        {
+          host,
+          headers: {
+            authorization: token,
+          },
+        },
+        userToBeFollowed.data.id,
+      );
+    });
+
+    it('유저가 언팔로우에 성공한다.', async () => {
+      const unfollowResponse = await UserApis.follow.unfollow(
+        {
+          host,
+          headers: {
+            authorization: token,
+          },
+        },
+        userToBeFollowed.data.id,
+      );
+
+      expect(unfollowResponse.data).toBeDefined();
+      // expect(unfollowResponse.data).toBeInstanceOf(Array);
+      // expect(unfollowResponse.data).toBe(1);
+    });
   });
 });

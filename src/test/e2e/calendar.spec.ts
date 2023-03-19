@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../app.module';
 import { INestApplication } from '@nestjs/common';
+
 import typia from 'typia';
 
 describe('E2E calendar test', () => {
@@ -25,7 +26,20 @@ describe('E2E calendar test', () => {
    * 캘린더를 조회한다.
    */
   describe('GET api/v1/calendar', () => {
-    it.todo('캘린더에는 내가 팔로우한 사람들의 생일이 조회되어야 한다.');
+    beforeEach(async () => {
+      // 캘린더 API를 쓸 가상의 유저를 회원가입, 로그인해놓고, 토큰을 저장해둘 것
+    });
+
+    it('캘린더에는 내가 팔로우한 사람들의 생일이 조회되어야 한다.', async () => {
+      // 팔로우 당할 사람을 생성 ( 생일은 내가 미리 지정한 임의의 날짜 )
+      // 팔로우 당할 사람을, 팔로우
+      // 내 친구 조회
+      // 팔로우가 있는 것 확인 완료
+      // 캘린더 API 호출하여 그 사람의 생일이 나오나 테스트
+      // const response = CalendarApis.get({host, headers}, {});
+      // expect(response.data.list).toBeInstanceOf(Array);
+      // expect(response.data.list.find((el) => el.userId === 방금만든유저.id).birth.toString()).toBe(생일.toString());
+    });
 
     it.todo('캘린더에는 내 생일도 표기되야 하며, 내 생일은 더욱 "특별히" 표현되어야 한다.');
 
