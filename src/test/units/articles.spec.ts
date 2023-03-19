@@ -1,15 +1,15 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ArticleEntity } from '../models/tables/article.entity';
-import { TypeOrmModuleOptions } from '../config/typeorm';
-import { ArticlesController } from '../controllers/articles.controller';
-import { ArticlesService } from '../providers/articles.service';
-import { ArticlesModule } from '../modules/articles.module';
-import { UserEntity } from '../models/tables/user.entity';
-import { generateRandomNumber } from '../utils/generate-random-number';
-import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
-import { CommentEntity } from '../models/tables/comment.entity';
+import { ArticleEntity } from '../../models/tables/article.entity';
+import { TypeOrmModuleOptions } from '../../config/typeorm';
+import { ArticlesController } from '../../controllers/articles.controller';
+import { ArticlesService } from '../../providers/articles.service';
+import { ArticlesModule } from '../../modules/articles.module';
+import { UserEntity } from '../../models/tables/user.entity';
+import { generateRandomNumber } from '../../utils/generate-random-number';
+import { GetAllArticlesResponseDto } from '../../models/response/get-all-articles-response.dto';
+import { CommentEntity } from '../../models/tables/comment.entity';
 
 describe('Article Entity', () => {
   let controller: ArticlesController;
@@ -56,7 +56,7 @@ describe('Article Entity', () => {
           password: readerMetadata,
         });
 
-        const response = await service.read(reader.id, { page: 1, limit: 10 });
+        const response = await service.read(reader.id, { page: 1, limit: 10 }, {});
         list = response.list;
         count = response.count;
       });
@@ -95,11 +95,11 @@ describe('Article Entity', () => {
           password: writerMetadata,
         });
 
-        await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata });
+        await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata, type: 'question' });
       });
 
       it('본인이 게시글의 작성자인 경우에는 본인인 줄 알 수 있게 표기가 되어야 한다.', async () => {
-        const response = await service.read(writer.id, { page: 1, limit: 10 });
+        const response = await service.read(writer.id, { page: 1, limit: 10 }, {});
         const myArticle = response.list.find((el) => el.writer.id === writer.id);
 
         expect(myArticle).toBeDefined();
@@ -128,7 +128,7 @@ describe('Article Entity', () => {
           password: writerMetadata,
         });
 
-        article = await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata });
+        article = await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata, type: 'question' });
         comments = await CommentEntity.save(
           [1, 2, 3].map((el) => {
             return CommentEntity.create({
@@ -139,7 +139,7 @@ describe('Article Entity', () => {
           }),
         );
 
-        const response = await service.read(writer.id, { page: 1, limit: 100 });
+        const response = await service.read(writer.id, { page: 1, limit: 100 }, {});
         list = response.list;
       });
 
@@ -167,7 +167,7 @@ describe('Article Entity', () => {
         const checkIsSame = service['checkIsSamePosition'](positions);
         expect(checkIsSame).toBe('This is to be failed.');
       } catch (err: any) {
-        expect(err?.message).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
+        expect(err?.response?.data).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
       }
     });
 
@@ -204,7 +204,7 @@ describe('Article Entity', () => {
         password: writerMetadata,
       });
 
-      article = await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata });
+      article = await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata, type: 'question' });
       comments = await CommentEntity.save(
         [1, 2, 3].map((el) => {
           return CommentEntity.create({
@@ -219,17 +219,23 @@ describe('Article Entity', () => {
     it('게시글을 조회할 때, 게시글에 댓글이 있는 경우 댓글이 조회되어야 한다.', async () => {
       const detailArticle = await controller.getOneDetailArticle(writer.id, article.id);
 
-      expect(detailArticle.comments.length).toBeGreaterThan(0);
-      expect(detailArticle.comments.length).toBe(3);
+      expect(detailArticle.data).toBeDefined();
+      if (detailArticle.data) {
+        expect(detailArticle.data.comments).toBeInstanceOf(Array);
+        if (detailArticle.data.comments) {
+          expect(detailArticle.data.comments.length).toBeGreaterThan(0);
+          expect(detailArticle.data.comments.length).toBe(3);
+          const comment = detailArticle.data.comments.at(0);
+          expect(comment).toBeDefined();
 
-      const comment = detailArticle.comments.at(0);
-      expect(comment).toBeDefined();
-      if (comment) {
-        expect(comment.id).toBeDefined();
-        expect(comment.parentId).toBeDefined();
-        expect(comment.contents).toBeDefined();
-        expect(comment.xPosition).toBeDefined();
-        expect(comment.yPosition).toBeDefined();
+          if (comment) {
+            expect(comment.id).toBeDefined();
+            expect(comment.parentId).toBeDefined();
+            expect(comment.contents).toBeDefined();
+            expect(comment.xPosition).toBeDefined();
+            expect(comment.yPosition).toBeDefined();
+          }
+        }
       }
     });
   });
@@ -247,7 +253,7 @@ describe('Article Entity', () => {
         password: writerMetadata,
       });
 
-      article = await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata });
+      article = await ArticleEntity.save({ writerId: writer.id, contents: writerMetadata, type: 'question' });
       comments = await CommentEntity.save(
         [1, 2, 3].map((el) => {
           return CommentEntity.create({

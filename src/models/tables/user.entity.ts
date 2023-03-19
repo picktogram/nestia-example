@@ -1,8 +1,12 @@
 import { Entity, Column, ManyToMany, JoinTable, OneToMany, AfterLoad } from 'typeorm';
 import { CommonCloumns } from '../common/common-columns';
+import { AlarmEntity } from './alarm.entity';
 import { ArticleEntity } from './article.entity';
 import { CommentEntity } from './comment.entity';
-import { UserBridgeEntity } from './userBridge.entity';
+import { ReportArticleEntity } from './report-article.entity';
+import { UserBridgeEntity } from './user-bridge.entity';
+import { UserLikeArticleEntity } from './user-like-article.entity';
+import { UserLikeCommentEntity } from './user-like-comment.entity';
 
 export type DecodedUserToken = Pick<UserEntity, 'id' | 'name' | 'nickname' | 'email' | 'birth'>;
 
@@ -35,8 +39,8 @@ export class UserEntity extends CommonCloumns {
    * @minLength 11
    * @maxLength 13
    */
-  @Column({ nullable: true, unique: true, select: false })
-  public phoneNumber?: string; //`${number}-${number}-${number}`;
+  @Column('text', { nullable: true, unique: true, select: false })
+  public phoneNumber!: string;
 
   /**
    * 사용자의 이메일 주소로 로그인 시 필요
@@ -55,8 +59,6 @@ export class UserEntity extends CommonCloumns {
 
   /**
    * 사용자의 생일을 의미하는 값
-   *
-   * @pattern ^(19\d{2}|2\d{3})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$
    */
   @Column('timestamp with time zone', { nullable: true, select: false })
   public birth?: string | null;
@@ -64,20 +66,20 @@ export class UserEntity extends CommonCloumns {
   /**
    * 사용자의 성별로 true면 남자라고 가정한다.
    */
-  @Column({ nullable: true, select: false })
-  public gender?: boolean;
+  @Column('boolean', { nullable: true, select: false })
+  public gender?: boolean | null;
 
   /**
    * 회원 가입 시 받는 값으로 수신 거부 가능
    */
-  @Column({ select: false, default: false, comment: 'sms 광고 수신 동의' })
-  public smsAdsConsent?: boolean;
+  @Column('boolean', { select: false, default: false, comment: 'sms 광고 수신 동의' })
+  public smsAdsConsent!: boolean;
 
   /**
    * 회원 가입 시 받는 값으로 수신 거부 가능
    */
-  @Column({ select: false, default: false, comment: 'email 광고 수신 동의' })
-  public emailAdsConsent?: boolean;
+  @Column('boolean', { select: false, default: false, comment: 'email 광고 수신 동의' })
+  public emailAdsConsent!: boolean;
 
   /**
    * 유저의 탈퇴 여부를 의미한다.
@@ -108,6 +110,18 @@ export class UserEntity extends CommonCloumns {
 
   @OneToMany(() => CommentEntity, (c) => c.writer)
   comments!: CommentEntity[];
+
+  @OneToMany(() => AlarmEntity, (a) => a.user)
+  alarms!: AlarmEntity[];
+
+  @OneToMany(() => ReportArticleEntity, (ra) => ra.user)
+  userReportArticle!: ReportArticleEntity[];
+
+  @OneToMany(() => UserLikeArticleEntity, (ula) => ula.user)
+  userLikesArticles?: UserLikeArticleEntity[];
+
+  @OneToMany(() => UserLikeCommentEntity, (ulc) => ulc.user)
+  userLikesComements?: UserLikeCommentEntity[];
 
   /**
    * methods

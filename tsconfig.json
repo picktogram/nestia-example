@@ -30,5 +30,5 @@
     "strict": true
   },
   "include": ["./src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "src/test/**/*.spec.ts"]
+  "exclude": ["node_modules", "dist", "src/test/**/*.spec.ts", "./src/api"]
 }

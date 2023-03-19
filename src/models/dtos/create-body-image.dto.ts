@@ -1,3 +1,3 @@
-import { BodyImageEntity } from '../tables/bodyImage.entity';
+import { BodyImageEntity } from '../tables/body-image.entity';
 
 export interface CreateRootBodyImageDto extends Pick<BodyImageEntity, 'url' | 'position'> {}

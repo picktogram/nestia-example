@@ -1,20 +1,22 @@
-import { BadRequestException, Controller, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { TypedRoute } from '@nestia/core';
+import { BadRequestException, Controller, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBadRequestResponse, ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createErrorSchema, ERROR } from '../config/constant/error';
 import { CreateBodyImageMulterOptions } from '../config/multer-s3/multer-option';
+import { createResponseForm } from '../interceptors/transform.interceptor';
 import { BodyImagesService } from '../providers/body-images.service';
+import { Try } from '../types';
 
-@ApiBearerAuth('Bearer')
 @UseGuards(JwtGuard)
 @Controller('api/v1/body-image')
 export class BodyImagesController {
   constructor(private readonly bodyImagesService: BodyImagesService, private readonly configService: ConfigService) {}
 
   /**
-   * 230129 - 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 10개이다.
+   * @summary 230129 - 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 10개이다.
    * @tag body-images
    * @param files 저장할 이미지
    * @returns 이미지가 저장되고 난 후의 경로의 배열
@@ -39,11 +41,12 @@ export class BodyImagesController {
       },
     },
   })
-  @Post()
-  async upload(@UploadedFiles() files: Express.MulterS3.File[]): Promise<string[]> {
+  @TypedRoute.Post()
+  async upload(@UploadedFiles() files: Express.MulterS3.File[]): Promise<Try<string[]>> {
     if (!files?.length) {
       throw new BadRequestException(ERROR.SELECT_MORE_THAN_ONE_BODY_IMAGE);
     }
-    return files.map(({ location }) => location);
+    const locations = files.map(({ location }) => location);
+    return createResponseForm(locations);
   }
 }
