@@ -6,8 +6,9 @@ import { ApiBadRequestResponse, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createErrorSchema, ERROR } from '../config/constant/error';
 import { CreateBodyImageMulterOptions } from '../config/multer-s3/multer-option';
-import { createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
+import { createResponseForm } from '../interceptors/transform.interceptor';
 import { BodyImagesService } from '../providers/body-images.service';
+import { ResponseForm } from '../types';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/body-image')

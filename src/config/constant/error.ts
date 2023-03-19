@@ -1,5 +1,5 @@
 import { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
-import { NTuple } from '../../types';
+import { NTuple, ValueOfError } from '../../types';
 
 export const ERROR = {
   ALREADY_CREATED_EMAIL: { result: false, code: 4001, data: '이미 생성된 이메일입니다.' },
@@ -28,9 +28,6 @@ export const ERROR = {
   CANNOT_FIND_ONE_COMMENT: { result: false, code: 4016, data: '해당 댓글을 찾지 못했습니다.' },
   CANNOT_FOLLOW_MYSELF: { result: false, code: 4017, data: '설마 자기 자신을 팔로우하려고 했어요?!' },
 } as const;
-
-export type KeyOfError = keyof typeof ERROR;
-export type ValueOfError = (typeof ERROR)[KeyOfError];
 
 export const createErrorSchema = (error: ValueOfError): SchemaObject => {
   return {

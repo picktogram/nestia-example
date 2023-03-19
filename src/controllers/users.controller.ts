@@ -5,8 +5,8 @@ import { User } from '../common/decorators/user.decorator';
 import { UserId } from '../common/decorators/user-id.decorator';
 import { TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import { JwtGuard } from '../auth/guards/jwt.guard';
-import { createPaginationForm, createResponseForm, ResponseForm, Try } from '../interceptors/transform.interceptor';
-import { PaginationDto, UserType } from '../types';
+import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
+import { PaginationDto, ResponseForm, Try, TryCatch, UserType } from '../types';
 import typia from 'typia';
 import { ERROR } from '../config/constant/error';
 
@@ -63,7 +63,7 @@ export class UsersController {
   }
 
   /**
-   * @summary 230313 - 해당 디자이너님의 팔로워 ( 누구를 팔로우하고 있는지 ) 를 조회한다.
+   * @summary 230313 - 해당 디자이너님의 팔로워 ( 누구를 팔로우하고 있는지 ) 를 조회한다. (미완성)
    * @tag users
    * @param userId 조회를 요청한 사람, 즉 유저
    * @param designerId 조회를 당하는 사람, 즉 해당 디자이너
@@ -78,7 +78,7 @@ export class UsersController {
   }
 
   /**
-   * @summary 230313 - 해당 디자이너님의 팔로이 ( 누구를 팔로우하고 있는지 ) 를 조회한다.
+   * @summary 230313 - 해당 디자이너님의 팔로이 ( 누구를 팔로우하고 있는지 ) 를 조회한다. (미완성)
    * @tag users
    * @param userId 조회를 요청한 사람, 즉 유저
    * @param designerId 조회를 당하는 사람, 즉 해당 디자이너
@@ -88,8 +88,8 @@ export class UsersController {
   async checkFollowees(
     @UserId() userId: number,
     @TypedParam('id', 'number') designerId: number,
-  ): Promise<UserType.GetAcquaintanceResponse> {
-    return typia.random<UserType.GetAcquaintanceResponse>();
+  ): Promise<Try<UserType.GetAcquaintanceResponse>> {
+    return createResponseForm(typia.random<UserType.GetAcquaintanceResponse>());
   }
 
   /**
@@ -105,7 +105,7 @@ export class UsersController {
   async unfollow(
     @UserId() userId: number,
     @TypedParam('id', 'number') followeeId: number,
-  ): Promise<Try<true, typeof ERROR.STILL_UNFOLLOW_USER | typeof ERROR.CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW>> {
+  ): Promise<TryCatch<true, typeof ERROR.STILL_UNFOLLOW_USER | typeof ERROR.CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW>> {
     const response = await this.usersService.unfollow(userId, followeeId);
     return response === true ? createResponseForm(response) : response;
   }
@@ -126,7 +126,7 @@ export class UsersController {
     @UserId() userId: number,
     @TypedParam('id', 'number') followeeId: number,
   ): Promise<
-    Try<
+    TryCatch<
       true,
       | typeof ERROR.ALREADY_FOLLOW_USER
       | typeof ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW

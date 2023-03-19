@@ -8,8 +8,8 @@ import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
-import { ArticleType, CommentType, PaginationDto } from '../types';
-import { createPaginationForm, createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
+import { ArticleType, CommentType, PaginationDto, ResponseForm } from '../types';
+import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')

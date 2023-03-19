@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
+import type { ERROR } from '../config/constant/error';
 import type { PaginationForm } from '../interceptors/transform.interceptor';
 import type { CreateArticleDto } from '../models/dtos/create-article.dto';
 import type { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
@@ -10,6 +11,19 @@ import type { CategoryEntity } from '../models/tables/category.entity';
 import type { CommentEntity } from '../models/tables/comment.entity';
 import type { ReportArticleEntity } from '../models/tables/report-article.entity';
 import type { UserEntity } from '../models/tables/user.entity';
+
+export interface ResponseForm<T> {
+  result: true;
+  code: 1000;
+  requestToResponse?: `${number}ms`;
+  data: T;
+}
+
+export type KeyOfError = keyof typeof ERROR;
+export type ValueOfError = (typeof ERROR)[KeyOfError];
+
+export type Try<T> = ResponseForm<T>;
+export type TryCatch<T, E extends ValueOfError> = ResponseForm<T> | E;
 
 export interface NestiaTypeErrorObject {
   path: string;

@@ -3,7 +3,7 @@ import { Controller, Req, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBody } from '@nestjs/swagger';
 import { User } from '../common/decorators/user.decorator';
-import { createResponseForm, ResponseForm } from '../interceptors/transform.interceptor';
+import { createResponseForm } from '../interceptors/transform.interceptor';
 import { CreateUserDto } from '../models/dtos/create-user.dto';
 import { LoginUserDto } from '../models/dtos/login-user.dto';
 import { DecodedUserToken } from '../models/tables/user.entity';
@@ -13,6 +13,7 @@ import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleGuard } from './guards/google.guard';
 import { KaKaoGuard } from '../auth/guards/kakao.guard';
+import { ResponseForm } from '../types';
 
 @Controller('api/v1/auth')
 export class AuthController {
