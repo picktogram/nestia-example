@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BodyImagesRepository } from '@root/models/repositories/body-images.repository';
+import { BodyImagesRepository } from '../models/repositories/body-images.repository';
 
 @Injectable()
 export class BodyImagesService {

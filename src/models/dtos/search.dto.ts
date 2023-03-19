@@ -1,10 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, MaxLength } from 'class-validator';
-
-export class SearchDto {
-  @ApiProperty({ name: 'search', description: '검색어', required: false })
-  @IsOptional()
-  @IsString()
-  @MaxLength(200)
+export interface SearchDto {
+  /**
+   * 검색하고자 하는 키워드, 또는 문장일 수도 있다
+   * @maxLength 200
+   */
   search?: string;
 }

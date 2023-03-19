@@ -1,4 +1,4 @@
-import { CustomRepository } from '@root/config/typeorm/custom-typeorm.decorator';
+import { CustomRepository } from '../../config/typeorm/custom-typeorm.decorator';
 import { Repository } from 'typeorm';
 import { ArticleEntity } from '../tables/article.entity';
 

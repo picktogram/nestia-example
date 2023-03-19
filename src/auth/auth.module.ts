@@ -6,14 +6,16 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { CategoriesModule } from '@root/modules/categories.module';
-import { ArticlesModule } from '@root/modules/articles.module';
-import { UsersModule } from '@root/modules/users.module';
+import { CategoriesModule } from '../modules/categories.module';
+import { ArticlesModule } from '../modules/articles.module';
+import { UsersModule } from '../modules/users.module';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from './strategies/local.strategy';
-import { BodyImageModule } from '@root/modules/body-images.module';
-import { CommentsModule } from '@root/modules/comments.module';
-import { NestiaController } from '@root/controllers/nestia.controller';
+import { BodyImageModule } from '../modules/body-images.module';
+import { CommentsModule } from '../modules/comments.module';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { KakaoStrategy } from '../auth/strategies/kakao.strategy';
+import { AlarmsModule } from '../modules/alarms.module';
 
 @Module({
   imports: [
@@ -34,9 +36,10 @@ import { NestiaController } from '@root/controllers/nestia.controller';
     ArticlesModule,
     BodyImageModule,
     CommentsModule,
+    AlarmsModule,
   ],
-  controllers: [AuthController, NestiaController],
-  providers: [AuthService, JwtStrategy, LocalStrategy],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy, LocalStrategy, GoogleStrategy, KakaoStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

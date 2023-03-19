@@ -1,18 +1,68 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ERROR } from '@root/config/constant/error';
-import { CreateCommentDto } from '@root/models/dtos/create-comment.dto';
-import { ArticlesRepository } from '@root/models/repositories/articles.repository';
-import { CommentsRepository } from '@root/models/repositories/comments.repository';
-import { ArticleEntity } from '@root/models/tables/article.entity';
-import { CommentEntity } from '@root/models/tables/comment.entity';
+import { ERROR } from '../config/constant/error';
+import { CreateCommentDto } from '../models/dtos/create-comment.dto';
+import { ArticlesRepository } from '../models/repositories/articles.repository';
+import { CommentsRepository } from '../models/repositories/comments.repository';
+import { UserLikeCommentsRepository } from '../models/repositories/user-like-comments.repository';
+import { ArticleEntity } from '../models/tables/article.entity';
+import { CommentEntity } from '../models/tables/comment.entity';
+import { CommentType } from '../types';
+import { getOffset } from '../utils/getOffset';
 
 @Injectable()
 export class CommentsService {
   constructor(
-    @InjectRepository(CommentsRepository) private readonly commentsRepository: CommentsRepository,
-    @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
+    @InjectRepository(CommentsRepository)
+    private readonly commentsRepository: CommentsRepository,
+    @InjectRepository(ArticlesRepository)
+    private readonly articlesRepository: ArticlesRepository,
+    @InjectRepository(UserLikeCommentsRepository)
+    private readonly userLikeCommentsRepository: UserLikeCommentsRepository,
   ) {}
+
+  async likeOrUnlike(userId: number, commentId: number) {
+    const like = await this.userLikeCommentsRepository.findOneBy({ userId, commentId });
+
+    if (like) {
+      await this.userLikeCommentsRepository.remove(like);
+    } else {
+      await this.userLikeCommentsRepository.save({ userId, commentId });
+    }
+
+    return !like;
+  }
+
+  async getOne(userId: number, articleId: number, commentId: number) {
+    const comment = await this.commentsRepository.findOne({ where: { id: commentId, articleId } });
+    if (!comment) {
+      throw new BadRequestException(ERROR.CANNOT_FIND_ONE_COMMENT);
+    }
+    return comment;
+  }
+
+  async readByArticleId(
+    articleId: number,
+    { page, limit }: { page: number; limit: number },
+  ): Promise<{ list: CommentType.RootComment[]; count: number }> {
+    const { skip, take } = getOffset({ page, limit });
+    const [list, count] = await this.commentsRepository.findAndCount({
+      select: {
+        id: true,
+        writerId: true,
+        parentId: true,
+        contents: true,
+        xPosition: true,
+        yPosition: true,
+      },
+      where: { articleId },
+      order: { createdAt: 'DESC' },
+      skip,
+      take,
+    });
+
+    return { list, count };
+  }
 
   async write(writerId: number, articleId: number, createCommentDto: CreateCommentDto): Promise<CommentEntity> {
     const article = await this.articlesRepository.findOne({
@@ -41,7 +91,8 @@ export class CommentsService {
       throw new BadRequestException(ERROR.TOO_MANY_REPORTED_ARTICLE);
     }
 
-    const comment = await this.commentsRepository.save({ writerId, articleId, ...createCommentDto });
+    const entityToSave = CommentEntity.create({ writerId, articleId, ...createCommentDto });
+    const comment = await this.commentsRepository.save(entityToSave);
     return comment;
   }
 }

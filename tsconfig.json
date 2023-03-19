@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "CommonJS",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -12,23 +12,23 @@
     "baseUrl": "./",
     "incremental": true,
     "paths": {
-      "@root/*": ["./src/*"]
+      "../*": ["./src/*"]
     },
     "noEmit": false,
-    "typeRoots": ["node_modules/@types", "./src/types"],
+    "typeRoots": ["node_modules/@types", "./src/types/**.*.d.ts"],
     "esModuleInterop": true,
     "plugins": [
       {
         "transform": "@nestia/core/lib/transform",
         "validate": "assert", // "assert", "is", "validate"
-        "stringify": "is" // "stringify", "assert", "is", "validate", null
+        "stringify": "assert" // "stringify", "assert", "is", "validate", null
       },
       {
         "transform": "typia/lib/transform"
       }
     ],
-    "strict": false
+    "strict": true
   },
   "include": ["./src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "*.spec.ts"]
+  "exclude": ["node_modules", "dist", "src/test/**/*.spec.ts", "./src/api"]
 }

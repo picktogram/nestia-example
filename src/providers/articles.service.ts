@@ -1,65 +1,131 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ERROR } from '@root/config/constant/error';
-import { CreateArticleDto } from '@root/models/dtos/create-article.dto';
-import { PaginationDto } from '@root/models/dtos/pagination.dto';
-import { ArticlesRepository } from '@root/models/repositories/articles.repository';
-import { CommentsRepository } from '@root/models/repositories/comments.repository';
-import { UserBridgesRepository } from '@root/models/repositories/user-bridge.repository';
-import { GetAllArticlesResponseDto } from '@root/models/response/get-all-articles-response.dto';
-import { GetOneArticleResponseDto } from '@root/models/response/get-one-article-response.dto';
-import { ArticleEntity } from '@root/models/tables/article.entity';
-import { CommentEntity } from '@root/models/tables/comment.entity';
-import { UserBridgeEntity } from '@root/models/tables/userBridge.entity';
-import { ArticleType, UserBridgeType } from '@root/types';
-import { getOffset } from '@root/utils/getOffset';
+import { ERROR } from '../config/constant/error';
+import { CreateArticleDto } from '../models/dtos/create-article.dto';
+import { ArticlesRepository } from '../models/repositories/articles.repository';
+import { CommentsRepository } from '../models/repositories/comments.repository';
+import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
+import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
+import { ArticleEntity } from '../models/tables/article.entity';
+import { UserBridgeEntity } from '../models/tables/user-bridge.entity';
+import { ArticleType, PaginationDto, UserBridgeType } from '../types';
+import { getOffset } from '../utils/getOffset';
 import { DataSource, In } from 'typeorm';
+import { CommentEntity } from '../models/tables/comment.entity';
+import { ReportArticlesRepository } from '../models/repositories/report-articles.repository';
+import { UserLikeArticlesRepository } from '../models/repositories/user-like-articles.repository';
 
 @Injectable()
 export class ArticlesService {
   constructor(
-    @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
-    @InjectRepository(CommentsRepository) private readonly commentsRepository: CommentsRepository,
-    @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
+    @InjectRepository(ArticlesRepository)
+    private readonly articlesRepository: ArticlesRepository,
+    @InjectRepository(CommentsRepository)
+    private readonly commentsRepository: CommentsRepository,
+    @InjectRepository(UserBridgesRepository)
+    private readonly userBridgesRepository: UserBridgesRepository,
+    @InjectRepository(ReportArticlesRepository)
+    private readonly reportArticlesRepository: ReportArticlesRepository,
+    @InjectRepository(UserLikeArticlesRepository)
+    private readonly userLikeArticlesRepository: UserLikeArticlesRepository,
 
     private readonly dataSource: DataSource,
   ) {}
 
-  async getOneDetailArticle(userId: number, articleId: number): Promise<GetOneArticleResponseDto> {
-    const article = await this.articlesRepository
-      .createQueryBuilder('a')
-      .select(['a.id', 'a.contents'])
-      .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
-      .addSelect(['i.id', 'i.position', 'i.url', 'i.depth'])
-      .leftJoin('a.images', 'i', 'i.parentId IS NULL')
-      .innerJoin('a.writer', 'w')
-      .where('a.id = :articleId', { articleId })
-      .getOne();
+  async likeOrUnLike(userId: number, articleId: number): Promise<boolean> {
+    const like = await this.userLikeArticlesRepository.findOneBy({
+      userId,
+      articleId,
+    });
+
+    if (like) {
+      await this.userLikeArticlesRepository.remove(like);
+    } else {
+      await this.userLikeArticlesRepository.save({ userId, articleId });
+    }
+
+    return !like;
+  }
+
+  async modify(articleId: number, updateArticleDto: ArticleType.UpdateArticleDto) {
+    await this.articlesRepository.update({ id: articleId }, updateArticleDto);
+  }
+
+  async report(userId: number, articleId: number, reason?: string) {
+    const report = await this.reportArticlesRepository.findOneBy({ userId, articleId });
+    if (!report) {
+      await this.reportArticlesRepository.save({ userId, articleId, reason });
+      return true;
+    }
+
+    if (report.status === 'canceled') {
+      await this.reportArticlesRepository.update({ userId, articleId }, { status: 'reported' });
+    }
+
+    throw new BadRequestException(ERROR.ARLEADY_REPORTED_ARTICLE);
+  }
+
+  async getOneDetailArticle(userId: number, articleId: number): Promise<ArticleType.DetailArticle> {
+    const [article, comments] = await Promise.all([
+      this.articlesRepository
+        .createQueryBuilder('a')
+        .select(['a.id', 'a.contents'])
+        .addSelect(['i.id', 'i.position', 'i.url', 'i.depth'])
+        .addSelect(['w.id', 'w.nickname', 'w.profileImage'])
+        .leftJoin('a.images', 'i', 'i.parentId IS NULL')
+        .innerJoin('a.writer', 'w')
+        .where('a.id = :articleId', { articleId })
+        .getOne(),
+      this.commentsRepository.find({
+        select: { id: true, parentId: true, contents: true, xPosition: true, yPosition: true },
+        where: { articleId },
+        order: { createdAt: 'DESC' },
+        take: 10,
+      }),
+    ]);
 
     if (!article) {
       throw new BadRequestException(ERROR.CANNOT_FINDONE_ARTICLE);
     }
 
-    return new GetOneArticleResponseDto(article);
+    article.comments = comments;
+    return article;
   }
 
   async read(
     userId: number,
     { page, limit }: PaginationDto,
+    { isNoReply }: { isNoReply?: boolean },
   ): Promise<{
     list: GetAllArticlesResponseDto[];
     count: number;
   }> {
-    const { skip, take } = getOffset(page, limit);
+    const { skip, take } = getOffset({ page, limit });
 
-    const query = this.articlesRepository
+    let query = this.articlesRepository
       .createQueryBuilder('a')
       .select(['a.id AS "id"', 'a.contents AS "contents"', 'a.createdAt AS "createdAt"'])
       .addSelect(['w.id AS "writerId"', 'w.nickname AS "nickname"', 'w.profileImage AS "profileImage"'])
       .leftJoin('a.writer', 'w')
+      .where('1=1')
       .orderBy('a.createdAt', 'DESC')
       .offset(skip)
       .limit(take);
+
+    if (isNoReply === true) {
+      query = query
+        .andWhere((qb) => {
+          const subQuery = qb
+            .subQuery()
+            .select('COUNT(*)')
+            .from(CommentEntity, 'c')
+            .where('c.articleId = a.id')
+            .getQuery();
+
+          return `${subQuery} = 0`;
+        })
+        .andWhere('a.type = :type', { type: 'question' });
+    }
 
     const [list, count]: [ArticleType.ReadArticleResponse[], number] = await Promise.all([
       query.getRawMany(),
@@ -67,16 +133,7 @@ export class ArticlesService {
     ]);
 
     const [comments, userBridges] = await Promise.all([
-      this.dataSource
-        .createQueryBuilder()
-        .from((qb) => {
-          return qb
-            .from(CommentEntity, 'c')
-            .select(['c.id AS "id"', 'c.contents AS "contents"', 'c.articleId AS "articleId"'])
-            .addSelect('ROW_NUMBER() OVER (PARTITION BY c."articleId" ORDER BY c."createdAt" DESC)::int4 AS "position"')
-            .where('c.articleId IN (:...articleIds)', { articleIds: list.map((el) => el.id) });
-        }, 'cte')
-        .getRawMany(),
+      this.getRepresentCommentsByArticeIds(list.map((el) => el.id)),
       this.userBridgesRepository.find({
         where: [
           {
@@ -103,13 +160,14 @@ export class ArticlesService {
     };
   }
 
-  async write(userId: number, { contents, images }: CreateArticleDto): Promise<ArticleEntity> {
+  async write(userId: number, { contents, images, type }: CreateArticleDto): Promise<ArticleEntity> {
     const checkedImages = this.checkIsSamePosition(images);
     const writedArticle = await this.articlesRepository.save(
       ArticleEntity.create({
         writerId: userId,
         contents,
         images: checkedImages,
+        type,
       }),
     );
 
@@ -118,9 +176,19 @@ export class ArticlesService {
     return writedArticle;
   }
 
-  private checkIsSamePosition<T extends { position: number }>(images: T[]): T[] {
+  private checkIsSamePosition<T extends { position?: number | `${number}` | null }>(images?: T[]): T[] {
+    if (!images || images.length === 0) {
+      return [];
+    }
+
     const isSamePositionImage = images
-      .map((el) => el.position)
+      .map((el, i, arr) => {
+        const previousPosition = (i - 1 >= 0 ? arr.at(i - 1)?.position : 0) || 0;
+        const nextPosition = (i + 1 === arr.length ? arr.at(i)?.position : arr.at(i + 1)?.position) || 0;
+        const averagePosition = (Number(previousPosition) + Number(nextPosition)) / 2;
+
+        return Number(el.position) || averagePosition;
+      })
       .filter((el) => el !== 0)
       .find((el, i, arr) => {
         const isSamePosition = (other: number, otherIdx: number) => {
@@ -136,7 +204,7 @@ export class ArticlesService {
     return this.sortImageByIndex(images);
   }
 
-  private sortImageByIndex<T extends { position: number }>(images: T[]): T[] {
+  private sortImageByIndex<T extends { position?: number | `${number}` | null }>(images: T[]): T[] {
     return images.map((image, i) => {
       image.position = image.position || i;
       return image;
@@ -153,5 +221,24 @@ export class ArticlesService {
     } else {
       return 'nothing';
     }
+  }
+
+  private async getRepresentCommentsByArticeIds(articleIds: number[]) {
+    if (articleIds.length === 0) {
+      return [];
+    }
+
+    const comments = await this.dataSource
+      .createQueryBuilder()
+      .from((qb) => {
+        return qb
+          .from(CommentEntity, 'c')
+          .select(['c.id AS "id"', 'c.contents AS "contents"', 'c.articleId AS "articleId"'])
+          .addSelect('ROW_NUMBER() OVER (PARTITION BY c."articleId" ORDER BY c."createdAt" DESC)::int4 AS "position"')
+          .where('c.articleId IN (:...articleIds)', { articleIds });
+      }, 'cte')
+      .getRawMany();
+
+    return comments;
   }
 }

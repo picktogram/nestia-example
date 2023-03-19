@@ -1,7 +1,7 @@
 import { BadRequestException, ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ERROR } from '@root/config/constant/error';
-import { DecodedUserToken } from '@root/models/tables/user.entity';
+import { ERROR } from '../../config/constant/error';
+import { DecodedUserToken } from '../../models/tables/user.entity';
 
 @Injectable()
 export class JwtGuard extends AuthGuard('jwt') {
