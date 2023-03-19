@@ -40,7 +40,7 @@ export class UsersController {
    * @returns 유저의 토큰을 디코딩한 것과 동일한 형태의 값들이 반환된다.
    */
   @TypedRoute.Get('profile')
-  async getProfile(@User() user: UserEntity): Promise<ResponseForm<DecodedUserToken>> {
+  async getProfile(@User() user: UserEntity): Promise<Try<DecodedUserToken>> {
     return createResponseForm(user);
   }
 
@@ -57,7 +57,7 @@ export class UsersController {
   async checkReputation(
     @UserId() userId: number,
     @TypedParam('id', 'number') designerId: number,
-  ): Promise<ResponseForm<UserType.Retuation>> {
+  ): Promise<Try<UserType.Retuation>> {
     const response = await this.usersService.checkReputation(designerId);
     return createResponseForm(response);
   }
@@ -73,8 +73,8 @@ export class UsersController {
   async checkFollowers(
     @UserId() userId: number,
     @TypedParam('id', 'number') designerId: number,
-  ): Promise<UserType.GetAcquaintanceResponse> {
-    return typia.random<UserType.GetAcquaintanceResponse>();
+  ): Promise<Try<UserType.GetAcquaintanceResponse>> {
+    return createResponseForm(typia.random<UserType.GetAcquaintanceResponse>());
   }
 
   /**

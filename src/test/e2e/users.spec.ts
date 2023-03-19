@@ -7,7 +7,7 @@ import typia from 'typia';
 import { CreateUserDto } from '../../models/dtos/create-user.dto';
 import { DecodedUserToken } from '../../models/tables/user.entity';
 import { ERROR, ValueOfError } from '../../config/constant/error';
-import { ResponseForm } from '../../interceptors/transform.interceptor';
+import { Try } from '../../interceptors/transform.interceptor';
 
 describe('E2E users test', () => {
   const host = 'http://localhost:4000';
@@ -290,7 +290,7 @@ describe('E2E users test', () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
 
-    let userToBeFollowed: ResponseForm<DecodedUserToken>;
+    let userToBeFollowed: Try<DecodedUserToken>;
 
     beforeEach(async () => {
       // NOTE : 팔로우를 하는 쪽

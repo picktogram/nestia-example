@@ -8,7 +8,7 @@ import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
-import { ArticleType, CommentType, PaginationDto, ResponseForm } from '../types';
+import { ArticleType, CommentType, PaginationDto, Try } from '../types';
 import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
 
 @UseGuards(JwtGuard)
@@ -44,7 +44,7 @@ export class ArticlesController {
     @UserId() userId: number,
     @TypedParam('id', 'number') articleId: number,
     @TypedBody() { reason }: ArticleType.ReportReason,
-  ): Promise<ResponseForm<true>> {
+  ): Promise<Try<true>> {
     const articleToReport = await this.articlesService.getOneDetailArticle(userId, articleId);
     await this.articlesService.report(userId, articleToReport.id, reason);
     return createResponseForm(true);
@@ -62,7 +62,7 @@ export class ArticlesController {
     @UserId() userId: number,
     @TypedParam('articleId', 'number') articleId: number,
     @TypedParam('commentId', 'number') commentId: number,
-  ): Promise<ResponseForm<boolean>> {
+  ): Promise<Try<boolean>> {
     const comment = await this.commentsService.getOne(userId, articleId, commentId);
     const response = await this.commentsService.likeOrUnlike(userId, comment.id);
     return createResponseForm(response);
@@ -100,7 +100,7 @@ export class ArticlesController {
     @UserId() writerId: number,
     @TypedParam('id', 'number') articleId: number,
     @TypedBody() createCommentDto: CreateCommentDto,
-  ): Promise<ResponseForm<CommentType.CreateResponse>> {
+  ): Promise<Try<CommentType.CreateResponse>> {
     const comment = await this.commentsService.write(writerId, articleId, createCommentDto);
     return createResponseForm(comment);
   }
@@ -115,7 +115,7 @@ export class ArticlesController {
   public async likeOrUnlike(
     @UserId() userId: number,
     @TypedParam('id', 'number') articleId: number,
-  ): Promise<ResponseForm<boolean>> {
+  ): Promise<Try<boolean>> {
     const articleToPatch = await this.articlesService.getOneDetailArticle(userId, articleId);
     const response = await this.articlesService.likeOrUnLike(userId, articleToPatch.id);
     return createResponseForm(response);
@@ -158,7 +158,7 @@ export class ArticlesController {
   public async getOneDetailArticle(
     @UserId() userId: number,
     @TypedParam('id', 'number') articleId: number,
-  ): Promise<ResponseForm<ArticleType.DetailArticle>> {
+  ): Promise<Try<ArticleType.DetailArticle>> {
     const article = await this.articlesService.getOneDetailArticle(userId, articleId);
     return createResponseForm(article);
   }
@@ -196,7 +196,7 @@ export class ArticlesController {
   public async writeArticle(
     @UserId() userId: number,
     @TypedBody() createArticleDto: CreateArticleDto,
-  ): Promise<ResponseForm<ArticleType.DetailArticle>> {
+  ): Promise<Try<ArticleType.DetailArticle>> {
     const savedArticle = await this.articlesService.write(userId, createArticleDto);
     const article = await this.articlesService.getOneDetailArticle(userId, savedArticle.id);
     return createResponseForm(article);

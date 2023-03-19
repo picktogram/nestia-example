@@ -8,7 +8,7 @@ import { createErrorSchema, ERROR } from '../config/constant/error';
 import { CreateBodyImageMulterOptions } from '../config/multer-s3/multer-option';
 import { createResponseForm } from '../interceptors/transform.interceptor';
 import { BodyImagesService } from '../providers/body-images.service';
-import { ResponseForm } from '../types';
+import { Try } from '../types';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/body-image')
@@ -42,7 +42,7 @@ export class BodyImagesController {
     },
   })
   @TypedRoute.Post()
-  async upload(@UploadedFiles() files: Express.MulterS3.File[]): Promise<ResponseForm<string[]>> {
+  async upload(@UploadedFiles() files: Express.MulterS3.File[]): Promise<Try<string[]>> {
     if (!files?.length) {
       throw new BadRequestException(ERROR.SELECT_MORE_THAN_ONE_BODY_IMAGE);
     }

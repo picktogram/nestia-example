@@ -3,7 +3,7 @@ import { NON_PAGINATION } from '../config/constant';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ExtendedResponse, ListOutputValue, ResponseForm } from '../types';
+import { ExtendedResponse, ListOutputValue, Try } from '../types';
 
 export const calcListTotalCount = (totalCount = 0, limit = 0): { totalResult: number; totalPage: number } => {
   const totalResult = totalCount;
@@ -92,7 +92,7 @@ export function createPaginationForm<ResponseType extends InitialPaginationRespo
   };
 }
 
-export function createResponseForm<T>(data: T, requestToResponse?: `${number}ms`): ResponseForm<T> {
+export function createResponseForm<T>(data: T, requestToResponse?: `${number}ms`): Try<T> {
   return {
     result: true,
     code: 1000,

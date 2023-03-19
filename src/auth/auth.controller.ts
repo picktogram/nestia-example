@@ -13,7 +13,7 @@ import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleGuard } from './guards/google.guard';
 import { KaKaoGuard } from '../auth/guards/kakao.guard';
-import { ResponseForm } from '../types';
+import { Try } from '../types';
 
 @Controller('api/v1/auth')
 export class AuthController {
@@ -30,7 +30,7 @@ export class AuthController {
    * @param CreateUserDto 유저를 생성하기 위해 필요한 최소한의 값 정의
    */
   @TypedRoute.Post('sign-up')
-  async signUp(@TypedBody() createUserDto: CreateUserDto): Promise<ResponseForm<DecodedUserToken>> {
+  async signUp(@TypedBody() createUserDto: CreateUserDto): Promise<Try<DecodedUserToken>> {
     if (typeof createUserDto.birth === 'string') {
       if (
         createUserDto.birth
@@ -77,7 +77,7 @@ export class AuthController {
     },
   })
   @TypedRoute.Post('login')
-  login(@User() user: DecodedUserToken, @TypedBody() body: LoginUserDto): ResponseForm<string> {
+  login(@User() user: DecodedUserToken, @TypedBody() body: LoginUserDto): Try<string> {
     const token = this.jwtService.sign({ ...user });
     return createResponseForm(token);
   }
