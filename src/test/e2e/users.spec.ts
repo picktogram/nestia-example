@@ -6,8 +6,7 @@ import * as AuthApis from '../../api/functional/api/v1/auth';
 import typia from 'typia';
 import { CreateUserDto } from '../../models/dtos/create-user.dto';
 import { DecodedUserToken } from '../../models/tables/user.entity';
-import { ERROR, ValueOfError } from '../../config/constant/error';
-import { Try } from '../../interceptors/transform.interceptor';
+import { Try } from '../../types';
 
 describe('E2E users test', () => {
   const host = 'http://localhost:4000';
