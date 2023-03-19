@@ -1,53 +1,8 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Req } from '@nestjs/common';
-import { NON_PAGINATION } from '../config/constant';
-import { Request } from 'express';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ExtendedResponse, ListOutputValue, Try } from '../types';
+import { Try } from '../types';
 
-export const calcListTotalCount = (totalCount = 0, limit = 0): { totalResult: number; totalPage: number } => {
-  const totalResult = totalCount;
-  const totalPage = totalResult % limit === 0 ? totalResult / limit : Math.floor(totalResult / limit) + 1;
-  return { totalResult, totalPage };
-};
-
-@Injectable()
-export class TransformInterceptor<T> implements NestInterceptor<T, ExtendedResponse<T>> {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<ExtendedResponse<T>> {
-    const request: Request & { now: number } = context.switchToHttp().getRequest();
-
-    return next.handle().pipe(
-      map((value) => {
-        const requestToResponse = `${Date.now() - request.now}ms`;
-
-        if (value instanceof Object && 'count' in value && 'list' in value) {
-          const { list, count, ...restData } = value;
-
-          const limit = request.query['limit'] ? request.query['limit'] : NON_PAGINATION;
-          const page = request.query['page'];
-          const search = request.query['search'];
-
-          return {
-            result: true,
-            code: 1000,
-            requestToResponse,
-            data: {
-              ...restData,
-              list,
-              ...(limit === NON_PAGINATION
-                ? { totalResult: count, totalPage: 1 }
-                : calcListTotalCount(count, Number(limit))),
-              ...(search ? { search } : { search: null }),
-              ...(page && { page: Number(page) }),
-            } as ListOutputValue,
-          };
-        }
-
-        return { result: true, code: 1000, requestToResponse, data: value };
-      }),
-    );
-  }
-}
+/**
+ * TODO : 여기 있는 타입들을 모두 types/index.ts로 옮기고, 가능한 하나의 인터페이스로 통합할 것
+ */
 
 export interface InitialPaginationResponseType {
   list: any[];
@@ -69,6 +24,12 @@ export interface PaginationForm<T extends InitialPaginationResponseType> {
   requestToResponse?: `${number}ms`;
   data: PaginationResponseType<T>;
 }
+
+export const calcListTotalCount = (totalCount = 0, limit = 0): { totalResult: number; totalPage: number } => {
+  const totalResult = totalCount;
+  const totalPage = totalResult % limit === 0 ? totalResult / limit : Math.floor(totalResult / limit) + 1;
+  return { totalResult, totalPage };
+};
 
 export function createPaginationForm<ResponseType extends InitialPaginationResponseType>(
   responseData: ResponseType,

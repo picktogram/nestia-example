@@ -133,7 +133,7 @@ export class ArticlesController {
     @UserId() writerId: number,
     @TypedParam('id', 'number') articleId: number,
     @TypedBody() updateArticleDto: ArticleType.UpdateArticleDto,
-  ) {
+  ): Promise<Try<boolean>> {
     const articleToUpdate = await this.articlesService.getOneDetailArticle(writerId, articleId);
     if (writerId !== articleToUpdate.writer.id) {
       throw new BadRequestException(ERROR.IS_NOT_WRITER_OF_THIS_ARTICLE);

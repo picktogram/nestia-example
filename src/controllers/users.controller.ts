@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Param, UseGuards } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
 import { User } from '../common/decorators/user.decorator';
@@ -6,7 +6,7 @@ import { UserId } from '../common/decorators/user-id.decorator';
 import { TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
-import { PaginationDto, ResponseForm, Try, TryCatch, UserType } from '../types';
+import { PaginationDto, Try, TryCatch, UserType } from '../types';
 import typia from 'typia';
 import { ERROR } from '../config/constant/error';
 
