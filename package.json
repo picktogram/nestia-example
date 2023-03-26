@@ -13,6 +13,7 @@
     "docker:build": "docker build -t picktogram/server:latest ./",
     "docker:start:local": "docker run -p 3000:3000 --env-file=.env picktogram/server:latest",
     "build": "nest build",
+    "build:api": "tsc -p tsconfig.api.json",
     "build:tsc": "tsc -p tsconfig.build.json",
     "start:local": "cross-env NODE_ENV=LOCAL nest start --watch",
     "start:dev": "cross-env NODE_ENV=DEVELOPMENT nest start --watch",
