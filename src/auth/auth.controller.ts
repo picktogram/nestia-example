@@ -1,5 +1,5 @@
 import { TypedBody, TypedRoute } from '@nestia/core';
-mport { Controller, Req, UseGuards } from '@nestjs/common';
+import { Controller, Req, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBody } from '@nestjs/swagger';
 import { User } from '../common/decorators/user.decorator';
@@ -14,7 +14,6 @@ import { AuthService } from './auth.service';
 import { GoogleGuard } from './guards/google.guard';
 import { KaKaoGuard } from '../auth/guards/kakao.guard';
 import { Try } from '../types';
-
 
 @Controller('api/v1/auth')
 export class AuthController {
