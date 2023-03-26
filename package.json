@@ -33,7 +33,7 @@
     "sdk": "npx nestia sdk",
     "sdk:fix": "node ../nestia sdk",
     "swagger": "npx nestia swagger",
-    "publish": "cd packages/api && npm publish"
+    "publish": "cd packages/api/lib && npm publish"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.294.0",

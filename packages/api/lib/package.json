@@ -1,0 +1,20 @@
+{
+  "name": "picktogram-server-apis",
+  "version": "0.0.4",
+  "description": "API for PROJECT",
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "repository": {
+    "type": "git"
+  },
+  "author": "AUTHOR",
+  "license": "MIT",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "#readme",
+  "dependencies": {
+    "@nestia/fetcher": "^1.0.1",
+    "typia": "^3.6.8"
+  }
+}
