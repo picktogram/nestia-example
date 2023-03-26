@@ -332,4 +332,20 @@ describe('E2E users test', () => {
       // expect(unfollowResponse.data).toBe(1);
     });
   });
+
+  /**
+   * 내가 차단한 사람들 목록을 조회한다.
+   */
+  describe('GET v1/api/users/haters', () => {
+    it('유저는 배열로 돌아와야 한다.', async () => {
+      expect([]).toBeInstanceOf(Array);
+    });
+
+    it.todo('내가 차단을 하면 차단 목록에 그 사람이 추가되어야 한다.');
+    /**
+     * 그리고 등등 테스트...
+     */
+
+    it.todo('10번째 어떤 테스트');
+  });
 });

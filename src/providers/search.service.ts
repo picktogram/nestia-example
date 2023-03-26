@@ -11,18 +11,22 @@ export class SearchService {
   ) {}
 
   async searchArticles(contents: string) {
-    return this.articlesRepository
+    const [list, count] = await this.articlesRepository
       .createQueryBuilder('a')
       .select(['a.id', 'a.contents'])
       .where('a.contents ILIKE :contents', { contents: `%${contents}%` })
-      .getMany();
+      .getManyAndCount();
+
+    return { list, count };
   }
 
   async searchComments(contents: string) {
-    return this.commentsRepository
+    const [list, count] = await this.commentsRepository
       .createQueryBuilder('c')
       .select(['c.id', 'c.contents'])
       .where('c.contents ILIKE :contents', { contents: `%${contents}%` })
-      .getMany();
+      .getManyAndCount();
+
+    return { list, count };
   }
 }
