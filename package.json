@@ -29,8 +29,10 @@
     "schema:sync:test": "cross-env NODE_ENV=TEST ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:sync -d ./data-source.ts",
     "schema:drop:test": "cross-env NODE_ENV=TEST ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:drop -d ./data-source.ts",
     "prepare": "ts-patch install && ts-patch install && ts-patch install && ts-patch install && ts-patch install && ts-patch install && ts-patch install",
-    "sdk": "npx nestia sdk && npx tsc -p tsconfig.api.json",
-    "swagger": "npx nestia swagger"
+    "sdk": "npx nestia sdk",
+    "sdk:fix": "node ../nestia sdk",
+    "swagger": "npx nestia swagger",
+    "publish": "cd packages/api && npm publish"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.294.0",
