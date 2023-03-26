@@ -260,7 +260,20 @@ describe('E2E articles test', () => {
       expect(unlikeResponse.data).toBe(false); // NOTE : 실행 후 결과가 좋아요가 취소된 경우 false를 반환한다.
     });
 
-    it.todo('사라진 글에 대해서 좋아요는 불가능해야 한다.');
+    it('사라진 글에 대해서 좋아요는 불가능해야 한다.', async () => {
+      const NON_ARTICLE = 987654321;
+      const response = await ArticleApis.likeOrUnlike(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        NON_ARTICLE,
+      );
+
+      expect(response).toBe(false);
+    });
 
     /**
      * 추후 마이페이지나 그 외 페이지에서 좋아요를 모아보게 될 경우, 사라진 글들은 디자이너가 확인 후 취소가 가능해야 하기 때문
@@ -278,6 +291,7 @@ describe('E2E articles test', () => {
     it.todo('게시글을 신고한다.');
     it.todo('신고 사유가 명시되어야 한다.');
     it.todo('동일 유저는 하나의 게시글을 2회 이상 신고할 수 없다.');
+    it.todo('나 자신을 신고할 때는 안 된다고 안내 메시지를 준다.');
 
     /**
      * 아래의 TODO는 신고 철회 API에서 검증할 것
