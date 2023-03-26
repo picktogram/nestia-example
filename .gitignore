@@ -130,7 +130,8 @@ dist
 # TernJS port file
 .tern-port
 
-packages
+packages/**/*.ts
+packages/**/*.js
 
 src/api
 
