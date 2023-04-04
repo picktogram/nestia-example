@@ -8,6 +8,7 @@ import typia from 'typia';
 import { CreateUserDto } from '../../models/dtos/create-user.dto';
 import { DecodedUserToken } from '../../models/tables/user.entity';
 import { Try } from '../../types';
+import { CreateArticleDto } from '../../models/dtos/create-article.dto';
 
 describe('E2E users test', () => {
   const host = 'http://localhost:4000';
@@ -113,8 +114,9 @@ describe('E2E users test', () => {
      * @link {https://github.com/picktogram/server/issues/10}
      */
     describe('#issue 10. followStatus 갱신 에러', () => {
-      let writerToken: DecodedUserToken;
+      let writerToken: string = '';
       let decodedWriterToken: DecodedUserToken;
+
       let token: string = '';
       let decodedToken: DecodedUserToken;
       beforeEach(async () => {
@@ -125,6 +127,9 @@ describe('E2E users test', () => {
         const writerSignUpResponse = await AuthApis.sign_up.signUp({ host }, writer);
         decodedWriterToken = writerSignUpResponse.data;
 
+        const writerLoginResponse = await AuthApis.login({ host }, writer);
+        writerToken = writerLoginResponse.data;
+
         /**
          * 팔로우 전후 글을 조회할 사람
          */
@@ -132,11 +137,22 @@ describe('E2E users test', () => {
         const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
         decodedToken = signUpResponse.data;
 
-        const response = await AuthApis.login({ host }, designer);
-        token = response.data;
+        const designerLoginResponse = await AuthApis.login({ host }, designer);
+        token = designerLoginResponse.data;
       });
 
       it.only('follow api 성공 메시지를 확인한 후에 게시글 리스트 조회 시 followStatus 갱신', async () => {
+        const dummyWriting = typia.random<CreateArticleDto>();
+        const writeArticleResponse = await ArticleApis.writeArticle(
+          {
+            host,
+            headers: {
+              Authorization: writerToken,
+            },
+          },
+          { contents: dummyWriting.contents, type: 'writing' },
+        );
+
         const before = await ArticleApis.getAllArticles(
           {
             host,
@@ -168,7 +184,12 @@ describe('E2E users test', () => {
         );
 
         expect(before.data.list.some((el) => el.followStatus !== 'nothing')).toBeFalsy();
-        expect(before.data.list.some((el) => el.followStatus !== 'nothing')).toBeTruthy();
+        const articleBeforeFollow = before.data.list.find((el) => el.id === writeArticleResponse.data.id);
+        expect(articleBeforeFollow?.followStatus === 'nothing').toBeTruthy();
+
+        expect(after.data.list.some((el) => el.followStatus !== 'nothing')).toBeTruthy();
+        const articleAfterFollow = after.data.list.find((el) => el.id === writeArticleResponse.data.id);
+        expect(articleAfterFollow?.followStatus === 'nothing').toBeFalsy();
       });
     });
   });

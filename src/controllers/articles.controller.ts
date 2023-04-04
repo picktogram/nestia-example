@@ -197,6 +197,7 @@ export class ArticlesController {
     @UserId() userId: number,
     @TypedBody() createArticleDto: CreateArticleDto,
   ): Promise<Try<ArticleType.DetailArticle>> {
+    console.log('here?');
     const savedArticle = await this.articlesService.write(userId, createArticleDto);
     const article = await this.articlesService.getOneDetailArticle(userId, savedArticle.id);
     return createResponseForm(article);
