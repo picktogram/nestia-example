@@ -141,7 +141,7 @@ describe('E2E users test', () => {
         token = designerLoginResponse.data;
       });
 
-      it.only('follow api 성공 메시지를 확인한 후에 게시글 리스트 조회 시 followStatus 갱신', async () => {
+      it('follow api 성공 메시지를 확인한 후에 게시글 리스트 조회 시 followStatus 갱신', async () => {
         const dummyWriting = typia.random<CreateArticleDto>();
         const writeArticleResponse = await ArticleApis.writeArticle(
           {
@@ -252,8 +252,16 @@ describe('E2E users test', () => {
         { page: 1, limit: 10 },
       );
 
+      console.log(response.data.list);
+      console.log(decodedToken);
+
       expect(response.data.list).toBeDefined();
       expect(response.data.list.length).toBe(1);
+
+      /**
+       * 자기 자신이 추천 목록에 나와서는 안 된다.
+       */
+      expect(response.data.list.some((el) => el.id === decodedToken.id)).toBeFalsy();
     });
 
     /**

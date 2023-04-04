@@ -11,6 +11,7 @@ import { UserBridgeEntity } from '../models/tables/user-bridge.entity';
 import { getOffset } from '../utils/getOffset';
 import { ArticleEntity } from '../models/tables/article.entity';
 import { CommentEntity } from '../models/tables/comment.entity';
+import { In } from 'typeorm';
 
 @Injectable()
 export class UsersService {
@@ -47,22 +48,42 @@ export class UsersService {
     { page, limit }: PaginationDto,
   ): Promise<{ list: UserType.Profile[]; count: number }> {
     const { skip, take } = getOffset({ page, limit });
-    const query = this.userBridgesRepository
-      .createQueryBuilder('ub')
-      .select(['u.id AS "id"', 'u.nickname AS "nickname"', 'u.profileImage AS "profileImage"'])
-      .innerJoin('ub.secondUser', 'u', 'u.id = :userId', { userId })
-      .where((qb) => {
-        // NOTE : 내가 팔로우를 당했음에도 상대를 팔로우하지 않은 경우를 추천한다.
-        const subQuery = qb
-          .subQuery()
-          .select('COUNT(*)')
-          .from(UserBridgeEntity, 'sub')
-          .where('sub.firstUserId = :userId', { userId })
-          .andWhere('sub.secondUserId = ub.firstUserId')
-          .getQuery();
+    // const query = this.userBridgesRepository
+    //   .createQueryBuilder('u')
+    //   .select(['u.id AS "id"', 'u.nickname AS "nickname"', 'u.profileImage AS "profileImage"'])
+    //   .innerJoin('ub.secondUser', 'u', 'u.id = :userId', { userId })
+    //   .where((qb) => {
+    //     // NOTE : 내가 팔로우를 당했음에도 상대를 팔로우하지 않은 경우를 추천한다.
+    //     const subQuery = qb
+    //       .subQuery()
+    //       .select('COUNT(*)')
+    //       .from(UserBridgeEntity, 'sub')
+    //       .where('sub.firstUserId = :userId', { userId })
+    //       .andWhere('sub.secondUserId = ub.firstUserId') // 내가 상대를 팔로우한 횟수가 0인 경우, 즉 팔로우 안 한 경우
+    //       .getQuery();
 
-        return `${subQuery} = 0`;
-      })
+    //     return `${subQuery} = 0`;
+    //   })
+    //   .offset(skip)
+    //   .limit(take);
+
+    const followedBridges = await this.userBridgesRepository.find({
+      where: { secondUserId: userId },
+      order: { firstUserId: 'DESC' },
+    });
+    const followeeIds = followedBridges.map((el) => el.firstUserId);
+    const isReversed = await this.userBridgesRepository.find({
+      where: { firstUserId: userId, secondUser: In(followeeIds) },
+      order: { secondUserId: 'DESC' },
+    });
+
+    const reversed = isReversed.map((el) => el.secondUserId);
+    const nonReversed = followeeIds.filter((el) => !reversed.includes(el));
+
+    const query = this.usersRepository
+      .createQueryBuilder('u')
+      .select(['u.id AS "id"', 'u.nickname AS "nickname"', 'u.profileImage AS "profileImage"'])
+      .where('u.id IN (:...nonReversed)', { nonReversed: nonReversed?.length ? nonReversed : [0] })
       .offset(skip)
       .limit(take);
 
