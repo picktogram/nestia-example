@@ -111,7 +111,7 @@ export class UsersController {
   }
 
   /**
-   * @summary 230207 - 디자이너님이 다른 디자이너님을 팔로우하는 API (수정 필요)
+   * @summary 230207 - 디자이너님이 다른 디자이너님을 팔로우하는 API
    *
    * @tag users
    * @param userId

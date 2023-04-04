@@ -3,6 +3,7 @@ import { AppModule } from '../../app.module';
 import { INestApplication } from '@nestjs/common';
 import * as UserApis from '../../api/functional/api/v1/users';
 import * as AuthApis from '../../api/functional/api/v1/auth';
+import * as ArticleApis from '../../api/functional/api/v1/articles';
 import typia from 'typia';
 import { CreateUserDto } from '../../models/dtos/create-user.dto';
 import { DecodedUserToken } from '../../models/tables/user.entity';
@@ -106,6 +107,69 @@ describe('E2E users test', () => {
        */
 
       expect(response.code).toBe(4017);
+    });
+
+    /**
+     * @link {https://github.com/picktogram/server/issues/10}
+     */
+    describe('#issue 10. followStatus 갱신 에러', () => {
+      let writerToken: DecodedUserToken;
+      let decodedWriterToken: DecodedUserToken;
+      let token: string = '';
+      let decodedToken: DecodedUserToken;
+      beforeEach(async () => {
+        /**
+         * 글을 작성할 사람으로, 팔로우 전 후로 게시글의 팔로우 상태 조회에 사용한다.
+         */
+        const writer = typia.random<CreateUserDto>();
+        const writerSignUpResponse = await AuthApis.sign_up.signUp({ host }, writer);
+        decodedWriterToken = writerSignUpResponse.data;
+
+        /**
+         * 팔로우 전후 글을 조회할 사람
+         */
+        const designer = typia.random<CreateUserDto>();
+        const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+        decodedToken = signUpResponse.data;
+
+        const response = await AuthApis.login({ host }, designer);
+        token = response.data;
+      });
+
+      it.only('follow api 성공 메시지를 확인한 후에 게시글 리스트 조회 시 followStatus 갱신', async () => {
+        const before = await ArticleApis.getAllArticles(
+          {
+            host,
+            headers: {
+              Authorization: token,
+            },
+          },
+          { page: 1, limit: 1 },
+        );
+
+        await UserApis.follow.follow(
+          {
+            host,
+            headers: {
+              Authorization: token,
+            },
+          },
+          decodedWriterToken.id,
+        );
+
+        const after = await ArticleApis.getAllArticles(
+          {
+            host,
+            headers: {
+              Authorization: token,
+            },
+          },
+          { page: 1, limit: 1 },
+        );
+
+        expect(before.data.list.some((el) => el.followStatus !== 'nothing')).toBeFalsy();
+        expect(before.data.list.some((el) => el.followStatus !== 'nothing')).toBeTruthy();
+      });
     });
   });
 
