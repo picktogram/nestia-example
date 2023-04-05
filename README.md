@@ -94,8 +94,9 @@ try {
 }
 ```
 
-[프론트에서 Nestia SDK를 연동한 예시](https://github.com/picktogram/front/blob/feature/user/picktogram/src/components/main/components/card/cardModal.tsx#L20)
+- [프론트에서 Nestia SDK를 연동한 코드 예시](https://github.com/picktogram/front/blob/feature/user/picktogram/src/components/main/components/card/cardModal.tsx#L20)
+- [프론트 개발자 입장에서 바라본 Nestia SDK](https://sunrise-push-ffa.notion.site/Picktogram-3437f9ef750b43e78ca09c3aae0df46d)
 
 # Nestia SDK 연동 (~ing)
 
-[일자리 구하고 있는 "신입" 뿌론토 개발자](https://sunrise-push-ffa.notion.site/BK-f28d897b19c44e0e992c6f6ff6161fc5)
+- [일자리 구하고 있는 "신입" 뿌론토 개발자](https://sunrise-push-ffa.notion.site/BK-f28d897b19c44e0e992c6f6ff6161fc5)
