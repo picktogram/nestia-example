@@ -1,5 +1,14 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { NTuple, ValueOfError } from '../../types';
+
+export declare namespace ERROR_TYPE {
+  interface CANNOT_FINDONE_ARTICLE {
+    result: false;
+    code: 4004;
+    data: '게시글을 찾지 못했습니다.';
+  }
+}
 
 export const ERROR = {
   ALREADY_CREATED_EMAIL: { result: false, code: 4001, data: '이미 생성된 이메일입니다.' },

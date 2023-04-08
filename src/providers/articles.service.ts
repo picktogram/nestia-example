@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ERROR } from '../config/constant/error';
+import { ERROR, ERROR_TYPE } from '../config/constant/error';
 import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { ArticlesRepository } from '../models/repositories/articles.repository';
 import { CommentsRepository } from '../models/repositories/comments.repository';
@@ -65,7 +65,7 @@ export class ArticlesService {
     throw new BadRequestException(ERROR.ARLEADY_REPORTED_ARTICLE);
   }
 
-  async getOneDetailArticle(userId: number, articleId: number): Promise<ArticleType.DetailArticle> {
+  async getOneDetailArticle(userId: number, articleId: number): Promise<ArticleType.DetailArticle | null> {
     const [article, comments] = await Promise.all([
       this.articlesRepository
         .createQueryBuilder('a')
@@ -85,7 +85,7 @@ export class ArticlesService {
     ]);
 
     if (!article) {
-      throw new BadRequestException(ERROR.CANNOT_FINDONE_ARTICLE);
+      return null;
     }
 
     article.comments = comments;
@@ -97,7 +97,7 @@ export class ArticlesService {
     { page, limit }: PaginationDto,
     { isNoReply }: { isNoReply?: boolean },
   ): Promise<{
-    list: GetAllArticlesResponseDto[];
+    list: ArticleType.Element[];
     count: number;
   }> {
     const { skip, take } = getOffset({ page, limit });
@@ -154,7 +154,20 @@ export class ArticlesService {
         const follow = userBridges.find((el) => el.firstUserId === userId && el.secondUserId === article.writerId);
         const followed = userBridges.find((el) => el.firstUserId === userId && el.secondUserId === article.writerId);
         const followStatus: 'follow' | 'followUp' | 'reverse' | 'nothing' = this.getFollowStatus(follow, followed);
-        return new GetAllArticlesResponseDto(userId, article, representationComments, followStatus);
+        // return new GetAllArticlesResponseDto(userId, article, representationComments, followStatus);
+        return {
+          id: article.id,
+          contents: article.contents,
+          createdAt: article.createdAt,
+          isMine: userId === article.writerId,
+          writer: {
+            id: article.writerId,
+            nickname: article.nickname,
+            profileImage: article.profileImage,
+            followStatus,
+          },
+          comments: representationComments,
+        };
       }),
       count,
     };

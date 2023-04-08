@@ -12,6 +12,10 @@ import type { CommentEntity } from '../models/tables/comment.entity';
 import type { ReportArticleEntity } from '../models/tables/report-article.entity';
 import type { UserEntity } from '../models/tables/user.entity';
 
+export type Merge<F, S> = {
+  [K in keyof (F & S)]: K extends keyof S ? S[K] : K extends keyof F ? F[K] : never;
+};
+
 export interface ResponseForm<T> {
   result: true;
   code: 1000;
@@ -122,9 +126,19 @@ export declare namespace ArticleType {
     comments: Pick<CommentEntity, 'id' | 'parentId' | 'contents' | 'xPosition' | 'yPosition'>[];
   }
 
+  interface Element
+    extends Merge<
+      Omit<ArticleType.ReadArticleResponse, 'writerId' | 'nickname' | 'profileImage'>,
+      {
+        isMine: boolean;
+        writer: any;
+        comments: any[];
+      }
+    > {}
+
   interface GetAllArticlesReponse
     extends PaginationForm<{
-      list: GetAllArticlesResponseDto[];
+      list: ArticleType.Element[];
       count: number;
     }> {}
 }

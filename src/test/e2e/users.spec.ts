@@ -183,13 +183,13 @@ describe('E2E users test', () => {
           { page: 1, limit: 1 },
         );
 
-        expect(before.data.list.some((el) => el.followStatus !== 'nothing')).toBeFalsy();
+        expect(before.data.list.some((el) => el.writer.followStatus !== 'nothing')).toBeFalsy();
         const articleBeforeFollow = before.data.list.find((el) => el.id === writeArticleResponse.data.id);
-        expect(articleBeforeFollow?.followStatus === 'nothing').toBeTruthy();
+        expect(articleBeforeFollow?.writer.followStatus === 'nothing').toBeTruthy();
 
-        expect(after.data.list.some((el) => el.followStatus !== 'nothing')).toBeTruthy();
+        expect(after.data.list.some((el) => el.writer.followStatus !== 'nothing')).toBeTruthy();
         const articleAfterFollow = after.data.list.find((el) => el.id === writeArticleResponse.data.id);
-        expect(articleAfterFollow?.followStatus === 'nothing').toBeFalsy();
+        expect(articleAfterFollow?.writer.followStatus === 'nothing').toBeFalsy();
       });
     });
   });
@@ -421,8 +421,6 @@ describe('E2E users test', () => {
       );
 
       expect(unfollowResponse.data).toBeDefined();
-      // expect(unfollowResponse.data).toBeInstanceOf(Array);
-      // expect(unfollowResponse.data).toBe(1);
     });
   });
 

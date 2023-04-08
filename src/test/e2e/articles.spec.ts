@@ -80,6 +80,22 @@ describe('E2E articles test', () => {
       expect(response.data.list).toBeInstanceOf(Array);
     });
 
+    it('게시글 리스토 조회 시 나와의 관계를 의미하는 프로퍼티가 필요.', async () => {
+      const response = await ArticleApis.getAllArticles(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        { page: 1, limit: 10 },
+      );
+
+      response.data.list.forEach((article) => {
+        expect(article.writer.followStatus).toBeDefined();
+      });
+    });
+
     it.todo('각 게시글 타입 별 프로퍼티에 대한 검증 필요');
   });
 
@@ -260,7 +276,7 @@ describe('E2E articles test', () => {
       expect(unlikeResponse.data).toBe(false); // NOTE : 실행 후 결과가 좋아요가 취소된 경우 false를 반환한다.
     });
 
-    it('사라진 글에 대해서 좋아요는 불가능해야 한다.', async () => {
+    it.only('사라진 글에 대해서 좋아요는 불가능해야 한다.', async () => {
       const NON_ARTICLE = 987654321;
       const response = await ArticleApis.likeOrUnlike(
         {
@@ -353,7 +369,7 @@ describe('E2E articles test', () => {
       article = writeArticleResponse.data;
     });
 
-    it.only('게시글에 댓글 남기기', async () => {
+    it('게시글에 댓글 남기기', async () => {
       const commentToSave = typia.random<CreateCommentDto>();
       commentToSave.parentId = null;
       const comment = await ArticleApis.comments.writeComment(
