@@ -10,6 +10,7 @@ import { CreateCommentDto } from '../../models/dtos/create-comment.dto';
 import { CommentEntity } from '../../models/tables/comment.entity';
 import { DecodedUserToken } from '../../models/tables/user.entity';
 import { ArticleType } from '../../types';
+import { isErrorGuard } from '../../config/errors/business-error';
 
 describe('E2E articles test', () => {
   const host = 'http://localhost:4000';
@@ -108,6 +109,11 @@ describe('E2E articles test', () => {
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      if (isErrorGuard(signUpResponse)) {
+        expect(1).toBe(2);
+        return;
+      }
+
       decodedToken = signUpResponse.data;
 
       const response = await AuthApis.login({ host }, designer);
@@ -243,6 +249,11 @@ describe('E2E articles test', () => {
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      if (isErrorGuard(signUpResponse)) {
+        expect(1).toBe(2);
+        return;
+      }
+
       decodedToken = signUpResponse.data;
 
       const response = await AuthApis.login({ host }, designer);
@@ -370,6 +381,11 @@ describe('E2E articles test', () => {
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      if (isErrorGuard(signUpResponse)) {
+        expect(1).toBe(2);
+        return;
+      }
+
       decodedToken = signUpResponse.data;
 
       const response = await AuthApis.login({ host }, designer);

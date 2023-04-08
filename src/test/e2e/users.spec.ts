@@ -9,6 +9,7 @@ import { CreateUserDto } from '../../models/dtos/create-user.dto';
 import { DecodedUserToken } from '../../models/tables/user.entity';
 import { Try } from '../../types';
 import { CreateArticleDto } from '../../models/dtos/create-article.dto';
+import { isErrorGuard } from '../../config/errors/business-error';
 
 describe('E2E users test', () => {
   const host = 'http://localhost:4000';
@@ -57,6 +58,10 @@ describe('E2E users test', () => {
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      if (isErrorGuard(signUpResponse)) {
+        return false;
+      }
+
       decodedToken = signUpResponse.data;
 
       const response = await AuthApis.login({ host }, designer);
@@ -67,6 +72,11 @@ describe('E2E users test', () => {
       // NOTE : 팔로우할 다른 디자이너 생성
       const userData = typia.random<CreateUserDto>();
       const follower = await AuthApis.sign_up.signUp({ host }, userData);
+
+      if (isErrorGuard(follower)) {
+        expect(1).toBe(2);
+        return;
+      }
 
       const response = await UserApis.follow.follow(
         {
@@ -125,6 +135,11 @@ describe('E2E users test', () => {
          */
         const writer = typia.random<CreateUserDto>();
         const writerSignUpResponse = await AuthApis.sign_up.signUp({ host }, writer);
+        if (isErrorGuard(writerSignUpResponse)) {
+          expect(1).toBe(2);
+          return;
+        }
+
         decodedWriterToken = writerSignUpResponse.data;
 
         const writerLoginResponse = await AuthApis.login({ host }, writer);
@@ -135,6 +150,10 @@ describe('E2E users test', () => {
          */
         const designer = typia.random<CreateUserDto>();
         const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+        if (isErrorGuard(signUpResponse)) {
+          expect(1).toBe(2);
+          return;
+        }
         decodedToken = signUpResponse.data;
 
         const designerLoginResponse = await AuthApis.login({ host }, designer);
@@ -207,6 +226,10 @@ describe('E2E users test', () => {
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      if (isErrorGuard(signUpResponse)) {
+        return;
+      }
+
       decodedToken = signUpResponse.data;
 
       const response = await AuthApis.login({ host }, designer);
@@ -272,6 +295,10 @@ describe('E2E users test', () => {
       // NOTE : 나를 팔로우할 대상을 생성
       const userData = typia.random<CreateUserDto>();
       const followee = await AuthApis.sign_up.signUp({ host }, userData);
+      if (isErrorGuard(followee)) {
+        expect(1).toBe(2);
+        return;
+      }
 
       // NOTE : 나를 팔로우할 대상이 로그인하여, 나를 팔로우
       const loginResponse = await AuthApis.login({ host }, userData);
@@ -353,6 +380,11 @@ describe('E2E users test', () => {
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      if (isErrorGuard(signUpResponse)) {
+        expect(1).toBe(2);
+        return;
+      }
+
       decodedToken = signUpResponse.data;
 
       const response = await AuthApis.login({ host }, designer);
@@ -389,6 +421,11 @@ describe('E2E users test', () => {
       // NOTE : 팔로우를 하는 쪽
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      if (isErrorGuard(signUpResponse)) {
+        expect(1).toBe(2);
+        return;
+      }
+
       decodedToken = signUpResponse.data;
 
       // NOTE : 팔로우하는 쪽에서는 로그인까지 진행
@@ -397,7 +434,13 @@ describe('E2E users test', () => {
 
       // NOTE : 팔로우를 당하는 쪽
       const designer2 = typia.random<CreateUserDto>();
-      userToBeFollowed = await AuthApis.sign_up.signUp({ host }, designer2);
+      const followerSignUpResponse = await AuthApis.sign_up.signUp({ host }, designer2);
+      if (isErrorGuard(followerSignUpResponse)) {
+        expect(1).toBe(2);
+        return;
+      }
+
+      userToBeFollowed = followerSignUpResponse;
 
       /**
        * NOTE : 언팔로우를 테스트하기 위해 팔로우를 미리 걸어놓는다.
