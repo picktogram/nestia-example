@@ -129,7 +129,6 @@ describe('E2E articles test', () => {
     });
 
     it('질문이 아닌 글은 작성해도 조회되지 말아야 한다.', async () => {
-      // NOTE : 질문이 아닌 글은 조회 되서는 안 된다.
       const dummyWriting = typia.random<CreateArticleDto>();
       dummyWriting.type = 'writing';
       const writing = await ArticleApis.writeArticle(
@@ -152,7 +151,14 @@ describe('E2E articles test', () => {
         { page: 1, limit: 10 },
       );
 
-      expect(getAllWithNoReplyResponse.data.list.some((el) => el.id === writing.data.id)).toBeFalsy();
+      const isAlreadyCreatedArticle = getAllWithNoReplyResponse.data.list.some((el) => {
+        if (typeof writing.data === 'string') {
+          return false;
+        }
+        return el.id === writing.data.id;
+      });
+
+      expect(isAlreadyCreatedArticle).toBeFalsy();
     });
 
     it('"댓글이 없는 질문 타입의 게시글"만 나오는지에 대한 검증', async () => {
@@ -180,7 +186,11 @@ describe('E2E articles test', () => {
       );
 
       expect(getAllWithNoReplyResponse.data.list).toBeInstanceOf(Array);
-      expect(getAllWithNoReplyResponse.data.list.some((el) => el.id === questionWithNoReply.data.id)).toBeTruthy();
+      expect(
+        getAllWithNoReplyResponse.data.list.some((el) => {
+          return typeof questionWithNoReply.data !== 'string' && el.id === questionWithNoReply.data.id;
+        }),
+      ).toBeTruthy();
     });
 
     it('질문형 게시글이지만 댓글이 있는 경우에는 조회되지 말아야 한다.', async () => {
@@ -197,6 +207,11 @@ describe('E2E articles test', () => {
         },
         { contents: dummyQuestionWithReply.contents, type: dummyQuestionWithReply.type },
       );
+
+      if (questionWithReply.code === 4004) {
+        expect(1).toBe(2);
+        return;
+      }
 
       await CommentEntity.save({
         contents: dummyReply.contents,
@@ -250,6 +265,11 @@ describe('E2E articles test', () => {
         typia.random<CreateArticleDto>(),
       );
 
+      if (writeArticleResponse.code !== 1000) {
+        expect(1).toBe(2);
+        return;
+      }
+
       // NOTE : 좋아요 테스트
       const likeResponse = await ArticleApis.likeOrUnlike(
         {
@@ -288,7 +308,7 @@ describe('E2E articles test', () => {
         NON_ARTICLE,
       );
 
-      expect(response).toBe(false);
+      expect(response.data).toBe('게시글을 찾지 못했습니다.');
     });
 
     /**
@@ -366,7 +386,9 @@ describe('E2E articles test', () => {
         typia.random<CreateArticleDto>(),
       );
 
-      article = writeArticleResponse.data;
+      if (writeArticleResponse.code === 1000) {
+        article = writeArticleResponse.data;
+      }
     });
 
     it('게시글에 댓글 남기기', async () => {

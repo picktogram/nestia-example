@@ -184,11 +184,15 @@ describe('E2E users test', () => {
         );
 
         expect(before.data.list.some((el) => el.writer.followStatus !== 'nothing')).toBeFalsy();
-        const articleBeforeFollow = before.data.list.find((el) => el.id === writeArticleResponse.data.id);
+        const articleBeforeFollow = before.data.list.find(
+          (el) => writeArticleResponse.code === 1000 && el.id === writeArticleResponse.data.id,
+        );
         expect(articleBeforeFollow?.writer.followStatus === 'nothing').toBeTruthy();
 
         expect(after.data.list.some((el) => el.writer.followStatus !== 'nothing')).toBeTruthy();
-        const articleAfterFollow = after.data.list.find((el) => el.id === writeArticleResponse.data.id);
+        const articleAfterFollow = after.data.list.find(
+          (el) => writeArticleResponse.code === 1000 && el.id === writeArticleResponse.data.id,
+        );
         expect(articleAfterFollow?.writer.followStatus === 'nothing').toBeFalsy();
       });
     });
@@ -251,9 +255,6 @@ describe('E2E users test', () => {
         },
         { page: 1, limit: 10 },
       );
-
-      console.log(response.data.list);
-      console.log(decodedToken);
 
       expect(response.data.list).toBeDefined();
       expect(response.data.list.length).toBe(1);
@@ -396,9 +397,12 @@ describe('E2E users test', () => {
 
       // NOTE : 팔로우를 당하는 쪽
       const designer2 = typia.random<CreateUserDto>();
-      userToBeFollowed = await AuthApis.sign_up.signUp({ host }, designer);
+      userToBeFollowed = await AuthApis.sign_up.signUp({ host }, designer2);
 
-      await UserApis.follow.follow(
+      /**
+       * NOTE : 언팔로우를 테스트하기 위해 팔로우를 미리 걸어놓는다.
+       */
+      const followResponse = await UserApis.follow.follow(
         {
           host,
           headers: {

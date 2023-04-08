@@ -8,8 +8,8 @@ import { ArticlesService } from '../../providers/articles.service';
 import { ArticlesModule } from '../../modules/articles.module';
 import { UserEntity } from '../../models/tables/user.entity';
 import { generateRandomNumber } from '../../utils/generate-random-number';
-import { GetAllArticlesResponseDto } from '../../models/response/get-all-articles-response.dto';
 import { CommentEntity } from '../../models/tables/comment.entity';
+import { ArticleType } from '../../types';
 
 describe('Article Entity', () => {
   let controller: ArticlesController;
@@ -45,7 +45,7 @@ describe('Article Entity', () => {
       /**
        * response
        */
-      let list: GetAllArticlesResponseDto[] = [];
+      let list: ArticleType.Element[] = [];
       let count: number = 0;
       beforeAll(async () => {
         const readerMetadata = generateRandomNumber(1000, 9999, true);
@@ -79,7 +79,7 @@ describe('Article Entity', () => {
         const article = list.at(0);
         expect(article).toBeDefined();
         if (article) {
-          expect(article['commentMetadata']).toBeInstanceOf(Array);
+          expect(article.comments).toBeInstanceOf(Array);
         }
       });
     });
@@ -117,7 +117,7 @@ describe('Article Entity', () => {
       /**
        * response
        */
-      let list: GetAllArticlesResponseDto[];
+      let list: ArticleType.Element[];
       let count: number;
 
       beforeAll(async () => {
@@ -144,7 +144,7 @@ describe('Article Entity', () => {
       });
 
       it('게시글의 글 순서는 기본적으로는 시간 순이다.', async () => {
-        const [created]: GetAllArticlesResponseDto[] = list.filter((el) => el['id'] === article.id);
+        const [created]: ArticleType.Element[] = list.filter((el) => el['id'] === article.id);
         const sorted = created.comments.sort((a, b) => a.id - b.id);
 
         const isSame = JSON.stringify(created.comments) === JSON.stringify(sorted);
@@ -220,7 +220,7 @@ describe('Article Entity', () => {
       const detailArticle = await controller.getOneDetailArticle(writer.id, article.id);
 
       expect(detailArticle.data).toBeDefined();
-      if (detailArticle.data) {
+      if (detailArticle.code === 1000) {
         expect(detailArticle.data.comments).toBeInstanceOf(Array);
         if (detailArticle.data.comments) {
           expect(detailArticle.data.comments.length).toBeGreaterThan(0);
