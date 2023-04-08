@@ -4,12 +4,12 @@ import { ConfigService } from '@nestjs/config';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBadRequestResponse, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
-import { createErrorSchema, ERROR } from '../config/constant/error';
+import { createErrorSchema, ERROR } from '../config/legacy/error';
 import { CreateBodyImageMulterOptions } from '../config/multer-s3/multer-option';
 import { createResponseForm } from '../interceptors/transform.interceptor';
 import { BodyImagesService } from '../providers/body-images.service';
 import { TryCatch } from '../types';
-import { SELECT_MORE_THAN_ONE_BODY_IMAGE } from '../config/constant/business-error';
+import { SELECT_MORE_THAN_ONE_BODY_IMAGE } from '../config/errors/business-error';
 import typia from 'typia';
 
 @UseGuards(JwtGuard)

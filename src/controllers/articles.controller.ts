@@ -3,12 +3,12 @@ import { Controller, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UserId } from '../common/decorators/user-id.decorator';
-import { createErrorSchema, ERROR } from '../config/constant/error';
+import { createErrorSchema, ERROR } from '../config/legacy/error';
 import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
-import { ArticleType, CommentType, PaginationDto, Try, TryCatch } from '../types';
+import { ArticleType, CommentType, PaginationDto, TryCatch } from '../types';
 import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
 import typia from 'typia';
 import {
@@ -21,7 +21,7 @@ import {
   NOT_FOUND_ARTICLE_TO_COMMENT,
   TOO_MANY_REPORTED_ARTICLE,
   isErrorGuard,
-} from '../config/constant/business-error';
+} from '../config/errors/business-error';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')

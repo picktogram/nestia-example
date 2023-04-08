@@ -13,7 +13,7 @@ import {
   CANNOT_FIND_ONE_REPLY_COMMENT,
   NOT_FOUND_ARTICLE_TO_COMMENT,
   TOO_MANY_REPORTED_ARTICLE,
-} from '../config/constant/business-error';
+} from '../config/errors/business-error';
 import typia from 'typia';
 
 @Injectable()

@@ -27,7 +27,9 @@
         "transform": "typia/lib/transform"
       }
     ],
-    "strict": true
+    "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": false
   },
   "include": ["./src/**/*.ts"],
   "exclude": ["node_modules", "dist", "src/test/**/*.spec.ts", "./src/api"]

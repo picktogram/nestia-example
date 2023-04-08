@@ -1,7 +1,6 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { SlackService } from '../../external/slack/slack.service';
 import { Request, Response } from 'express';
-import typia from 'typia';
 import { NestiaTypeErrorObject } from '../../types';
 
 const UNCHATCHED_ERROR = '서버에서 캐치되지 못한 에러입니다.';
@@ -21,7 +20,7 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
 
-      const { path, user, body, query } = request;
+      const { path, user, query } = request;
       const requestToResponse = `${Date.now() - request.now}ms`;
 
       console.log(`error\n${request.method} ${path} ${requestToResponse}\n` + `currentTime : ${new Date()}]\n`);

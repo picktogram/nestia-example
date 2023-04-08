@@ -1,6 +1,6 @@
 import { BadRequestException, ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ERROR } from '../../config/constant/error';
+import { ERROR } from '../../config/legacy/error';
 import { DecodedUserToken } from '../../models/tables/user.entity';
 
 @Injectable()

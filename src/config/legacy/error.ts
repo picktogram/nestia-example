@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
+/**
+ * legacy
+ */
 import { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { NTuple, ValueOfError } from '../../types';
 

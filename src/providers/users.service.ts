@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import { CreateUserDto } from '../models/dtos/create-user.dto';
-import { ERROR } from '../config/constant/error';
+import { ERROR } from '../config/legacy/error';
 import { UsersRepository } from '../models/repositories/users.repository';
 import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
 import bcrypt from 'bcrypt';
@@ -19,7 +19,7 @@ import {
   CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
   ALREADY_CREATED_EMAIL,
   ALREADY_CREATED_PHONE_NUMBER,
-} from '../config/constant/business-error';
+} from '../config/errors/business-error';
 import typia from 'typia';
 
 @Injectable()

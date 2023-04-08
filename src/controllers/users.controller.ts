@@ -14,7 +14,7 @@ import {
   ALREADY_FOLLOW_USER,
   CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
   CANNOT_FOLLOW_MYSELF,
-} from '../config/constant/business-error';
+} from '../config/errors/business-error';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/users')

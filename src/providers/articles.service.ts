@@ -1,6 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ERROR } from '../config/constant/error';
 import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { ArticlesRepository } from '../models/repositories/articles.repository';
 import { CommentsRepository } from '../models/repositories/comments.repository';
@@ -14,7 +13,7 @@ import { CommentEntity } from '../models/tables/comment.entity';
 import { ReportArticlesRepository } from '../models/repositories/report-articles.repository';
 import { UserLikeArticlesRepository } from '../models/repositories/user-like-articles.repository';
 import typia from 'typia';
-import { ARLEADY_REPORTED_ARTICLE, IS_SAME_POSITION, isErrorGuard } from '../config/constant/business-error';
+import { ARLEADY_REPORTED_ARTICLE, IS_SAME_POSITION, isErrorGuard } from '../config/errors/business-error';
 
 @Injectable()
 export class ArticlesService {

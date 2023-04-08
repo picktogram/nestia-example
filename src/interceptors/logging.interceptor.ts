@@ -8,7 +8,7 @@ export class LoggingInterceptor implements NestInterceptor {
   constructor(private readonly configService: ConfigService) {}
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
-    const { path, user, body, query } = request;
+    const { path } = request;
 
     const requestToResponse: `${number}ms` = `${Date.now() - request.now}ms`;
     return next.handle().pipe(
