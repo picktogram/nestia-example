@@ -26,8 +26,10 @@ export interface ResponseForm<T> {
 export type KeyOfError = keyof typeof ERROR;
 export type ValueOfError = (typeof ERROR)[KeyOfError];
 
+export type ERROR = { result: false; code: number; data: string };
+
 export type Try<T> = ResponseForm<T>;
-export type TryCatch<T, E extends ValueOfError> = ResponseForm<T> | E;
+export type TryCatch<T, E extends ERROR> = ResponseForm<T> | E;
 
 export interface NestiaTypeErrorObject {
   path: string;

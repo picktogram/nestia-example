@@ -3,13 +3,15 @@ import { BadRequestException, Controller, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UserId } from '../common/decorators/user-id.decorator';
-import { createErrorSchema, ERROR, ERROR_TYPE } from '../config/constant/error';
+import { createErrorSchema, ERROR } from '../config/constant/error';
 import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
 import { ArticleType, CommentType, PaginationDto, Try, TryCatch } from '../types';
 import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
+import * as ERROR_TYPE from '../config/constant/error-interface';
+import typia from 'typia';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')
@@ -47,7 +49,7 @@ export class ArticlesController {
   ): Promise<TryCatch<true, ERROR_TYPE.CANNOT_FINDONE_ARTICLE>> {
     const articleToReport = await this.articlesService.getOneDetailArticle(userId, articleId);
     if (!articleToReport) {
-      return ERROR.CANNOT_FINDONE_ARTICLE;
+      return typia.random<ERROR_TYPE.CANNOT_FINDONE_ARTICLE>();
     }
     await this.articlesService.report(userId, articleToReport.id, reason);
     return createResponseForm(true as const);
@@ -121,7 +123,7 @@ export class ArticlesController {
   ): Promise<TryCatch<boolean, ERROR_TYPE.CANNOT_FINDONE_ARTICLE>> {
     const articleToPatch = await this.articlesService.getOneDetailArticle(userId, articleId);
     if (!articleToPatch) {
-      return ERROR.CANNOT_FINDONE_ARTICLE;
+      return typia.random<ERROR_TYPE.CANNOT_FINDONE_ARTICLE>();
     }
     const response = await this.articlesService.likeOrUnLike(userId, articleToPatch.id);
     return createResponseForm(response);
@@ -142,7 +144,7 @@ export class ArticlesController {
   ): Promise<TryCatch<boolean, ERROR_TYPE.CANNOT_FINDONE_ARTICLE>> {
     const articleToUpdate = await this.articlesService.getOneDetailArticle(writerId, articleId);
     if (!articleToUpdate) {
-      return ERROR.CANNOT_FINDONE_ARTICLE;
+      return typia.random<ERROR_TYPE.CANNOT_FINDONE_ARTICLE>();
     }
 
     if (writerId !== articleToUpdate.writer.id) {
@@ -160,10 +162,6 @@ export class ArticlesController {
    * @param articleId 조회하고자 하는 게시글의 id 값
    * @returns 조회한 게시글
    */
-  @ApiBadRequestResponse({
-    description: '이미지들 중 position이 null이 아니면서 동일하게 배정된 경우',
-    schema: createErrorSchema(ERROR.CANNOT_FINDONE_ARTICLE),
-  })
   @TypedRoute.Get(':id')
   public async getOneDetailArticle(
     @UserId() userId: number,
@@ -171,7 +169,7 @@ export class ArticlesController {
   ): Promise<TryCatch<ArticleType.DetailArticle, ERROR_TYPE.CANNOT_FINDONE_ARTICLE>> {
     const article = await this.articlesService.getOneDetailArticle(userId, articleId);
     if (!article) {
-      return ERROR.CANNOT_FINDONE_ARTICLE;
+      return typia.random<ERROR_TYPE.CANNOT_FINDONE_ARTICLE>();
     }
     return createResponseForm(article);
   }
@@ -213,7 +211,7 @@ export class ArticlesController {
     const savedArticle = await this.articlesService.write(userId, createArticleDto);
     const article = await this.articlesService.getOneDetailArticle(userId, savedArticle.id);
     if (!article) {
-      return ERROR.CANNOT_FINDONE_ARTICLE;
+      return typia.random<ERROR_TYPE.CANNOT_FINDONE_ARTICLE>();
     }
     return createResponseForm(article);
   }

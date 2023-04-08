@@ -1,11 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ERROR, ERROR_TYPE } from '../config/constant/error';
+import { ERROR } from '../config/constant/error';
 import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { ArticlesRepository } from '../models/repositories/articles.repository';
 import { CommentsRepository } from '../models/repositories/comments.repository';
 import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
-import { GetAllArticlesResponseDto } from '../models/response/get-all-articles-response.dto';
 import { ArticleEntity } from '../models/tables/article.entity';
 import { UserBridgeEntity } from '../models/tables/user-bridge.entity';
 import { ArticleType, PaginationDto, UserBridgeType } from '../types';
