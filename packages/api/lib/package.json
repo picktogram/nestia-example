@@ -1,6 +1,6 @@
 {
   "name": "picktogram-server-apis",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "API for PROJECT",
   "main": "index.js",
   "typings": "index.d.ts",
