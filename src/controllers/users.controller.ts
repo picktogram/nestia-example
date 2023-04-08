@@ -8,7 +8,13 @@ import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
 import { PaginationDto, Try, TryCatch, UserType } from '../types';
 import typia from 'typia';
-import { ERROR } from '../config/constant/error';
+import {
+  STILL_UNFOLLOW_USER,
+  CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW,
+  ALREADY_FOLLOW_USER,
+  CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
+  CANNOT_FOLLOW_MYSELF,
+} from '../config/constant/error-interface';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/users')
@@ -105,7 +111,7 @@ export class UsersController {
   async unfollow(
     @UserId() userId: number,
     @TypedParam('id', 'number') followeeId: number,
-  ): Promise<TryCatch<true, typeof ERROR.STILL_UNFOLLOW_USER | typeof ERROR.CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW>> {
+  ): Promise<TryCatch<true, STILL_UNFOLLOW_USER | CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW>> {
     const response = await this.usersService.unfollow(userId, followeeId);
     return response === true ? createResponseForm(response) : response;
   }
@@ -125,16 +131,9 @@ export class UsersController {
   async follow(
     @UserId() userId: number,
     @TypedParam('id', 'number') followeeId: number,
-  ): Promise<
-    TryCatch<
-      true,
-      | typeof ERROR.ALREADY_FOLLOW_USER
-      | typeof ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW
-      | typeof ERROR.CANNOT_FOLLOW_MYSELF
-    >
-  > {
+  ): Promise<TryCatch<true, ALREADY_FOLLOW_USER | CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW | CANNOT_FOLLOW_MYSELF>> {
     if (userId === followeeId) {
-      return ERROR.CANNOT_FOLLOW_MYSELF;
+      return typia.random<CANNOT_FOLLOW_MYSELF>();
     }
     const response = await this.usersService.follow(userId, followeeId);
     return response === true ? createResponseForm(response) : response;

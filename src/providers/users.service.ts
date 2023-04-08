@@ -12,6 +12,13 @@ import { getOffset } from '../utils/getOffset';
 import { ArticleEntity } from '../models/tables/article.entity';
 import { CommentEntity } from '../models/tables/comment.entity';
 import { In } from 'typeorm';
+import {
+  STILL_UNFOLLOW_USER,
+  CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW,
+  ALREADY_FOLLOW_USER,
+  CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
+} from '../config/constant/error-interface';
+import typia from 'typia';
 
 @Injectable()
 export class UsersService {
@@ -137,14 +144,18 @@ export class UsersService {
   async unfollow(
     followerId: number,
     followeeId: number,
-  ): Promise<true | typeof ERROR.STILL_UNFOLLOW_USER | typeof ERROR.CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW> {
-    const response = await this.getFolloweeOrThrow(followerId, followeeId, ERROR.CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW);
+  ): Promise<true | STILL_UNFOLLOW_USER | CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW> {
+    const response = await this.getFolloweeOrThrow(
+      followerId,
+      followeeId,
+      typia.random<CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW>(),
+    );
     if (!response.result) {
       return response;
     }
 
     if (!response.bridge) {
-      return ERROR.STILL_UNFOLLOW_USER;
+      return typia.random<STILL_UNFOLLOW_USER>();
     }
 
     await this.userBridgesRepository.delete({ firstUserId: followerId, secondUserId: followeeId });
@@ -154,14 +165,18 @@ export class UsersService {
   async follow(
     followerId: number,
     followeeId: number,
-  ): Promise<true | typeof ERROR.ALREADY_FOLLOW_USER | typeof ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW> {
-    const response = await this.getFolloweeOrThrow(followerId, followeeId, ERROR.CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW);
+  ): Promise<true | ALREADY_FOLLOW_USER | CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW> {
+    const response = await this.getFolloweeOrThrow(
+      followerId,
+      followeeId,
+      typia.random<CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW>(),
+    );
     if (!response.result) {
       return response;
     }
 
     if (response.bridge) {
-      return ERROR.ALREADY_FOLLOW_USER;
+      return typia.random<ALREADY_FOLLOW_USER>();
     }
 
     await this.userBridgesRepository.save({ firstUserId: followerId, secondUserId: followeeId });

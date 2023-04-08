@@ -10,8 +10,8 @@ import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
 import { ArticleType, CommentType, PaginationDto, Try, TryCatch } from '../types';
 import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
-import * as ERROR_TYPE from '../config/constant/error-interface';
 import typia from 'typia';
+import { CANNOT_FINDONE_ARTICLE, IS_NOT_WRITER_OF_THIS_ARTICLE } from '../config/constant/error-interface';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')
@@ -46,10 +46,10 @@ export class ArticlesController {
     @UserId() userId: number,
     @TypedParam('id', 'number') articleId: number,
     @TypedBody() { reason }: ArticleType.ReportReason,
-  ): Promise<TryCatch<true, ERROR_TYPE.CANNOT_FINDONE_ARTICLE>> {
+  ): Promise<TryCatch<true, CANNOT_FINDONE_ARTICLE>> {
     const articleToReport = await this.articlesService.getOneDetailArticle(userId, articleId);
     if (!articleToReport) {
-      return typia.random<ERROR_TYPE.CANNOT_FINDONE_ARTICLE>();
+      return typia.random<CANNOT_FINDONE_ARTICLE>();
     }
     await this.articlesService.report(userId, articleToReport.id, reason);
     return createResponseForm(true as const);
@@ -120,10 +120,10 @@ export class ArticlesController {
   public async likeOrUnlike(
     @UserId() userId: number,
     @TypedParam('id', 'number') articleId: number,
-  ): Promise<TryCatch<boolean, ERROR_TYPE.CANNOT_FINDONE_ARTICLE>> {
+  ): Promise<TryCatch<boolean, CANNOT_FINDONE_ARTICLE>> {
     const articleToPatch = await this.articlesService.getOneDetailArticle(userId, articleId);
     if (!articleToPatch) {
-      return typia.random<ERROR_TYPE.CANNOT_FINDONE_ARTICLE>();
+      return typia.random<CANNOT_FINDONE_ARTICLE>();
     }
     const response = await this.articlesService.likeOrUnLike(userId, articleToPatch.id);
     return createResponseForm(response);
@@ -141,14 +141,14 @@ export class ArticlesController {
     @UserId() writerId: number,
     @TypedParam('id', 'number') articleId: number,
     @TypedBody() updateArticleDto: ArticleType.UpdateArticleDto,
-  ): Promise<TryCatch<boolean, ERROR_TYPE.CANNOT_FINDONE_ARTICLE>> {
+  ): Promise<TryCatch<boolean, CANNOT_FINDONE_ARTICLE | IS_NOT_WRITER_OF_THIS_ARTICLE>> {
     const articleToUpdate = await this.articlesService.getOneDetailArticle(writerId, articleId);
     if (!articleToUpdate) {
-      return typia.random<ERROR_TYPE.CANNOT_FINDONE_ARTICLE>();
+      return typia.random<CANNOT_FINDONE_ARTICLE>();
     }
 
     if (writerId !== articleToUpdate.writer.id) {
-      throw new BadRequestException(ERROR.IS_NOT_WRITER_OF_THIS_ARTICLE);
+      return typia.random<IS_NOT_WRITER_OF_THIS_ARTICLE>();
     }
 
     await this.articlesService.modify(articleId, updateArticleDto);
@@ -166,10 +166,10 @@ export class ArticlesController {
   public async getOneDetailArticle(
     @UserId() userId: number,
     @TypedParam('id', 'number') articleId: number,
-  ): Promise<TryCatch<ArticleType.DetailArticle, ERROR_TYPE.CANNOT_FINDONE_ARTICLE>> {
+  ): Promise<TryCatch<ArticleType.DetailArticle, CANNOT_FINDONE_ARTICLE>> {
     const article = await this.articlesService.getOneDetailArticle(userId, articleId);
     if (!article) {
-      return typia.random<ERROR_TYPE.CANNOT_FINDONE_ARTICLE>();
+      return typia.random<CANNOT_FINDONE_ARTICLE>();
     }
     return createResponseForm(article);
   }
@@ -207,11 +207,11 @@ export class ArticlesController {
   public async writeArticle(
     @UserId() userId: number,
     @TypedBody() createArticleDto: CreateArticleDto,
-  ): Promise<TryCatch<ArticleType.DetailArticle, ERROR_TYPE.CANNOT_FINDONE_ARTICLE>> {
+  ): Promise<TryCatch<ArticleType.DetailArticle, CANNOT_FINDONE_ARTICLE>> {
     const savedArticle = await this.articlesService.write(userId, createArticleDto);
     const article = await this.articlesService.getOneDetailArticle(userId, savedArticle.id);
     if (!article) {
-      return typia.random<ERROR_TYPE.CANNOT_FINDONE_ARTICLE>();
+      return typia.random<CANNOT_FINDONE_ARTICLE>();
     }
     return createResponseForm(article);
   }
