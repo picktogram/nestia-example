@@ -14,6 +14,7 @@ import typia from 'typia';
 import {
   ARLEADY_REPORTED_ARTICLE,
   CANNOT_FINDONE_ARTICLE,
+  CANNOT_FIND_ONE_COMMENT,
   CANNOT_FIND_ONE_REPLY_COMMENT,
   IS_NOT_WRITER_OF_THIS_ARTICLE,
   IS_SAME_POSITION,
@@ -80,8 +81,11 @@ export class ArticlesController {
     @UserId() userId: number,
     @TypedParam('articleId', 'number') articleId: number,
     @TypedParam('commentId', 'number') commentId: number,
-  ): Promise<Try<boolean>> {
+  ): Promise<TryCatch<boolean, CANNOT_FIND_ONE_COMMENT>> {
     const comment = await this.commentsService.getOne(userId, articleId, commentId);
+    if (isErrorGuard(comment)) {
+      return comment;
+    }
     const response = await this.commentsService.likeOrUnlike(userId, comment.id);
     return createResponseForm(response);
   }
