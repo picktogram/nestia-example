@@ -307,7 +307,7 @@ describe('E2E articles test', () => {
       expect(unlikeResponse.data).toBe(false); // NOTE : 실행 후 결과가 좋아요가 취소된 경우 false를 반환한다.
     });
 
-    it.only('사라진 글에 대해서 좋아요는 불가능해야 한다.', async () => {
+    it('사라진 글에 대해서 좋아요는 불가능해야 한다.', async () => {
       const NON_ARTICLE = 987654321;
       const response = await ArticleApis.likeOrUnlike(
         {

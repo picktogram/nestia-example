@@ -25,7 +25,7 @@ describe('Auth Entity', () => {
   });
 
   describe('0. 테스트 환경을 확인합니다.', () => {
-    it.only('0-1. controller 가 정의되어야 합니다.', async () => {
+    it('0-1. controller 가 정의되어야 합니다.', async () => {
       expect(controller).toBeDefined();
     });
   });

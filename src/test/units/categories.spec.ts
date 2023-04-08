@@ -29,7 +29,7 @@ describe('CategoryEntity Entity', () => {
   });
 
   describe('0. 테스트 환경을 확인합니다.', () => {
-    it.only('0-1. Service와 Controller 가 정의되어야 합니다.', async () => {
+    it('0-1. Service와 Controller 가 정의되어야 합니다.', async () => {
       expect(controller).toBeDefined();
       expect(service).toBeDefined();
     });
