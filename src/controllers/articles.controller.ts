@@ -11,7 +11,13 @@ import { ArticlesService } from '../providers/articles.service';
 import { ArticleType, CommentType, PaginationDto, Try, TryCatch } from '../types';
 import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
 import typia from 'typia';
-import { CANNOT_FINDONE_ARTICLE, IS_NOT_WRITER_OF_THIS_ARTICLE } from '../config/constant/business-error';
+import {
+  ARLEADY_REPORTED_ARTICLE,
+  CANNOT_FINDONE_ARTICLE,
+  IS_NOT_WRITER_OF_THIS_ARTICLE,
+  IS_SAME_POSITION,
+  isErrorGuard,
+} from '../config/constant/business-error';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')
@@ -46,12 +52,16 @@ export class ArticlesController {
     @UserId() userId: number,
     @TypedParam('id', 'number') articleId: number,
     @TypedBody() { reason }: ArticleType.ReportReason,
-  ): Promise<TryCatch<true, CANNOT_FINDONE_ARTICLE>> {
+  ): Promise<TryCatch<true, CANNOT_FINDONE_ARTICLE | ARLEADY_REPORTED_ARTICLE>> {
     const articleToReport = await this.articlesService.getOneDetailArticle(userId, articleId);
     if (!articleToReport) {
       return typia.random<CANNOT_FINDONE_ARTICLE>();
     }
-    await this.articlesService.report(userId, articleToReport.id, reason);
+    const reportRespnose = await this.articlesService.report(userId, articleToReport.id, reason);
+    if (reportRespnose !== true) {
+      return reportRespnose;
+    }
+
     return createResponseForm(true as const);
   }
 
@@ -207,8 +217,12 @@ export class ArticlesController {
   public async writeArticle(
     @UserId() userId: number,
     @TypedBody() createArticleDto: CreateArticleDto,
-  ): Promise<TryCatch<ArticleType.DetailArticle, CANNOT_FINDONE_ARTICLE>> {
+  ): Promise<TryCatch<ArticleType.DetailArticle, CANNOT_FINDONE_ARTICLE | IS_SAME_POSITION>> {
     const savedArticle = await this.articlesService.write(userId, createArticleDto);
+    if (isErrorGuard(savedArticle)) {
+      return savedArticle;
+    }
+
     const article = await this.articlesService.getOneDetailArticle(userId, savedArticle.id);
     if (!article) {
       return typia.random<CANNOT_FINDONE_ARTICLE>();

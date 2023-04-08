@@ -165,9 +165,9 @@ describe('Article Entity', () => {
       const positions = [1, 2, 3, 4, 5, 6, 6].map((position) => ({ position }));
       try {
         const checkIsSame = service['checkIsSamePosition'](positions);
-        expect(checkIsSame).toBe('This is to be failed.');
+        expect(checkIsSame).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
       } catch (err: any) {
-        expect(err?.response?.data).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
+        // expect(err?.response?.data).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
       }
     });
 

@@ -1,5 +1,5 @@
 import { TypedRoute } from '@nestia/core';
-import { BadRequestException, Controller, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBadRequestResponse, ApiBody, ApiConsumes } from '@nestjs/swagger';
@@ -8,7 +8,9 @@ import { createErrorSchema, ERROR } from '../config/constant/error';
 import { CreateBodyImageMulterOptions } from '../config/multer-s3/multer-option';
 import { createResponseForm } from '../interceptors/transform.interceptor';
 import { BodyImagesService } from '../providers/body-images.service';
-import { Try } from '../types';
+import { TryCatch } from '../types';
+import { SELECT_MORE_THAN_ONE_BODY_IMAGE } from '../config/constant/business-error';
+import typia from 'typia';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/body-image')
@@ -42,9 +44,11 @@ export class BodyImagesController {
     },
   })
   @TypedRoute.Post()
-  async upload(@UploadedFiles() files: Express.MulterS3.File[]): Promise<Try<string[]>> {
+  async upload(
+    @UploadedFiles() files: Express.MulterS3.File[],
+  ): Promise<TryCatch<string[], SELECT_MORE_THAN_ONE_BODY_IMAGE>> {
     if (!files?.length) {
-      throw new BadRequestException(ERROR.SELECT_MORE_THAN_ONE_BODY_IMAGE);
+      return typia.random<SELECT_MORE_THAN_ONE_BODY_IMAGE>();
     }
     const locations = files.map(({ location }) => location);
     return createResponseForm(locations);

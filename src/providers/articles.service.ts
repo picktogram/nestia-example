@@ -13,6 +13,8 @@ import { DataSource, In } from 'typeorm';
 import { CommentEntity } from '../models/tables/comment.entity';
 import { ReportArticlesRepository } from '../models/repositories/report-articles.repository';
 import { UserLikeArticlesRepository } from '../models/repositories/user-like-articles.repository';
+import typia from 'typia';
+import { ARLEADY_REPORTED_ARTICLE, IS_SAME_POSITION, isErrorGuard } from '../config/constant/business-error';
 
 @Injectable()
 export class ArticlesService {
@@ -50,7 +52,7 @@ export class ArticlesService {
     await this.articlesRepository.update({ id: articleId }, updateArticleDto);
   }
 
-  async report(userId: number, articleId: number, reason?: string) {
+  async report(userId: number, articleId: number, reason?: string): Promise<true | ARLEADY_REPORTED_ARTICLE> {
     const report = await this.reportArticlesRepository.findOneBy({ userId, articleId });
     if (!report) {
       await this.reportArticlesRepository.save({ userId, articleId, reason });
@@ -59,9 +61,10 @@ export class ArticlesService {
 
     if (report.status === 'canceled') {
       await this.reportArticlesRepository.update({ userId, articleId }, { status: 'reported' });
+      return true;
     }
 
-    throw new BadRequestException(ERROR.ARLEADY_REPORTED_ARTICLE);
+    return typia.random<ARLEADY_REPORTED_ARTICLE>();
   }
 
   async getOneDetailArticle(userId: number, articleId: number): Promise<ArticleType.DetailArticle | null> {
@@ -172,8 +175,12 @@ export class ArticlesService {
     };
   }
 
-  async write(userId: number, { contents, images, type }: CreateArticleDto): Promise<ArticleEntity> {
+  async write(userId: number, { contents, images, type }: CreateArticleDto): Promise<ArticleEntity | IS_SAME_POSITION> {
     const checkedImages = this.checkIsSamePosition(images);
+    if (isErrorGuard(checkedImages)) {
+      return checkedImages;
+    }
+
     const writedArticle = await this.articlesRepository.save(
       ArticleEntity.create({
         writerId: userId,
@@ -188,7 +195,9 @@ export class ArticlesService {
     return writedArticle;
   }
 
-  private checkIsSamePosition<T extends { position?: number | `${number}` | null }>(images?: T[]): T[] {
+  private checkIsSamePosition<T extends { position?: number | `${number}` | null }>(
+    images?: T[],
+  ): T[] | IS_SAME_POSITION {
     if (!images || images.length === 0) {
       return [];
     }
@@ -210,7 +219,7 @@ export class ArticlesService {
       });
 
     if (isSamePositionImage) {
-      throw new BadRequestException(ERROR.IS_SAME_POSITION);
+      return typia.random<IS_SAME_POSITION>();
     }
 
     return this.sortImageByIndex(images);

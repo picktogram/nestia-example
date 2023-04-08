@@ -208,7 +208,7 @@ describe('E2E articles test', () => {
         { contents: dummyQuestionWithReply.contents, type: dummyQuestionWithReply.type },
       );
 
-      if (questionWithReply.code === 4004) {
+      if (questionWithReply.code !== 1000) {
         expect(1).toBe(2);
         return;
       }
