@@ -1,5 +1,5 @@
 import { TypedBody, TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
-import { BadRequestException, Controller, UseGuards } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UserId } from '../common/decorators/user-id.decorator';
@@ -14,8 +14,11 @@ import typia from 'typia';
 import {
   ARLEADY_REPORTED_ARTICLE,
   CANNOT_FINDONE_ARTICLE,
+  CANNOT_FIND_ONE_REPLY_COMMENT,
   IS_NOT_WRITER_OF_THIS_ARTICLE,
   IS_SAME_POSITION,
+  NOT_FOUND_ARTICLE_TO_COMMENT,
+  TOO_MANY_REPORTED_ARTICLE,
   isErrorGuard,
 } from '../config/constant/business-error';
 
@@ -115,8 +118,16 @@ export class ArticlesController {
     @UserId() writerId: number,
     @TypedParam('id', 'number') articleId: number,
     @TypedBody() createCommentDto: CreateCommentDto,
-  ): Promise<Try<CommentType.CreateResponse>> {
+  ): Promise<
+    TryCatch<
+      CommentType.CreateResponse,
+      CANNOT_FIND_ONE_REPLY_COMMENT | NOT_FOUND_ARTICLE_TO_COMMENT | TOO_MANY_REPORTED_ARTICLE
+    >
+  > {
     const comment = await this.commentsService.write(writerId, articleId, createCommentDto);
+    if (isErrorGuard(comment)) {
+      return comment;
+    }
     return createResponseForm(comment);
   }
 

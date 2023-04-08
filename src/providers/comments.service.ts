@@ -1,6 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ERROR } from '../config/constant/error';
 import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { ArticlesRepository } from '../models/repositories/articles.repository';
 import { CommentsRepository } from '../models/repositories/comments.repository';
@@ -9,6 +8,13 @@ import { ArticleEntity } from '../models/tables/article.entity';
 import { CommentEntity } from '../models/tables/comment.entity';
 import { CommentType } from '../types';
 import { getOffset } from '../utils/getOffset';
+import {
+  CANNOT_FIND_ONE_COMMENT,
+  CANNOT_FIND_ONE_REPLY_COMMENT,
+  NOT_FOUND_ARTICLE_TO_COMMENT,
+  TOO_MANY_REPORTED_ARTICLE,
+} from '../config/constant/business-error';
+import typia from 'typia';
 
 @Injectable()
 export class CommentsService {
@@ -33,10 +39,10 @@ export class CommentsService {
     return !like;
   }
 
-  async getOne(userId: number, articleId: number, commentId: number) {
+  async getOne(userId: number, articleId: number, commentId: number): Promise<CommentEntity | CANNOT_FIND_ONE_COMMENT> {
     const comment = await this.commentsRepository.findOne({ where: { id: commentId, articleId } });
     if (!comment) {
-      throw new BadRequestException(ERROR.CANNOT_FIND_ONE_COMMENT);
+      return typia.random<CANNOT_FIND_ONE_COMMENT>();
     }
     return comment;
   }
@@ -64,7 +70,11 @@ export class CommentsService {
     return { list, count };
   }
 
-  async write(writerId: number, articleId: number, createCommentDto: CreateCommentDto): Promise<CommentEntity> {
+  async write(
+    writerId: number,
+    articleId: number,
+    createCommentDto: CreateCommentDto,
+  ): Promise<CommentEntity | CANNOT_FIND_ONE_REPLY_COMMENT | NOT_FOUND_ARTICLE_TO_COMMENT | TOO_MANY_REPORTED_ARTICLE> {
     const article = await this.articlesRepository.findOne({
       select: {
         id: true,
@@ -79,16 +89,16 @@ export class CommentsService {
       });
 
       if (!parentComment) {
-        throw new BadRequestException(ERROR.CANNOT_FIND_ONE_REPLY_COMMENT);
+        return typia.random<CANNOT_FIND_ONE_REPLY_COMMENT>();
       }
     }
 
     if (!article) {
-      throw new BadRequestException(ERROR.NOT_FOUND_ARTICLE_TO_COMMENT);
+      return typia.random<NOT_FOUND_ARTICLE_TO_COMMENT>();
     }
 
     if (article.isReported >= ArticleEntity.TOO_MANY_REPORTED) {
-      throw new BadRequestException(ERROR.TOO_MANY_REPORTED_ARTICLE);
+      return typia.random<TOO_MANY_REPORTED_ARTICLE>();
     }
 
     const entityToSave = CommentEntity.create({ writerId, articleId, ...createCommentDto });

@@ -17,6 +17,8 @@ import {
   CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW,
   ALREADY_FOLLOW_USER,
   CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
+  ALREADY_CREATED_EMAIL,
+  ALREADY_CREATED_PHONE_NUMBER,
 } from '../config/constant/business-error';
 import typia from 'typia';
 
@@ -99,13 +101,15 @@ export class UsersService {
     return { list, count };
   }
 
-  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+  async create(
+    createUserDto: CreateUserDto,
+  ): Promise<UserEntity | ALREADY_CREATED_EMAIL | ALREADY_CREATED_PHONE_NUMBER> {
     const alreadyCreatedEmail = await this.usersRepository.findOne({
       where: { email: createUserDto.email },
     });
 
     if (alreadyCreatedEmail) {
-      throw new BadRequestException(ERROR.ALREADY_CREATED_EMAIL);
+      return typia.random<ALREADY_CREATED_EMAIL>();
     }
 
     const alreadyCreatedPhoneNumber = await this.usersRepository.findOne({
@@ -113,7 +117,7 @@ export class UsersService {
     });
 
     if (alreadyCreatedPhoneNumber) {
-      throw new BadRequestException(ERROR.ALREADY_CREATED_PHONE_NUMBER);
+      return typia.random<ALREADY_CREATED_PHONE_NUMBER>();
     }
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
