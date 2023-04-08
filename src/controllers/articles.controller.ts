@@ -11,7 +11,7 @@ import { ArticlesService } from '../providers/articles.service';
 import { ArticleType, CommentType, PaginationDto, Try, TryCatch } from '../types';
 import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
 import typia from 'typia';
-import { CANNOT_FINDONE_ARTICLE, IS_NOT_WRITER_OF_THIS_ARTICLE } from '../config/constant/error-interface';
+import { CANNOT_FINDONE_ARTICLE, IS_NOT_WRITER_OF_THIS_ARTICLE } from '../config/constant/business-error';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')

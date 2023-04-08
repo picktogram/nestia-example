@@ -14,7 +14,7 @@ import {
   ALREADY_FOLLOW_USER,
   CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
   CANNOT_FOLLOW_MYSELF,
-} from '../config/constant/error-interface';
+} from '../config/constant/business-error';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/users')
@@ -104,8 +104,6 @@ export class UsersController {
    * @param userId
    * @param followeeId
    * @returns 성공 시 true를 반환한다.
-   * @throws 4010 아직 팔로우한 적 없는 디자이너님에요!
-   * @throws 4011 언팔로우할 디자이너님을 찾지 못했습니다.
    */
   @TypedRoute.Delete(':id/follow')
   async unfollow(
@@ -123,9 +121,6 @@ export class UsersController {
    * @param userId
    * @param followeeId
    * @returns 성공 시 true를 반환한다.
-   * @throws 4008 이미 좋아요를 누른 디자이너님입니다!
-   * @throws 4009 팔로우할 디자이너님을 찾지 못했습니다.
-   * @throws 4017 설마 자기 자신을 팔로우하려고 했어요?!
    */
   @TypedRoute.Post(':id/follow')
   async follow(

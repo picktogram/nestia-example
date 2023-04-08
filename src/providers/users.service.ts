@@ -17,7 +17,7 @@ import {
   CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW,
   ALREADY_FOLLOW_USER,
   CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
-} from '../config/constant/error-interface';
+} from '../config/constant/business-error';
 import typia from 'typia';
 
 @Injectable()
