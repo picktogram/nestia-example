@@ -1,9 +1,7 @@
 import { TypedBody, TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import { Controller, UseGuards } from '@nestjs/common';
-import { ApiBadRequestResponse } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UserId } from '../common/decorators/user-id.decorator';
-import { createErrorSchema, ERROR } from '../config/legacy/error';
 import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { CommentsService } from '../providers/comments.service';
@@ -11,18 +9,17 @@ import { ArticlesService } from '../providers/articles.service';
 import { ArticleType, CommentType, PaginationDto, TryCatch } from '../types';
 import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
 import typia from 'typia';
+import { isBusinessErrorGuard } from '../config/errors';
 import {
-  ARLEADY_REPORTED_ARTICLE,
   CANNOT_FINDONE_ARTICLE,
+  ARLEADY_REPORTED_ARTICLE,
   CANNOT_FIND_ONE_COMMENT,
   CANNOT_FIND_ONE_REPLY_COMMENT,
-  IS_NOT_WRITER_OF_THIS_ARTICLE,
-  IS_SAME_POSITION,
   NOT_FOUND_ARTICLE_TO_COMMENT,
   TOO_MANY_REPORTED_ARTICLE,
-  isErrorGuard,
+  IS_NOT_WRITER_OF_THIS_ARTICLE,
+  IS_SAME_POSITION,
 } from '../config/errors/business-error';
-
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')
 export class ArticlesController {
@@ -83,7 +80,7 @@ export class ArticlesController {
     @TypedParam('commentId', 'number') commentId: number,
   ): Promise<TryCatch<boolean, CANNOT_FIND_ONE_COMMENT>> {
     const comment = await this.commentsService.getOne(userId, articleId, commentId);
-    if (isErrorGuard(comment)) {
+    if (isBusinessErrorGuard(comment)) {
       return comment;
     }
     const response = await this.commentsService.likeOrUnlike(userId, comment.id);
@@ -129,7 +126,7 @@ export class ArticlesController {
     >
   > {
     const comment = await this.commentsService.write(writerId, articleId, createCommentDto);
-    if (isErrorGuard(comment)) {
+    if (isBusinessErrorGuard(comment)) {
       return comment;
     }
     return createResponseForm(comment);
@@ -224,17 +221,13 @@ export class ArticlesController {
    * @param createArticleDto 게시글의 정보
    * @returns
    */
-  @ApiBadRequestResponse({
-    description: '이미지들 중 position이 null이 아니면서 동일하게 배정된 경우',
-    schema: createErrorSchema(ERROR.IS_SAME_POSITION),
-  })
   @TypedRoute.Post()
   public async writeArticle(
     @UserId() userId: number,
     @TypedBody() createArticleDto: CreateArticleDto,
   ): Promise<TryCatch<ArticleType.DetailArticle, CANNOT_FINDONE_ARTICLE | IS_SAME_POSITION>> {
     const savedArticle = await this.articlesService.write(userId, createArticleDto);
-    if (isErrorGuard(savedArticle)) {
+    if (isBusinessErrorGuard(savedArticle)) {
       return savedArticle;
     }
 

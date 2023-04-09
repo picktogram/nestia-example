@@ -13,7 +13,8 @@ import { CommentEntity } from '../models/tables/comment.entity';
 import { ReportArticlesRepository } from '../models/repositories/report-articles.repository';
 import { UserLikeArticlesRepository } from '../models/repositories/user-like-articles.repository';
 import typia from 'typia';
-import { ARLEADY_REPORTED_ARTICLE, IS_SAME_POSITION, isErrorGuard } from '../config/errors/business-error';
+import { ARLEADY_REPORTED_ARTICLE, IS_SAME_POSITION } from '../config/errors/business-error';
+import { isBusinessErrorGuard } from '../config/errors';
 
 @Injectable()
 export class ArticlesService {
@@ -176,7 +177,7 @@ export class ArticlesService {
 
   async write(userId: number, { contents, images, type }: CreateArticleDto): Promise<ArticleEntity | IS_SAME_POSITION> {
     const checkedImages = this.checkIsSamePosition(images);
-    if (isErrorGuard(checkedImages)) {
+    if (isBusinessErrorGuard(checkedImages)) {
       return checkedImages;
     }
 

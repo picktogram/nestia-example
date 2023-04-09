@@ -109,7 +109,7 @@ describe('E2E articles test', () => {
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
-      if (isErrorGuard(signUpResponse)) {
+      if (isBusinessErrorGuard(signUpResponse)) {
         expect(1).toBe(2);
         return;
       }
@@ -249,7 +249,7 @@ describe('E2E articles test', () => {
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
-      if (isErrorGuard(signUpResponse)) {
+      if (isBusinessErrorGuard(signUpResponse)) {
         expect(1).toBe(2);
         return;
       }
@@ -381,7 +381,7 @@ describe('E2E articles test', () => {
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
-      if (isErrorGuard(signUpResponse)) {
+      if (isBusinessErrorGuard(signUpResponse)) {
         expect(1).toBe(2);
         return;
       }

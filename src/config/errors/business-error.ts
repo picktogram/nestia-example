@@ -1,18 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-namespace
 
-export interface ERROR {
-  type: string;
-  result: false;
-  code: number;
-  data: string;
-}
-
-export const isErrorGuard = (obj: any): obj is ERROR => {
-  if (obj.result === false) {
-    return true;
-  }
-  return false;
-};
+import { ERROR } from '.';
 
 export interface ALREADY_CREATED_EMAIL extends ERROR {
   type: 'business';

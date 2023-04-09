@@ -58,7 +58,7 @@ describe('E2E users test', () => {
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
-      if (isErrorGuard(signUpResponse)) {
+      if (isBusinessErrorGuard(signUpResponse)) {
         return false;
       }
 
@@ -73,7 +73,7 @@ describe('E2E users test', () => {
       const userData = typia.random<CreateUserDto>();
       const follower = await AuthApis.sign_up.signUp({ host }, userData);
 
-      if (isErrorGuard(follower)) {
+      if (isBusinessErrorGuard(follower)) {
         expect(1).toBe(2);
         return;
       }
@@ -135,7 +135,7 @@ describe('E2E users test', () => {
          */
         const writer = typia.random<CreateUserDto>();
         const writerSignUpResponse = await AuthApis.sign_up.signUp({ host }, writer);
-        if (isErrorGuard(writerSignUpResponse)) {
+        if (isBusinessErrorGuard(writerSignUpResponse)) {
           expect(1).toBe(2);
           return;
         }
@@ -150,7 +150,7 @@ describe('E2E users test', () => {
          */
         const designer = typia.random<CreateUserDto>();
         const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
-        if (isErrorGuard(signUpResponse)) {
+        if (isBusinessErrorGuard(signUpResponse)) {
           expect(1).toBe(2);
           return;
         }
@@ -226,7 +226,7 @@ describe('E2E users test', () => {
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
-      if (isErrorGuard(signUpResponse)) {
+      if (isBusinessErrorGuard(signUpResponse)) {
         return;
       }
 
@@ -295,7 +295,7 @@ describe('E2E users test', () => {
       // NOTE : 나를 팔로우할 대상을 생성
       const userData = typia.random<CreateUserDto>();
       const followee = await AuthApis.sign_up.signUp({ host }, userData);
-      if (isErrorGuard(followee)) {
+      if (isBusinessErrorGuard(followee)) {
         expect(1).toBe(2);
         return;
       }
@@ -380,7 +380,7 @@ describe('E2E users test', () => {
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
-      if (isErrorGuard(signUpResponse)) {
+      if (isBusinessErrorGuard(signUpResponse)) {
         expect(1).toBe(2);
         return;
       }
@@ -421,7 +421,7 @@ describe('E2E users test', () => {
       // NOTE : 팔로우를 하는 쪽
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
-      if (isErrorGuard(signUpResponse)) {
+      if (isBusinessErrorGuard(signUpResponse)) {
         expect(1).toBe(2);
         return;
       }
@@ -435,7 +435,7 @@ describe('E2E users test', () => {
       // NOTE : 팔로우를 당하는 쪽
       const designer2 = typia.random<CreateUserDto>();
       const followerSignUpResponse = await AuthApis.sign_up.signUp({ host }, designer2);
-      if (isErrorGuard(followerSignUpResponse)) {
+      if (isBusinessErrorGuard(followerSignUpResponse)) {
         expect(1).toBe(2);
         return;
       }

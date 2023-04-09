@@ -14,7 +14,8 @@ import { AuthService } from './auth.service';
 import { GoogleGuard } from './guards/google.guard';
 import { KaKaoGuard } from '../auth/guards/kakao.guard';
 import { Try, TryCatch } from '../types';
-import { ALREADY_CREATED_EMAIL, ALREADY_CREATED_PHONE_NUMBER, isErrorGuard } from '../config/errors/business-error';
+import { ALREADY_CREATED_EMAIL, ALREADY_CREATED_PHONE_NUMBER } from '../config/errors/business-error';
+import { isBusinessErrorGuard } from '../config/errors';
 
 @Controller('api/v1/auth')
 export class AuthController {
@@ -52,7 +53,7 @@ export class AuthController {
     }
 
     const createUserResponse = await this.usersService.create(createUserDto);
-    if (isErrorGuard(createUserResponse)) {
+    if (isBusinessErrorGuard(createUserResponse)) {
       return createUserResponse;
     }
 
