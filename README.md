@@ -28,6 +28,9 @@ TEST_DB_PASSWORD=
 
 ## 테스트
 
+- [Nestia를 활용한 e2e 테스트](https://kscodebase.tistory.com/642)
+- [테스트 코드로 커뮤니케이션하기](https://kscodebase.tistory.com/646)
+
 ```bash
 npm run test:watch
 ```
@@ -66,6 +69,8 @@ npm run publish # cd packages/api/lib && npm publish
 
 ## 프론트에서의 SDK 사용
 
+> _TypeScript로 작성된 서버는 프론트 개발자가 코드를 보고 해석하는 데에 전혀 문제가 없다._
+
 ```bash
 # front side
 npm i picktogram-server-apis
@@ -96,6 +101,8 @@ try {
 
 - [프론트에서 Nestia SDK를 연동한 코드 예시](https://github.com/picktogram/front/blob/feature/user/picktogram/src/components/main/components/card/cardModal.tsx#L20)
 - [프론트 개발자 입장에서 바라본 Nestia SDK](https://sunrise-push-ffa.notion.site/Picktogram-3437f9ef750b43e78ca09c3aae0df46d)
+- [모든 타입이 추론되는 API 만들기 ( feat. Nestia )](https://kscodebase.tistory.com/663)
+- [Nestia에서 typeof, namespace를 쓰면 안 됩니다](https://kscodebase.tistory.com/676)
 
 # Nestia SDK 연동 (~ing)
 
