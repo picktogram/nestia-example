@@ -77,7 +77,7 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
         path: request.url,
 
         errorCode: code ?? 4000,
-        errorMessage: code ?? 4000 === 4000 ? UNCHATCHED_ERROR : message,
+        errorMessage: (code ?? 4000) === 4000 ? UNCHATCHED_ERROR : message,
         requestToResponse,
       });
       return;
