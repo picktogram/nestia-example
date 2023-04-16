@@ -9,7 +9,7 @@ import { CreateBodyImageMulterOptions } from '../config/multer-s3/multer-option'
 import { createResponseForm } from '../interceptors/transform.interceptor';
 import { BodyImagesService } from '../providers/body-images.service';
 import { TryCatch } from '../types';
-import { SELECT_MORE_THAN_ONE_BODY_IMAGE } from '../config/errors/business-error';
+import { SELECT_MORE_THAN_ONE_IMAGE } from '../config/errors/business-error';
 import typia from 'typia';
 
 @UseGuards(JwtGuard)
@@ -46,9 +46,9 @@ export class BodyImagesController {
   @TypedRoute.Post()
   async upload(
     @UploadedFiles() files: Express.MulterS3.File[],
-  ): Promise<TryCatch<string[], SELECT_MORE_THAN_ONE_BODY_IMAGE>> {
+  ): Promise<TryCatch<string[], SELECT_MORE_THAN_ONE_IMAGE>> {
     if (!files?.length) {
-      return typia.random<SELECT_MORE_THAN_ONE_BODY_IMAGE>();
+      return typia.random<SELECT_MORE_THAN_ONE_IMAGE>();
     }
     const locations = files.map(({ location }) => location);
     return createResponseForm(locations);

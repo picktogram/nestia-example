@@ -10,6 +10,7 @@ import { DecodedUserToken } from '../../models/tables/user.entity';
 import { Try } from '../../types';
 import { CreateArticleDto } from '../../models/dtos/create-article.dto';
 import { isBusinessErrorGuard, isErrorGuard } from '../../config/errors';
+import { IConnection } from '@nestia/fetcher';
 
 describe('E2E users test', () => {
   const host = 'http://localhost:4000';
@@ -39,7 +40,30 @@ describe('E2E users test', () => {
    * 이미지 업로드
    */
   describe('POST api/v1/users/profile/cover', () => {
+    let token: string = '';
+    let connection: IConnection;
+    beforeAll(async () => {
+      const designer = typia.random<CreateUserDto>();
+      await AuthApis.sign_up.signUp({ host }, designer);
+      const response = await AuthApis.login({ host }, designer);
+      connection = {
+        host,
+        headers: {
+          Authorization: response.data,
+        },
+      };
+    });
+
     it.todo('프로필의 커버 이미지를 업로드하는 기능을 테스트');
+
+    it('이미지가 없을 경우에 대한 예외 처리', async () => {
+      const uploadCoverImageResponse = await UserApis.profile.cover.uploadCoverImage(connection);
+      if (!isBusinessErrorGuard(uploadCoverImageResponse)) {
+        expect(1).toBe(2);
+        return;
+      }
+      expect(uploadCoverImageResponse.data).toBe('적어도 1장 이상의 이미지를 골라야 합니다.');
+    });
   });
 
   describe('GET api/v1/users/profile', () => {

@@ -1,4 +1,4 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
 import { User } from '../common/decorators/user.decorator';
@@ -14,7 +14,10 @@ import {
   ALREADY_FOLLOW_USER,
   CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
   CANNOT_FOLLOW_MYSELF,
+  SELECT_MORE_THAN_ONE_IMAGE,
 } from '../config/errors/business-error';
+import { CreateCoverImageMulterOptions } from '../config/multer-s3/multer-option';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/users')
@@ -36,6 +39,24 @@ export class UsersController {
   ): Promise<UserType.GetAcquaintanceResponse> {
     const acquaintances = await this.usersService.getAcquaintance(userId, paginationDto);
     return createPaginationForm(acquaintances, paginationDto);
+  }
+
+  /**
+   * @summary 230129 - 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 10개이다.
+   * @tag body-images
+   * @param files 저장할 이미지
+   * @returns 이미지가 저장되고 난 후의 경로의 배열
+   */
+  @UseInterceptors(FilesInterceptor('file', 1, CreateCoverImageMulterOptions()))
+  @TypedRoute.Post('profile/cover')
+  async uploadCoverImage(
+    @UploadedFiles() files: Express.MulterS3.File[],
+  ): Promise<TryCatch<string[], SELECT_MORE_THAN_ONE_IMAGE>> {
+    if (!files?.length) {
+      return typia.random<SELECT_MORE_THAN_ONE_IMAGE>();
+    }
+    const locations = files.map(({ location }) => location);
+    return createResponseForm(locations);
   }
 
   /**

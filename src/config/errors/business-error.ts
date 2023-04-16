@@ -30,7 +30,7 @@ export interface CANNOT_FINDONE_ARTICLE extends ERROR {
   data: '게시글을 찾지 못했습니다.';
 }
 
-export interface SELECT_MORE_THAN_ONE_BODY_IMAGE extends ERROR {
+export interface SELECT_MORE_THAN_ONE_IMAGE extends ERROR {
   type: 'business';
   result: false;
   code: 4005;

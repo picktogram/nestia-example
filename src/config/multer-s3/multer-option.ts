@@ -31,3 +31,11 @@ export const CreateBodyImageMulterOptions = (): MulterOptions => {
     limits: { fileSize: 1024 * 1024 * 20 },
   };
 };
+
+export const CreateCoverImageMulterOptions = (): MulterOptions => {
+  return {
+    fileFilter: fileFilter('image'),
+    storage: new MulterBuilder().allowImageMimeTypes().setResource('user').setPath('cover-image').build(),
+    limits: { fileSize: 1024 * 1024 * 20 },
+  };
+};
