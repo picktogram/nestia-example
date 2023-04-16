@@ -9,7 +9,7 @@ import { CreateUserDto } from '../../models/dtos/create-user.dto';
 import { DecodedUserToken } from '../../models/tables/user.entity';
 import { Try } from '../../types';
 import { CreateArticleDto } from '../../models/dtos/create-article.dto';
-import { isErrorGuard } from '../../config/errors/business-error';
+import { isBusinessErrorGuard, isErrorGuard } from '../../config/errors';
 
 describe('E2E users test', () => {
   const host = 'http://localhost:4000';
@@ -27,6 +27,19 @@ describe('E2E users test', () => {
 
   afterAll(async () => {
     await app.close();
+  });
+
+  describe('PUT api/v1/users/profile', () => {
+    it.todo('커버 이미지를 수정하는 기능을 테스트');
+    it.todo('프로필 이미지를 수정하는 기능을 테스트');
+    it.todo('소개글 수정을 테스트');
+  });
+
+  /**
+   * 이미지 업로드
+   */
+  describe('POST api/v1/users/profile/cover', () => {
+    it.todo('프로필의 커버 이미지를 업로드하는 기능을 테스트');
   });
 
   describe('GET api/v1/users/profile', () => {
@@ -49,8 +62,15 @@ describe('E2E users test', () => {
       expect(profile).toBeDefined();
     });
 
+    it.todo('디자이너 프로필 조회 시 프로필 이미지가 나와야 한다.');
+
     it.todo('토큰을 decode할 게 아니라, 업데이트된 이후의 최신 정보를 반환해야 한다.');
   });
+
+  /**
+   * 다른 디자이너를 조회
+   */
+  describe('GET api/v1/users/:id', () => {});
 
   describe('POST api/v1/users/:id/follow', () => {
     let token: string = '';

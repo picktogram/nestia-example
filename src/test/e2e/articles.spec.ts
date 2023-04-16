@@ -10,7 +10,7 @@ import { CreateCommentDto } from '../../models/dtos/create-comment.dto';
 import { CommentEntity } from '../../models/tables/comment.entity';
 import { DecodedUserToken } from '../../models/tables/user.entity';
 import { ArticleType } from '../../types';
-import { isErrorGuard } from '../../config/errors/business-error';
+import { isBusinessErrorGuard } from '../../config/errors';
 
 describe('E2E articles test', () => {
   const host = 'http://localhost:4000';
