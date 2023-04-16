@@ -67,7 +67,9 @@ export declare namespace AlarmType {
 
 export declare namespace UserType {
   interface Profile extends Pick<UserEntity, 'id' | 'nickname' | 'profileImage'> {}
-  interface DetailProfile extends Merge<DecodedUserToken, Pick<UserEntity, 'profileImage' | 'coverImage'>> {}
+  interface DetailProfile extends Merge<DecodedUserToken, Pick<UserEntity, 'profileImage' | 'coverImage'>> {
+    myself?: boolean;
+  }
 
   interface GetAcquaintanceResponse extends PaginationForm<{ list: Profile[]; count: number }> {}
 

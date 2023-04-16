@@ -1,7 +1,5 @@
 import { Controller, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
-import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import { UsersService } from '../providers/users.service';
-import { User } from '../common/decorators/user.decorator';
 import { UserId } from '../common/decorators/user-id.decorator';
 import { TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import { JwtGuard } from '../auth/guards/jwt.guard';
@@ -62,7 +60,7 @@ export class UsersController {
   }
 
   /**
-   * @summary 디자이너 프로필 조회 & 토큰에 담긴 값 Parsing
+   * @summary 디자이너가 자신의 프로필을 조회하는 API (legacy)
    *
    * @tag users
    * @param user
@@ -159,5 +157,25 @@ export class UsersController {
     }
     const response = await this.usersService.follow(userId, followeeId);
     return response === true ? createResponseForm(response) : response;
+  }
+
+  /**
+   * @summary 디자이너 프로필 조회로, 자기 자신을 조회할 경우에는 myself 값이 true로 온다.
+   *
+   * @tag users
+   * @param userId
+   * @param designerId
+   * @returns 유저의 상세한 프로필
+   */
+  @TypedRoute.Get(':id')
+  async getDetailProdfile(
+    @UserId() userId: number,
+    @TypedParam('id', 'number') designerId: number,
+  ): Promise<TryCatch<UserType.DetailProfile, CANNOT_FIND_DESIGNER_PROFILE>> {
+    const designerProfile = await this.usersService.getUserProfile(designerId);
+    if (isBusinessErrorGuard(designerProfile)) {
+      return designerProfile;
+    }
+    return createResponseForm({ ...designerProfile, myself: userId === designerId });
   }
 }
