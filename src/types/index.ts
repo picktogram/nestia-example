@@ -9,7 +9,7 @@ import type { BodyImageEntity } from '../models/tables/body-image.entity';
 import type { CategoryEntity } from '../models/tables/category.entity';
 import type { CommentEntity } from '../models/tables/comment.entity';
 import type { ReportArticleEntity } from '../models/tables/report-article.entity';
-import type { UserEntity } from '../models/tables/user.entity';
+import type { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 
 export type Merge<F, S> = {
   [K in keyof (F & S)]: K extends keyof S ? S[K] : K extends keyof F ? F[K] : never;
@@ -67,6 +67,7 @@ export declare namespace AlarmType {
 
 export declare namespace UserType {
   interface Profile extends Pick<UserEntity, 'id' | 'nickname' | 'profileImage'> {}
+  interface DetailProfile extends Merge<DecodedUserToken, Pick<UserEntity, 'profileImage' | 'coverImage'>> {}
 
   interface GetAcquaintanceResponse extends PaginationForm<{ list: Profile[]; count: number }> {}
 

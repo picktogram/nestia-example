@@ -1,13 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import { CreateUserDto } from '../models/dtos/create-user.dto';
-import { ERROR } from '../config/legacy/error';
 import { UsersRepository } from '../models/repositories/users.repository';
 import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
 import bcrypt from 'bcrypt';
-import { PaginationDto, UserType, ValueOfError } from '../types';
-import { UserBridgeEntity } from '../models/tables/user-bridge.entity';
+import { Merge, PaginationDto, UserType, ValueOfError } from '../types';
 import { getOffset } from '../utils/getOffset';
 import { ArticleEntity } from '../models/tables/article.entity';
 import { CommentEntity } from '../models/tables/comment.entity';
@@ -19,6 +17,7 @@ import {
   CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
   ALREADY_CREATED_EMAIL,
   ALREADY_CREATED_PHONE_NUMBER,
+  CANNOT_FIND_DESIGNER_PROFILE,
 } from '../config/errors/business-error';
 import typia from 'typia';
 
@@ -28,6 +27,27 @@ export class UsersService {
     @InjectRepository(UsersRepository) private readonly usersRepository: UsersRepository,
     @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
   ) {}
+
+  async getUserProfile(userId: number): Promise<UserType.DetailProfile | CANNOT_FIND_DESIGNER_PROFILE> {
+    const user = await this.usersRepository.findOne({
+      select: {
+        id: true,
+        name: true,
+        nickname: true,
+        email: true,
+        birth: true,
+        profileImage: true,
+        coverImage: true,
+      },
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return typia.random<CANNOT_FIND_DESIGNER_PROFILE>();
+    }
+
+    return user;
+  }
 
   async checkReputation(designerId: number): Promise<UserType.Retuation> {
     const reputation = await this.usersRepository

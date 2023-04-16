@@ -86,7 +86,22 @@ describe('E2E users test', () => {
       expect(profile).toBeDefined();
     });
 
-    it.todo('디자이너 프로필 조회 시 프로필 이미지가 나와야 한다.');
+    it('디자이너 프로필 조회 시 프로필 이미지가 나와야 한다.', async () => {
+      const profile = await UserApis.profile.getProfile({
+        host,
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      if (isBusinessErrorGuard(profile)) {
+        expect(1).toBe(2);
+        return;
+      }
+
+      expect(profile).toBeDefined();
+      expect(Object.keys(profile.data).includes('profileImage')).toBeDefined();
+    });
 
     it.todo('토큰을 decode할 게 아니라, 업데이트된 이후의 최신 정보를 반환해야 한다.');
   });

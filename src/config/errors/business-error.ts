@@ -120,3 +120,10 @@ export interface CANNOT_FOLLOW_MYSELF extends ERROR {
   code: 4017;
   data: '설마 자기 자신을 팔로우하려고 했어요?!';
 }
+
+export interface CANNOT_FIND_DESIGNER_PROFILE extends ERROR {
+  type: 'business';
+  result: false;
+  code: 4018;
+  data: '디자이너의 프로필을 찾지 못했어요.';
+}

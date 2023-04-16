@@ -15,9 +15,11 @@ import {
   CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW,
   CANNOT_FOLLOW_MYSELF,
   SELECT_MORE_THAN_ONE_IMAGE,
+  CANNOT_FIND_DESIGNER_PROFILE,
 } from '../config/errors/business-error';
 import { CreateCoverImageMulterOptions } from '../config/multer-s3/multer-option';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { isBusinessErrorGuard } from '../config/errors';
 
 @UseGuards(JwtGuard)
 @Controller('api/v1/users')
@@ -67,7 +69,11 @@ export class UsersController {
    * @returns 유저의 토큰을 디코딩한 것과 동일한 형태의 값들이 반환된다.
    */
   @TypedRoute.Get('profile')
-  async getProfile(@User() user: UserEntity): Promise<Try<DecodedUserToken>> {
+  async getProfile(@UserId() userId: number): Promise<TryCatch<UserType.DetailProfile, CANNOT_FIND_DESIGNER_PROFILE>> {
+    const user = await this.usersService.getUserProfile(userId);
+    if (isBusinessErrorGuard(user)) {
+      return user;
+    }
     return createResponseForm(user);
   }
 
