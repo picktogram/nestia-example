@@ -32,6 +32,12 @@ export class UserEntity extends CommonCloumns {
    * 사용자의 프로필 이미지
    */
   @Column('text', { nullable: true, select: false })
+  public coverImage?: string | null;
+
+  /**
+   * 사용자의 프로필 이미지
+   */
+  @Column('text', { nullable: true, select: false })
   public profileImage?: string | null;
 
   /**
