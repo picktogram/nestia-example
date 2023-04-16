@@ -1,7 +1,7 @@
 import { Controller, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UsersService } from '../providers/users.service';
 import { UserId } from '../common/decorators/user-id.decorator';
-import { TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
+import { TypedBody, TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
 import { PaginationDto, Try, TryCatch, UserType } from '../types';
@@ -15,7 +15,7 @@ import {
   SELECT_MORE_THAN_ONE_IMAGE,
   CANNOT_FIND_DESIGNER_PROFILE,
 } from '../config/errors/business-error';
-import { CreateCoverImageMulterOptions } from '../config/multer-s3/multer-option';
+import { CreateCoverImageMulterOptions, CreateProfileImageMulterOptions } from '../config/multer-s3/multer-option';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { isBusinessErrorGuard } from '../config/errors';
 
@@ -42,13 +42,13 @@ export class UsersController {
   }
 
   /**
-   * @summary 230129 - 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 10개이다.
-   * @tag body-images
+   * @summary 230416 - 커버 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 1개이다.
+   * @tag users
    * @param files 저장할 이미지
    * @returns 이미지가 저장되고 난 후의 경로의 배열
    */
   @UseInterceptors(FilesInterceptor('file', 1, CreateCoverImageMulterOptions()))
-  @TypedRoute.Post('profile/cover')
+  @TypedRoute.Post('profile/cover-image')
   async uploadCoverImage(
     @UploadedFiles() files: Express.MulterS3.File[],
   ): Promise<TryCatch<string[], SELECT_MORE_THAN_ONE_IMAGE>> {
@@ -57,6 +57,37 @@ export class UsersController {
     }
     const locations = files.map(({ location }) => location);
     return createResponseForm(locations);
+  }
+
+  /**
+   * @summary 230416 - 프로필 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 1개이다.
+   * @tag users
+   * @param files 저장할 이미지
+   * @returns 이미지가 저장되고 난 후의 경로의 배열
+   */
+  @UseInterceptors(FilesInterceptor('file', 1, CreateProfileImageMulterOptions()))
+  @TypedRoute.Post('profile/image')
+  async uploadProfileImage(
+    @UploadedFiles() files: Express.MulterS3.File[],
+  ): Promise<TryCatch<string[], SELECT_MORE_THAN_ONE_IMAGE>> {
+    if (!files?.length) {
+      return typia.random<SELECT_MORE_THAN_ONE_IMAGE>();
+    }
+    const locations = files.map(({ location }) => location);
+    return createResponseForm(locations);
+  }
+
+  @TypedRoute.Put('profile')
+  async updateProfile(
+    @UserId() userId: number,
+    @TypedBody() updateUserDto: UserType.UpdateUserDto,
+  ): Promise<TryCatch<UserType.DetailProfile, CANNOT_FIND_DESIGNER_PROFILE>> {
+    await this.usersService.updateProfile(userId, updateUserDto);
+    const user = await this.usersService.getUserProfile(userId);
+    if (isBusinessErrorGuard(user)) {
+      return user;
+    }
+    return createResponseForm(user);
   }
 
   /**

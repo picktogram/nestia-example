@@ -29,7 +29,7 @@ export class UserEntity extends CommonCloumns {
   public nickname!: string;
 
   /**
-   * 사용자의 프로필 이미지
+   * 사용자의 커버 이미지
    */
   @Column('text', { nullable: true, select: false })
   public coverImage?: string | null;
@@ -62,6 +62,12 @@ export class UserEntity extends CommonCloumns {
    */
   @Column({ select: false })
   public password!: string;
+
+  /**
+   * @maxLength 2000
+   */
+  @Column('text', { select: false, nullable: true })
+  public introduce?: string | null;
 
   /**
    * 사용자의 생일을 의미하는 값

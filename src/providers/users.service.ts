@@ -28,6 +28,11 @@ export class UsersService {
     @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
   ) {}
 
+  async updateProfile(userId: number, updateUserDto: UserType.UpdateUserDto): Promise<true> {
+    await this.usersRepository.update({ id: userId }, updateUserDto);
+    return true;
+  }
+
   async getUserProfile(userId: number): Promise<UserType.DetailProfile | CANNOT_FIND_DESIGNER_PROFILE> {
     const user = await this.usersRepository.findOne({
       select: {
@@ -36,6 +41,7 @@ export class UsersService {
         nickname: true,
         email: true,
         birth: true,
+        introduce: true,
         profileImage: true,
         coverImage: true,
       },

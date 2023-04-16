@@ -31,16 +31,65 @@ describe('E2E users test', () => {
   });
 
   describe('PUT api/v1/users/profile', () => {
-    it.todo('커버 이미지를 수정하는 기능을 테스트');
-    it.todo('프로필 이미지를 수정하는 기능을 테스트');
-    it.todo('소개글 수정을 테스트');
+    let connection: IConnection;
+    beforeAll(async () => {
+      const designer = typia.random<CreateUserDto>();
+      await AuthApis.sign_up.signUp({ host }, designer);
+      const response = await AuthApis.login({ host }, designer);
+      connection = {
+        host,
+        headers: {
+          Authorization: response.data,
+        },
+      };
+    });
+
+    it('커버 이미지를 수정하는 기능을 테스트', async () => {
+      const before = await UserApis.profile.getProfile(connection);
+      await UserApis.profile.updateProfile(connection, { coverImage: 'test.jpg' });
+      const after = await UserApis.profile.getProfile(connection);
+
+      if (isBusinessErrorGuard(before) || isBusinessErrorGuard(after)) {
+        expect(1).toBe(2);
+        return;
+      }
+
+      expect(before.data.coverImage).toBe(null);
+      expect(after.data.coverImage).toBe('test.jpg');
+    });
+
+    it('프로필 이미지를 수정하는 기능을 테스트', async () => {
+      const before = await UserApis.profile.getProfile(connection);
+      await UserApis.profile.updateProfile(connection, { profileImage: 'test.jpg' });
+      const after = await UserApis.profile.getProfile(connection);
+
+      if (isBusinessErrorGuard(before) || isBusinessErrorGuard(after)) {
+        expect(1).toBe(2);
+        return;
+      }
+
+      expect(before.data.profileImage).toBe(null);
+      expect(after.data.profileImage).toBe('test.jpg');
+    });
+
+    it('소개글 수정을 테스트', async () => {
+      const before = await UserApis.profile.getProfile(connection);
+      const res = await UserApis.profile.updateProfile(connection, { introduce: 'test.jpg' });
+      const after = await UserApis.profile.getProfile(connection);
+      if (isBusinessErrorGuard(before) || isBusinessErrorGuard(after)) {
+        expect(1).toBe(2);
+        return;
+      }
+
+      expect(before.data.introduce).toBe(null);
+      expect(after.data.introduce).toBe('test.jpg');
+    });
   });
 
   /**
    * 이미지 업로드
    */
   describe('POST api/v1/users/profile/cover', () => {
-    let token: string = '';
     let connection: IConnection;
     beforeAll(async () => {
       const designer = typia.random<CreateUserDto>();
@@ -60,7 +109,7 @@ describe('E2E users test', () => {
     it.todo('프로필의 커버 이미지를 업로드하는 기능을 테스트');
 
     it('이미지가 없을 경우에 대한 예외 처리', async () => {
-      const uploadCoverImageResponse = await UserApis.profile.cover.uploadCoverImage(connection);
+      const uploadCoverImageResponse = await UserApis.profile.cover_image.uploadCoverImage(connection);
       if (!isBusinessErrorGuard(uploadCoverImageResponse)) {
         expect(1).toBe(2);
         return;
