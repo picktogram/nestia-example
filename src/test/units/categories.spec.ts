@@ -6,13 +6,15 @@ import { TypeOrmModuleOptions } from '../../config/typeorm';
 import { CategoriesController } from '../../controllers/categories.controller';
 import { CategoriesService } from '../../providers/categories.service';
 import { CategoriesModule } from '../../modules/categories.module';
+import { describe, it, before } from 'node:test';
+import assert from 'node:assert';
 
 describe('CategoryEntity Entity', () => {
   let controller: CategoriesController;
   let service: CategoriesService;
   let category;
 
-  beforeAll(async () => {
+  before(async () => {
     const module = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
@@ -30,8 +32,8 @@ describe('CategoryEntity Entity', () => {
 
   describe('0. 테스트 환경을 확인합니다.', () => {
     it('0-1. Service와 Controller 가 정의되어야 합니다.', async () => {
-      expect(controller).toBeDefined();
-      expect(service).toBeDefined();
+      assert.notStrictEqual(controller, undefined);
+      assert.notStrictEqual(service, undefined);
     });
   });
 });

@@ -11,13 +11,15 @@ import { CommentEntity } from '../../models/tables/comment.entity';
 import { DecodedUserToken } from '../../models/tables/user.entity';
 import { ArticleType } from '../../types';
 import { isBusinessErrorGuard } from '../../config/errors';
+import { describe, it, before, after, beforeEach } from 'node:test';
+import assert from 'node:assert';
 
 describe('E2E articles test', () => {
   const host = 'http://localhost:4000';
   let app: INestApplication;
   let testingModule: TestingModule;
 
-  beforeAll(async () => {
+  before(async () => {
     testingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -26,13 +28,13 @@ describe('E2E articles test', () => {
     await (await app.init()).listen(4000);
   });
 
-  afterAll(async () => {
+  after(async () => {
     await app.close();
   });
 
-  describe('POST api/v1/articles', () => {
+  describe('POST api/v1/articles', { concurrency: true }, () => {
     let token: string = '';
-    beforeAll(async () => {
+    before(async () => {
       const designer = typia.random<CreateUserDto>();
       await AuthApis.sign_up.signUp({ host }, designer);
       const response = await AuthApis.login({ host }, designer);
@@ -51,16 +53,16 @@ describe('E2E articles test', () => {
         { contents: articleToSave.contents, type: 'writing' },
       );
 
-      expect(writeArticleResponse.data).toBeDefined();
+      assert.notStrictEqual(writeArticleResponse.data, undefined);
     });
 
-    it.todo('이미지가 있는 경우에는 이미지의 경로가 모두 달라야 한다.');
-    it.todo('이미지가 있을 때, 이미지의 포지션이 동일해서는 안 된다.');
+    it('이미지가 있는 경우에는 이미지의 경로가 모두 달라야 한다.', { todo: true });
+    it('이미지가 있을 때, 이미지의 포지션이 동일해서는 안 된다.', { todo: true });
   });
 
-  describe('GET api/v1/articles', () => {
+  describe('GET api/v1/articles', { concurrency: true }, () => {
     let token: string = '';
-    beforeAll(async () => {
+    before(async () => {
       const designer = typia.random<CreateUserDto>();
       await AuthApis.sign_up.signUp({ host }, designer);
       const response = await AuthApis.login({ host }, designer);
@@ -78,7 +80,7 @@ describe('E2E articles test', () => {
         { page: 1, limit: 10 },
       );
 
-      expect(response.data.list).toBeInstanceOf(Array);
+      assert.notStrictEqual(response.data.list instanceof Array, true);
     });
 
     it('게시글 리스토 조회 시 나와의 관계를 의미하는 프로퍼티가 필요.', async () => {
@@ -93,24 +95,24 @@ describe('E2E articles test', () => {
       );
 
       response.data.list.forEach((article) => {
-        expect(article.writer.followStatus).toBeDefined();
+        assert.notStrictEqual(article.writer.followStatus, undefined);
       });
     });
 
-    it.todo('각 게시글 타입 별 프로퍼티에 대한 검증 필요');
+    it('각 게시글 타입 별 프로퍼티에 대한 검증 필요', { todo: true });
   });
 
   /**
    * 답변을 기다리는 질문
    */
-  describe('GET api/v1/articles/no-reply', () => {
+  describe('GET api/v1/articles/no-reply', { concurrency: true }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
       if (isBusinessErrorGuard(signUpResponse)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
@@ -131,7 +133,7 @@ describe('E2E articles test', () => {
         { page: 1, limit: 10 },
       );
 
-      expect(getAllWithNoReplyResponse.data.list).toBeInstanceOf(Array);
+      assert.strictEqual(getAllWithNoReplyResponse.data.list instanceof Array, true);
     });
 
     it('질문이 아닌 글은 작성해도 조회되지 말아야 한다.', async () => {
@@ -164,7 +166,7 @@ describe('E2E articles test', () => {
         return el.id === writing.data.id;
       });
 
-      expect(isAlreadyCreatedArticle).toBeFalsy();
+      assert.strictEqual(isAlreadyCreatedArticle, false);
     });
 
     it('"댓글이 없는 질문 타입의 게시글"만 나오는지에 대한 검증', async () => {
@@ -191,12 +193,13 @@ describe('E2E articles test', () => {
         { page: 1, limit: 10 },
       );
 
-      expect(getAllWithNoReplyResponse.data.list).toBeInstanceOf(Array);
-      expect(
+      assert.strictEqual(getAllWithNoReplyResponse.data.list instanceof Array, true);
+      assert.strictEqual(
         getAllWithNoReplyResponse.data.list.some((el) => {
           return typeof questionWithNoReply.data !== 'string' && el.id === questionWithNoReply.data.id;
         }),
-      ).toBeTruthy();
+        true,
+      );
     });
 
     it('질문형 게시글이지만 댓글이 있는 경우에는 조회되지 말아야 한다.', async () => {
@@ -215,7 +218,7 @@ describe('E2E articles test', () => {
       );
 
       if (questionWithReply.code !== 1000) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
@@ -235,22 +238,25 @@ describe('E2E articles test', () => {
         { page: 1, limit: 10 },
       );
 
-      expect(getAllWithNoReplyResponse.data.list).toBeInstanceOf(Array);
-      expect(getAllWithNoReplyResponse.data.list.some((el) => el.id === questionWithReply.data.id)).toBeFalsy();
+      assert.strictEqual(getAllWithNoReplyResponse.data.list instanceof Array, true);
+      assert.strictEqual(
+        getAllWithNoReplyResponse.data.list.some((el) => el.id === questionWithReply.data.id),
+        false,
+      );
     });
   });
 
   /**
    * 게시글에 대한 좋아요/좋아요 취소
    */
-  describe('PATCH api/v1/articles/:id', () => {
+  describe('PATCH api/v1/articles/:id', { concurrency: true }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
       if (isBusinessErrorGuard(signUpResponse)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
@@ -277,7 +283,7 @@ describe('E2E articles test', () => {
       );
 
       if (writeArticleResponse.code !== 1000) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
@@ -303,8 +309,8 @@ describe('E2E articles test', () => {
         writeArticleResponse.data.id,
       );
 
-      expect(likeResponse.data).toBe(true); // NOTE : 실행 후 결과가 좋아요인 경우 true를 반환한다.
-      expect(unlikeResponse.data).toBe(false); // NOTE : 실행 후 결과가 좋아요가 취소된 경우 false를 반환한다.
+      assert.strictEqual(likeResponse.data, true); // NOTE : 실행 후 결과가 좋아요인 경우 true를 반환한다.
+      assert.strictEqual(unlikeResponse.data, false); // NOTE : 실행 후 결과가 좋아요가 취소된 경우 false를 반환한다.
     });
 
     it('사라진 글에 대해서 좋아요는 불가능해야 한다.', async () => {
@@ -319,62 +325,62 @@ describe('E2E articles test', () => {
         NON_ARTICLE,
       );
 
-      expect(response.data).toBe('게시글을 찾지 못했습니다.');
+      assert.strictEqual(response.data, '게시글을 찾지 못했습니다.');
     });
 
     /**
      * 추후 마이페이지나 그 외 페이지에서 좋아요를 모아보게 될 경우, 사라진 글들은 디자이너가 확인 후 취소가 가능해야 하기 때문
      */
-    it.todo('사라진 글에 대해서 좋아요 취소는 가능해야 한다.');
+    it('사라진 글에 대해서 좋아요 취소는 가능해야 한다.', { todo: true });
   });
 
   /**
    * 게시글 신고
    */
-  describe('POST api/v1/articles/:id/reports', () => {
+  describe('POST api/v1/articles/:id/reports', { concurrency: true }, () => {
     /**
      * article.isReported는 1이 올라가며, ReportArcticle table에 row 1개 생성
      */
-    it.todo('게시글을 신고한다.');
-    it.todo('신고 사유가 명시되어야 한다.');
-    it.todo('동일 유저는 하나의 게시글을 2회 이상 신고할 수 없다.');
-    it.todo('나 자신을 신고할 때는 안 된다고 안내 메시지를 준다.');
+    it('게시글을 신고한다.', { todo: true });
+    it('신고 사유가 명시되어야 한다.', { todo: true });
+    it('동일 유저는 하나의 게시글을 2회 이상 신고할 수 없다.', { todo: true });
+    it('나 자신을 신고할 때는 안 된다고 안내 메시지를 준다.', { todo: true });
 
     /**
      * 아래의 TODO는 신고 철회 API에서 검증할 것
      */
-    // it.todo('동일 유저가 게시글을 신고 후 취소한 경우 isReported는 감소, ReportArticle table는 상태 변경');
+    // it('동일 유저가 게시글을 신고 후 취소한 경우 isReported는 감소, ReportArticle table는 상태 변경', {todo: true});
 
     /**
      * isReported는 다시 증가, 그리고 ReportArticle table의 row는 상태 변경
      */
-    it.todo('신고가 철회된 게시글에 대해서 다시 신고하는 것이 가능해야 한다.');
+    it('신고가 철회된 게시글에 대해서 다시 신고하는 것이 가능해야 한다.', { todo: true });
   });
 
   /**
    * 게시글 중 그리기에 해당하는 글에 대한 수정
    */
-  describe('PUT api/v1/articles/:id', () => {
+  describe('PUT api/v1/articles/:id', { concurrency: true }, () => {
     /**
      * 이미지를 수정하는 경우, 해당 이미지를 저장하고 그 이력을 남겨야 한다.
      * 서비스 내 이미지는 개발자의 커밋 이력처럼, 이미지 이력이 남아야 한다.
      * 언젠가 이미지는 블록체인을 이용해서 저장
      */
-    it.todo('그리기(drawing) 타입의 게시글 수정 시, 만약 이미지를 수정하는 경우');
+    it('그리기(drawing) 타입의 게시글 수정 시, 만약 이미지를 수정하는 경우', { todo: true });
 
     /**
      * 그 외 수정 사항에 대해서는 다른 게시글 타입과 마찬가지로 동작해야 한다.
      */
-    it.todo('그리기(drawing) 타입의 게시글 수정 시, 이미지를 제외한 나머지를 수정하는 경우');
+    it('그리기(drawing) 타입의 게시글 수정 시, 이미지를 제외한 나머지를 수정하는 경우', { todo: true });
 
-    it.todo('그 외 나머지 타입에 대한 게시글 수정이 올바르게 되는지에 대한 검증');
+    it('그 외 나머지 타입에 대한 게시글 수정이 올바르게 되는지에 대한 검증', { todo: true });
   });
 
   /**
    * 게시글에 댓글 남기기
    * 그리기 타입 글에 대해서는 댓글에 좌표 값이 반드시 있어야 한다.
    */
-  describe('POST api/v1/articles/:id/comments', () => {
+  describe('POST api/v1/articles/:id/comments', { concurrency: true }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
     let article: ArticleType.DetailArticle;
@@ -382,7 +388,7 @@ describe('E2E articles test', () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
       if (isBusinessErrorGuard(signUpResponse)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
@@ -421,67 +427,67 @@ describe('E2E articles test', () => {
         commentToSave,
       );
 
-      expect(comment).toBeDefined();
+      assert.notStrictEqual(comment, undefined);
     });
   });
 
   /**
    * 답글 달기
    */
-  describe('POST api/v1/articles/:articleId/comments/:commentId', () => {
-    it.todo('게시글의 댓글에 답변을 남기기');
+  describe('POST api/v1/articles/:articleId/comments/:commentId', { concurrency: true }, () => {
+    it('게시글의 댓글에 답변을 남기기', { todo: true });
   });
 
   /**
    * 댓글에 대한 좋아요/좋아요 취소
    */
-  describe('PATCH api/v1/articles/:articleId/comments/:commentId', () => {
-    it.todo('댓글에 좋아요 하기');
-    it.todo('이미 좋아요한 댓글에 대해 좋아요를 할 경우 취소가 된다.');
+  describe('PATCH api/v1/articles/:articleId/comments/:commentId', { concurrency: true }, () => {
+    it('댓글에 좋아요 하기', { todo: true });
+    it('이미 좋아요한 댓글에 대해 좋아요를 할 경우 취소가 된다.', { todo: true });
 
-    it.todo('삭제된 댓글에 대해서 좋아요를 할 수는 없다.');
+    it('삭제된 댓글에 대해서 좋아요를 할 수는 없다.', { todo: true });
 
     /**
      * 추후 마이페이지나 그 외 페이지에서 좋아요를 모아보게 될 경우, 사라진 글들은 디자이너가 확인 후 취소가 가능해야 하기 때문
      */
-    it.todo('삭제된 댓글에 대해서는 좋아요 취소가 가능해야 한다.');
+    it('삭제된 댓글에 대해서는 좋아요 취소가 가능해야 한다.', { todo: true });
   });
 
   /**
    * 댓글 삭제
    */
-  describe('DELETE api/v1/articles/:articleId/comments/:commentId', () => {
-    it.todo('작성자는 댓글을 삭제할 수 있어야 한다.');
-    it.todo('본인의 댓글이 아닌 경우에는 에러를 뱉어야 한다.');
+  describe('DELETE api/v1/articles/:articleId/comments/:commentId', { concurrency: true }, () => {
+    it('작성자는 댓글을 삭제할 수 있어야 한다.', { todo: true });
+    it('본인의 댓글이 아닌 경우에는 에러를 뱉어야 한다.', { todo: true });
 
     /**
      * 추후 필요한 기능
      */
-    it.todo('신고 당한 댓글이 삭제될 경우, 관리자 채널로 알림을 보내야 한다.');
+    it('신고 당한 댓글이 삭제될 경우, 관리자 채널로 알림을 보내야 한다.', { todo: true });
   });
 
   /**
    * 댓글 수정
    * 수정 시에는, 이전 내역이 욕설이나 그 외 상대의 기분을 해칠 수 있는 댓글인지를 확인해야 한다.
    */
-  describe('PUT api/v1/articles/:articleId/comments/:commentId', () => {
-    it.todo('댓글을 수정할 수 있다.');
+  describe('PUT api/v1/articles/:articleId/comments/:commentId', { concurrency: true }, () => {
+    it('댓글을 수정할 수 있다.', { todo: true });
 
     /**
      * 수정을 여러 차례에 나눠서 할 경우, 그 이력을 알 수 없기 때문에 모두 저장해야 한다.
      * 당장 급한 스펙은 아니다.
      */
-    it.todo('신고당한 글을 수정할 때에는 그 수정 이력을 저장해야 한다.');
+    it('신고당한 글을 수정할 때에는 그 수정 이력을 저장해야 한다.', { todo: true });
   });
 
   /**
    * 댓글 신고
    * 댓글이 신고된 경우, 해당 댓글의 내역을, 유저가 수정할 경우를 대비해 따로 저장해두어야 한다.
    */
-  describe('POST api/v1/articles/:articleid/comments/:commentId', () => {
+  describe('POST api/v1/articles/:articleid/comments/:commentId', { concurrency: true }, () => {
     /**
      * ReportComment에 칼럼을 두고, 신고 당시의 글 내용을 저장해두는 걸 추천한다.
      */
-    it.todo('댓글이 신고될 때, 신고 당시의 내용을 저장해야 한다.');
+    it('댓글이 신고될 때, 신고 당시의 내용을 저장해야 한다.', { todo: true });
   });
 });

@@ -10,13 +10,15 @@ import { UsersModule } from '../../modules/users.module';
 import { AuthService } from '../../auth/auth.service';
 import { generateRandomNumber } from '../../utils/generate-random-number';
 import { UserBridgeEntity } from '../../models/tables/user-bridge.entity';
+import { describe, it, before, beforeEach } from 'node:test';
+import assert from 'node:assert';
 
 describe('User Entity', () => {
   let controller: UsersController;
   let service: UsersService;
   let authService: AuthService;
 
-  beforeAll(async () => {
+  before(async () => {
     const module = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
@@ -37,8 +39,8 @@ describe('User Entity', () => {
 
   describe('0. 테스트 환경을 확인합니다.', () => {
     it('0-1. Service와 Controller 가 정의되어야 합니다.', async () => {
-      expect(controller).toBeDefined();
-      expect(service).toBeDefined();
+      assert.notStrictEqual(controller, undefined);
+      assert.notStrictEqual(service, undefined);
     });
   });
 
@@ -63,7 +65,7 @@ describe('User Entity', () => {
     //     emailAdsConsent: true,
     //   });
     //   console.log(user);
-    //   expect(user).toBeDefined();
+    //.notStrictEqual   assert(user, undefined);
     // });
   });
 
@@ -94,24 +96,24 @@ describe('User Entity', () => {
         where: { firstUserId: follower.id, secondUserId: followee.id },
       });
 
-      expect(response.data).toBe(true);
-      expect(userBridge).toBeDefined();
+      assert.strictEqual(response.data, true);
+      assert.notStrictEqual(userBridge, undefined);
       if (userBridge) {
         const { firstUserId, secondUserId } = userBridge;
-        expect(firstUserId).toBe(follower.id);
-        expect(secondUserId).toBe(followee.id);
+        assert.strictEqual(firstUserId, follower.id);
+        assert.strictEqual(secondUserId, followee.id);
       }
     });
 
     it('이미 좋아요를 누른 디자이너에게 좋아요 시 에러를 발생시킨다.', async () => {
       await controller.follow(follower.id, followee.id);
       const response = await controller.follow(follower.id, followee.id);
-      expect(response.data).toBe('이미 좋아요를 누른 디자이너님입니다!');
+      assert.strictEqual(response.data, '이미 좋아요를 누른 디자이너님입니다!');
     });
 
     it('존재하지 않는 디자이너에 대해서는 좋아요를 할 수 없어야 한다.', async () => {
       const response = await controller.follow(follower.id, NON_EXIST);
-      expect(response.data).toBe('팔로우할 디자이너님을 찾지 못했습니다.');
+      assert.strictEqual(response.data, '팔로우할 디자이너님을 찾지 못했습니다.');
     });
 
     // NOTE : deprecated
@@ -122,7 +124,7 @@ describe('User Entity', () => {
     //     where: { firstUserId: follower.id, secondUserId: followee.id },
     //   });
 
-    //   expect(response.status).toBe('followUp');
+    //.strictEqual   assert(response.status,'followUp');
     // });
   });
 
@@ -165,13 +167,13 @@ describe('User Entity', () => {
         where: { firstUserId: follower.id, secondUserId: followee.id },
       });
 
-      expect(original).toBeDefined();
+      assert.notStrictEqual(original, undefined);
       if (original) {
-        expect(isCreated.firstUserId).toBe(original.firstUserId);
-        expect(isCreated.secondUserId).toBe(original.secondUserId);
+        assert.strictEqual(isCreated.firstUserId, original.firstUserId);
+        assert.strictEqual(isCreated.secondUserId, original.secondUserId);
       }
 
-      expect(afterUnfollow).toBeNull();
+      assert.strictEqual(afterUnfollow, null);
     });
   });
 });

@@ -10,12 +10,14 @@ import { UserEntity } from '../../models/tables/user.entity';
 import { generateRandomNumber } from '../../utils/generate-random-number';
 import { CommentEntity } from '../../models/tables/comment.entity';
 import { ArticleType } from '../../types';
+import { describe, it, before, after } from 'node:test';
+import assert from 'node:assert';
 
 describe('Article Entity', () => {
   let controller: ArticlesController;
   let service: ArticlesService;
 
-  beforeAll(async () => {
+  before(async () => {
     const module = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRootAsync(TypeOrmModuleOptions),
@@ -33,8 +35,8 @@ describe('Article Entity', () => {
 
   describe('0. 테스트 환경을 확인합니다.', () => {
     it('0-1. Service와 Controller 가 정의되어야 합니다.', async () => {
-      expect(controller).toBeDefined();
-      expect(service).toBeDefined();
+      assert.notStrictEqual(controller, undefined);
+      assert.notStrictEqual(service, undefined);
     });
   });
 
@@ -47,7 +49,7 @@ describe('Article Entity', () => {
        */
       let list: ArticleType.Element[] = [];
       let count: number = 0;
-      beforeAll(async () => {
+      before(async () => {
         const readerMetadata = generateRandomNumber(1000, 9999, true);
 
         reader = await UserEntity.save({
@@ -62,24 +64,24 @@ describe('Article Entity', () => {
       });
 
       it('게시글은 페이지네이션 형태로 작성되어야 한다.', async () => {
-        expect(list).toBeInstanceOf(Array);
-        expect(typeof count).toBe('number');
+        assert.strictEqual(list instanceof Array, true);
+        assert.strictEqual(typeof count, 'number');
       });
 
       it('게시글에는 작성자가 포함되어 있어야 하며, 이름과 사진을 알아볼 수 있어야 한다.', async () => {
         list.forEach((article) => {
-          expect(article.writer).toBeDefined();
-          expect(article.writer.id).toBeDefined();
-          expect(article.writer.profileImage).toBeDefined();
-          expect(article.writer.nickname).toBeDefined();
+          assert.notStrictEqual(article.writer, undefined);
+          assert.notStrictEqual(article.writer.id, undefined);
+          assert.notStrictEqual(article.writer.profileImage, undefined);
+          assert.notStrictEqual(article.writer.nickname, undefined);
         });
       });
 
       it('게시글 리스트에서도 일정 개수(length) 이상의 댓글 배열이 포함되어 있어야 한다.', async () => {
         const article = list.at(0);
-        expect(article).toBeDefined();
+        assert.notStrictEqual(article, undefined);
         if (article) {
-          expect(article.comments).toBeInstanceOf(Array);
+          assert.strictEqual(article.comments instanceof Array, true);
         }
       });
     });
@@ -87,7 +89,7 @@ describe('Article Entity', () => {
     describe('게시글 리스트 조회 시 작성자에 대한 정보 검증', () => {
       let writer: UserEntity;
 
-      beforeAll(async () => {
+      before(async () => {
         const writerMetadata = generateRandomNumber(1000, 9999, true);
         writer = await UserEntity.save({
           name: writerMetadata,
@@ -102,9 +104,9 @@ describe('Article Entity', () => {
         const response = await service.read(writer.id, { page: 1, limit: 10 }, {});
         const myArticle = response.list.find((el) => el.writer.id === writer.id);
 
-        expect(myArticle).toBeDefined();
+        assert.notStrictEqual(myArticle, undefined);
         if (myArticle) {
-          expect(myArticle['isMine']).toBeTruthy();
+          assert.strictEqual(myArticle['isMine'], true);
         }
       });
     });
@@ -120,7 +122,7 @@ describe('Article Entity', () => {
       let list: ArticleType.Element[];
       let count: number;
 
-      beforeAll(async () => {
+      before(async () => {
         const writerMetadata = generateRandomNumber(1000, 9999, true);
         writer = await UserEntity.save({
           name: writerMetadata,
@@ -149,7 +151,7 @@ describe('Article Entity', () => {
 
         const isSame = JSON.stringify(created.comments) === JSON.stringify(sorted);
 
-        expect(isSame).toBeTruthy();
+        assert.strictEqual(isSame, true);
       });
 
       it('게시글의 댓글 배열은 인기 순, 좋아요 순으로 정렬되어야 한다.', async () => {});
@@ -165,9 +167,9 @@ describe('Article Entity', () => {
       const positions = [1, 2, 3, 4, 5, 6, 6].map((position) => ({ position }));
       try {
         const checkIsSame = service['checkIsSamePosition'](positions);
-        expect(checkIsSame).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
+        assert.strictEqual(checkIsSame, '이미지의 정렬 값이 동일한 경우가 존재합니다.');
       } catch (err: any) {
-        // expect(err?.response?.data).toBe('이미지의 정렬 값이 동일한 경우가 존재합니다.');
+        //.strictEqual assert(err?.response?.data, '이미지의 정렬 값이 동일한 경우가 존재합니다.');
       }
     });
 
@@ -176,9 +178,9 @@ describe('Article Entity', () => {
       const positions = [0, 1].map((position) => ({ position }));
       try {
         const checkIsSame = service['checkIsSamePosition'](positions);
-        expect(JSON.stringify(checkIsSame)).toBe(JSON.stringify(positions));
+        assert.strictEqual(JSON.stringify(checkIsSame), JSON.stringify(positions));
       } catch (err) {
-        expect(err).toBeUndefined();
+        assert.strictEqual(err, undefined);
       }
     });
 
@@ -187,7 +189,7 @@ describe('Article Entity', () => {
       const answer = [0, 1, 2].map((position) => ({ position }));
 
       const checkIsSame = service['checkIsSamePosition'](positions);
-      expect(JSON.stringify(checkIsSame)).toBe(JSON.stringify(answer));
+      assert.strictEqual(JSON.stringify(checkIsSame), JSON.stringify(answer));
     });
   });
 
@@ -196,7 +198,7 @@ describe('Article Entity', () => {
     let article: ArticleEntity;
     let comments: CommentEntity[];
 
-    beforeAll(async () => {
+    before(async () => {
       const writerMetadata = generateRandomNumber(1000, 9999, true);
       writer = await UserEntity.save({
         name: writerMetadata,
@@ -219,21 +221,21 @@ describe('Article Entity', () => {
     it('게시글을 조회할 때, 게시글에 댓글이 있는 경우 댓글이 조회되어야 한다.', async () => {
       const detailArticle = await controller.getOneDetailArticle(writer.id, article.id);
 
-      expect(detailArticle.data).toBeDefined();
+      assert.notStrictEqual(detailArticle.data, undefined);
       if (detailArticle.code === 1000) {
-        expect(detailArticle.data.comments).toBeInstanceOf(Array);
+        assert.strictEqual(detailArticle.data.comments instanceof Array, true);
         if (detailArticle.data.comments) {
-          expect(detailArticle.data.comments.length).toBeGreaterThan(0);
-          expect(detailArticle.data.comments.length).toBe(3);
+          assert.strictEqual(detailArticle.data.comments.length > 0, true);
+          assert.strictEqual(detailArticle.data.comments.length, 3);
           const comment = detailArticle.data.comments.at(0);
-          expect(comment).toBeDefined();
+          assert.notStrictEqual(comment, undefined);
 
           if (comment) {
-            expect(comment.id).toBeDefined();
-            expect(comment.parentId).toBeDefined();
-            expect(comment.contents).toBeDefined();
-            expect(comment.xPosition).toBeDefined();
-            expect(comment.yPosition).toBeDefined();
+            assert.notStrictEqual(comment.id, undefined);
+            assert.notStrictEqual(comment.parentId, undefined);
+            assert.notStrictEqual(comment.contents, undefined);
+            assert.notStrictEqual(comment.xPosition, undefined);
+            assert.notStrictEqual(comment.yPosition, undefined);
           }
         }
       }
@@ -245,7 +247,7 @@ describe('Article Entity', () => {
     let article: ArticleEntity;
     let comments: CommentEntity[];
 
-    beforeAll(async () => {
+    before(async () => {
       const writerMetadata = generateRandomNumber(1000, 9999, true);
       writer = await UserEntity.save({
         name: writerMetadata,
@@ -271,11 +273,11 @@ describe('Article Entity', () => {
       const comment3 = await controller.readComments(article.id, { page: 3, limit: 1 });
 
       [comment1.data?.list.at(0), comment2.data?.list.at(0), comment3.data?.list.at(0)].forEach((comment, i) => {
-        expect(comment).toBeDefined();
+        assert.notStrictEqual(comment, undefined);
         if (comment) {
           const searchedComment = comments.at(i);
           if (searchedComment) {
-            expect(comment.id).toBe(searchedComment.id);
+            assert.strictEqual(comment.id, searchedComment.id);
           }
         }
       });

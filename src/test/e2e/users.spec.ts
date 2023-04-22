@@ -11,13 +11,15 @@ import { Try } from '../../types';
 import { CreateArticleDto } from '../../models/dtos/create-article.dto';
 import { isBusinessErrorGuard, isErrorGuard } from '../../config/errors';
 import { IConnection } from '@nestia/fetcher';
+import { describe, it, after, before, beforeEach } from 'node:test';
+import assert from 'node:assert';
 
 describe('E2E users test', () => {
   const host = 'http://localhost:4000';
   let app: INestApplication;
   let testingModule: TestingModule;
 
-  beforeAll(async () => {
+  before(async () => {
     testingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -26,13 +28,13 @@ describe('E2E users test', () => {
     await (await app.init()).listen(4000);
   });
 
-  afterAll(async () => {
+  after(async () => {
     await app.close();
   });
 
-  describe('PUT api/v1/users/profile', () => {
+  describe('PUT api/v1/users/profile', { concurrency: true }, () => {
     let connection: IConnection;
-    beforeAll(async () => {
+    before(async () => {
       const designer = typia.random<CreateUserDto>();
       await AuthApis.sign_up.signUp({ host }, designer);
       const response = await AuthApis.login({ host }, designer);
@@ -50,12 +52,12 @@ describe('E2E users test', () => {
       const after = await UserApis.profile.getProfile(connection);
 
       if (isBusinessErrorGuard(before) || isBusinessErrorGuard(after)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
-      expect(before.data.coverImage).toBe(null);
-      expect(after.data.coverImage).toBe('test.jpg');
+      assert.strictEqual(before.data.coverImage, null);
+      assert.strictEqual(after.data.coverImage, 'test.jpg');
     });
 
     it('프로필 이미지를 수정하는 기능을 테스트', async () => {
@@ -64,12 +66,12 @@ describe('E2E users test', () => {
       const after = await UserApis.profile.getProfile(connection);
 
       if (isBusinessErrorGuard(before) || isBusinessErrorGuard(after)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
-      expect(before.data.profileImage).toBe(null);
-      expect(after.data.profileImage).toBe('test.jpg');
+      assert.strictEqual(before.data.profileImage, null);
+      assert.strictEqual(after.data.profileImage, 'test.jpg');
     });
 
     it('소개글 수정을 테스트', async () => {
@@ -77,21 +79,21 @@ describe('E2E users test', () => {
       const res = await UserApis.profile.updateProfile(connection, { introduce: 'test.jpg' });
       const after = await UserApis.profile.getProfile(connection);
       if (isBusinessErrorGuard(before) || isBusinessErrorGuard(after)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
-      expect(before.data.introduce).toBe(null);
-      expect(after.data.introduce).toBe('test.jpg');
+      assert.strictEqual(before.data.introduce, null);
+      assert.strictEqual(after.data.introduce, 'test.jpg');
     });
   });
 
   /**
    * 이미지 업로드
    */
-  describe('POST api/v1/users/profile/cover', () => {
+  describe('POST api/v1/users/profile/cover', { concurrency: true }, () => {
     let connection: IConnection;
-    beforeAll(async () => {
+    before(async () => {
       const designer = typia.random<CreateUserDto>();
       await AuthApis.sign_up.signUp({ host }, designer);
       const response = await AuthApis.login({ host }, designer);
@@ -106,21 +108,21 @@ describe('E2E users test', () => {
     /**
      * 이미지 업로드 같은 경우는 nestia로는 불가능하기 때문에 추후에 하는 것으로.
      */
-    it.todo('프로필의 커버 이미지를 업로드하는 기능을 테스트');
+    it('프로필의 커버 이미지를 업로드하는 기능을 테스트', { todo: true });
 
     it('이미지가 없을 경우에 대한 예외 처리', async () => {
       const uploadCoverImageResponse = await UserApis.profile.cover_image.uploadCoverImage(connection);
       if (!isBusinessErrorGuard(uploadCoverImageResponse)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
-      expect(uploadCoverImageResponse.data).toBe('적어도 1장 이상의 이미지를 골라야 합니다.');
+      assert.strictEqual(uploadCoverImageResponse.data, '적어도 1장 이상의 이미지를 골라야 합니다.');
     });
   });
 
-  describe('GET api/v1/users/profile', () => {
+  describe('GET api/v1/users/profile', { concurrency: true }, () => {
     let token: string = '';
-    beforeAll(async () => {
+    before(async () => {
       const designer = typia.random<CreateUserDto>();
       await AuthApis.sign_up.signUp({ host }, designer);
       const response = await AuthApis.login({ host }, designer);
@@ -135,7 +137,7 @@ describe('E2E users test', () => {
         },
       });
 
-      expect(profile).toBeDefined();
+      assert.notStrictEqual(profile, undefined);
     });
 
     it('디자이너 프로필 조회 시 프로필 이미지가 나와야 한다.', async () => {
@@ -147,12 +149,12 @@ describe('E2E users test', () => {
       });
 
       if (isBusinessErrorGuard(profile)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
-      expect(profile).toBeDefined();
-      expect(Object.keys(profile.data).includes('profileImage')).toBeDefined();
+      assert.notStrictEqual(profile, undefined);
+      assert.notStrictEqual(Object.keys(profile.data).includes('profileImage'), undefined);
     });
 
     it('디자이너 프로필 조회 시 프로필 이미지가 나와야 한다.', async () => {
@@ -164,23 +166,23 @@ describe('E2E users test', () => {
       });
 
       if (isBusinessErrorGuard(profile)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
-      expect(profile).toBeDefined();
-      expect(Object.keys(profile.data).includes('coverImage')).toBeDefined();
+      assert.notStrictEqual(profile, undefined);
+      assert.notStrictEqual(Object.keys(profile.data).includes('coverImage'), undefined);
     });
 
-    it.todo('토큰을 decode할 게 아니라, 업데이트된 이후의 최신 정보를 반환해야 한다.');
+    it('토큰을 decode할 게 아니라, 업데이트된 이후의 최신 정보를 반환해야 한다.', { todo: true });
   });
 
   /**
    * 다른 디자이너를 조회
    */
-  describe('GET api/v1/users/:id', () => {});
+  describe('GET api/v1/users/:id', { concurrency: true }, () => {});
 
-  describe('POST api/v1/users/:id/follow', () => {
+  describe('POST api/v1/users/:id/follow', { concurrency: true }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
     beforeEach(async () => {
@@ -202,7 +204,7 @@ describe('E2E users test', () => {
       const follower = await AuthApis.sign_up.signUp({ host }, userData);
 
       if (isBusinessErrorGuard(follower)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
@@ -225,7 +227,7 @@ describe('E2E users test', () => {
         response.data;
       }
 
-      expect(response.data).toBe(true);
+      assert.strictEqual(response.data, true);
     });
 
     /**
@@ -245,13 +247,13 @@ describe('E2E users test', () => {
        * 반드시 에러로 진입하여야 하기 때문에 아래는 일부러 틀린 코드를 작성한다.
        */
 
-      expect(response.code).toBe(4017);
+      assert.strictEqual(response.code, 4017);
     });
 
     /**
      * @link {https://github.com/picktogram/server/issues/10}
      */
-    describe('#issue 10. followStatus 갱신 에러', () => {
+    describe('#issue 10. followStatus 갱신 에러', { concurrency: true }, () => {
       let writerToken: string = '';
       let decodedWriterToken: DecodedUserToken;
 
@@ -264,7 +266,7 @@ describe('E2E users test', () => {
         const writer = typia.random<CreateUserDto>();
         const writerSignUpResponse = await AuthApis.sign_up.signUp({ host }, writer);
         if (isBusinessErrorGuard(writerSignUpResponse)) {
-          expect(1).toBe(2);
+          assert.strictEqual(1, 2);
           return;
         }
 
@@ -279,7 +281,7 @@ describe('E2E users test', () => {
         const designer = typia.random<CreateUserDto>();
         const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
         if (isBusinessErrorGuard(signUpResponse)) {
-          expect(1).toBe(2);
+          assert.strictEqual(1, 2);
           return;
         }
         decodedToken = signUpResponse.data;
@@ -330,17 +332,23 @@ describe('E2E users test', () => {
           { page: 1, limit: 1 },
         );
 
-        expect(before.data.list.some((el) => el.writer.followStatus !== 'nothing')).toBeFalsy();
+        assert.strictEqual(
+          before.data.list.some((el) => el.writer.followStatus !== 'nothing'),
+          false,
+        );
         const articleBeforeFollow = before.data.list.find(
           (el) => writeArticleResponse.code === 1000 && el.id === writeArticleResponse.data.id,
         );
-        expect(articleBeforeFollow?.writer.followStatus === 'nothing').toBeTruthy();
+        assert.strictEqual(articleBeforeFollow?.writer.followStatus === 'nothing', true);
 
-        expect(after.data.list.some((el) => el.writer.followStatus !== 'nothing')).toBeTruthy();
+        assert.strictEqual(
+          after.data.list.some((el) => el.writer.followStatus !== 'nothing'),
+          true,
+        );
         const articleAfterFollow = after.data.list.find(
           (el) => writeArticleResponse.code === 1000 && el.id === writeArticleResponse.data.id,
         );
-        expect(articleAfterFollow?.writer.followStatus === 'nothing').toBeFalsy();
+        assert.strictEqual(articleAfterFollow?.writer.followStatus === 'nothing', false);
       });
     });
   });
@@ -348,7 +356,7 @@ describe('E2E users test', () => {
   /**
    * 알 수도 있는 사람을 조회하는 API
    */
-  describe('GET api/v1/users/acquaintance', () => {
+  describe('GET api/v1/users/acquaintance', { concurrency: true }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
     beforeEach(async () => {
@@ -375,8 +383,8 @@ describe('E2E users test', () => {
         { page: 1, limit: 10 },
       );
 
-      expect(response.data.list).toBeDefined();
-      expect(response.data.list.length).toBe(0);
+      assert.notStrictEqual(response.data.list, undefined);
+      assert.strictEqual(response.data.list.length, 0);
     });
 
     it('팔로우를 당한 경우, 나를 팔로우한 상대가 추천 목록에 조회되어야 한다.', async () => {
@@ -407,13 +415,16 @@ describe('E2E users test', () => {
         { page: 1, limit: 10 },
       );
 
-      expect(response.data.list).toBeDefined();
-      expect(response.data.list.length).toBe(1);
+      assert.notStrictEqual(response.data.list, undefined);
+      assert.strictEqual(response.data.list.length, 1);
 
       /**
        * 자기 자신이 추천 목록에 나와서는 안 된다.
        */
-      expect(response.data.list.some((el) => el.id === decodedToken.id)).toBeFalsy();
+      assert.strictEqual(
+        response.data.list.some((el) => el.id === decodedToken.id),
+        false,
+      );
     });
 
     /**
@@ -424,7 +435,7 @@ describe('E2E users test', () => {
       const userData = typia.random<CreateUserDto>();
       const followee = await AuthApis.sign_up.signUp({ host }, userData);
       if (isBusinessErrorGuard(followee)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
@@ -461,55 +472,59 @@ describe('E2E users test', () => {
         { page: 1, limit: 10 },
       );
 
-      expect(response.data.list).toBeDefined();
-      expect(response.data.list.length).toBe(0);
+      assert.notStrictEqual(response.data.list, undefined);
+      assert.strictEqual(response.data.list.length, 0);
     });
 
     /**
      * 위에서 에러가 발생했기 때문에 다른 방식으로 한 번 더 테스트 진행할 것
      */
-    it.todo('역으로 나도 팔로우를 하여, 서로 맞팔 상태가 되었을 때 친구 추천 목록에서 나오지 말아야 한다. 2');
+    it('역으로 나도 팔로우를 하여, 서로 맞팔 상태가 되었을 때 친구 추천 목록에서 나오지 말아야 한다. 2', {
+      todo: true,
+    });
 
-    it.todo('나 자신은 친구 추천 목록에서 나와서는 안 된다.');
-    it.todo('친구의 친구들을 추천해야 하며, 사유를 말해야 한다.');
+    it('나 자신은 친구 추천 목록에서 나와서는 안 된다.', { todo: true });
+    it('친구의 친구들을 추천해야 하며, 사유를 말해야 한다.', { todo: true });
 
     /**
      * 유명인의 기준은 팔로우가 100명 이상인 사람이다.
      */
-    it.todo('유명인들을 추천해주어야 하며, 사유를 말해야 한다.');
-    it.todo('내가 좋아요를 누른 게시글과 댓글이 우연히 n 번 이상 동일 인물인 경우 추천해주며, 사유를 말해줘야 한다.');
+    it('유명인들을 추천해주어야 하며, 사유를 말해야 한다.', { todo: true });
+    it('내가 좋아요를 누른 게시글과 댓글이 우연히 n 번 이상 동일 인물인 경우 추천해주며, 사유를 말해줘야 한다.', {
+      todo: true,
+    });
   });
 
-  describe('GET api/v1/users/:id/follwers', () => {
-    it.todo('해당 유저가 팔로우한 사람들이 조회된다.');
+  describe('GET api/v1/users/:id/follwers', { concurrency: true }, () => {
+    it('해당 유저가 팔로우한 사람들이 조회된다.', { todo: true });
 
     /**
      * 팔로우 자체를 못하게 막을 것이지만, 더 방어적으로 프로그래밍한다.
      */
-    it.todo('해당 유저가 팔로워 목록에서 조회되서는 안 된다.');
+    it('해당 유저가 팔로워 목록에서 조회되서는 안 된다.', { todo: true });
   });
 
-  describe('GET api/v1/users/:id/followee', () => {
-    it.todo('해당 유저를 팔로이한 사람들이 조회된다.');
+  describe('GET api/v1/users/:id/followee', { concurrency: true }, () => {
+    it('해당 유저를 팔로이한 사람들이 조회된다.', { todo: true });
 
     /**
      * 팔로우 자체를 못하게 막을 것이지만, 더 방어적으로 프로그래밍한다.
      */
-    it.todo('해당 유저가 팔로이 목록에서 조회되서는 안 된다.');
+    it('해당 유저가 팔로이 목록에서 조회되서는 안 된다.', { todo: true });
   });
 
   /**
    * 유저의 평판 조회하기 API
    * 가리키는 아이디가 내 id일 경우, 내 평판 조회하는 것과 동일하게 된다.
    */
-  describe('GET api/v1/uesrs/:id/reputation', () => {
+  describe('GET api/v1/uesrs/:id/reputation', { concurrency: true }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
       if (isBusinessErrorGuard(signUpResponse)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
@@ -530,16 +545,16 @@ describe('E2E users test', () => {
         decodedToken.id,
       );
 
-      expect(myReputation.data).toBeDefined();
+      assert.notStrictEqual(myReputation.data, undefined);
     });
 
-    it.todo('조회한 유저가 자기 자신일 경우에는 그걸 의미하는 값을 전달해야 한다.');
+    it('조회한 유저가 자기 자신일 경우에는 그걸 의미하는 값을 전달해야 한다.', { todo: true });
   });
 
   /**
    * 유저가 다른 유저를 언팔로우하는 상황
    */
-  describe('DELETE api/v1/users/:id/follow', () => {
+  describe('DELETE api/v1/users/:id/follow', { concurrency: true }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
 
@@ -550,7 +565,7 @@ describe('E2E users test', () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
       if (isBusinessErrorGuard(signUpResponse)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
@@ -564,7 +579,7 @@ describe('E2E users test', () => {
       const designer2 = typia.random<CreateUserDto>();
       const followerSignUpResponse = await AuthApis.sign_up.signUp({ host }, designer2);
       if (isBusinessErrorGuard(followerSignUpResponse)) {
-        expect(1).toBe(2);
+        assert.strictEqual(1, 2);
         return;
       }
 
@@ -595,23 +610,21 @@ describe('E2E users test', () => {
         userToBeFollowed.data.id,
       );
 
-      expect(unfollowResponse.data).toBeDefined();
+      assert.notStrictEqual(unfollowResponse.data, undefined);
     });
   });
 
   /**
    * 내가 차단한 사람들 목록을 조회한다.
    */
-  describe('GET v1/api/users/haters', () => {
-    it('유저는 배열로 돌아와야 한다.', async () => {
-      expect([]).toBeInstanceOf(Array);
-    });
+  describe('GET v1/api/users/haters', { concurrency: true }, () => {
+    it('유저는 배열로 돌아와야 한다.', { todo: true });
 
-    it.todo('내가 차단을 하면 차단 목록에 그 사람이 추가되어야 한다.');
+    it('내가 차단을 하면 차단 목록에 그 사람이 추가되어야 한다.', { todo: true });
     /**
      * 그리고 등등 테스트...
      */
 
-    it.todo('10번째 어떤 테스트');
+    it('10번째 어떤 테스트', { todo: true });
   });
 });

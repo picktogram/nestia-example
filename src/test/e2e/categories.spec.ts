@@ -6,13 +6,15 @@ import { CreateUserDto } from '../../models/dtos/create-user.dto';
 import * as AuthApis from '../../api/functional/api/v1/auth';
 import * as CategoryApis from '../../api/functional/api/v1/categories';
 import { CategoryEntity } from '../../models/tables/category.entity';
+import { after, describe, it, before } from 'node:test';
+import assert from 'node:assert';
 
 describe('E2E categories test', () => {
   const host = 'http://localhost:4000';
   let app: INestApplication;
   let testingModule: TestingModule;
 
-  beforeAll(async () => {
+  before(async () => {
     testingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -21,14 +23,14 @@ describe('E2E categories test', () => {
     await (await app.init()).listen(4000);
   });
 
-  afterAll(async () => {
+  after(async () => {
     await app.close();
   });
 
-  describe('GET api/v1/categories', () => {
+  describe('GET api/v1/categories', { concurrency: true }, () => {
     let token: string = '';
     let categories: CategoryEntity[];
-    beforeAll(async () => {
+    before(async () => {
       /**
        * 로그인 절차
        */
@@ -62,7 +64,8 @@ describe('E2E categories test', () => {
         },
         { page: 1, limit: 10 },
       );
-      expect(findAllResponse.data.list).toBeInstanceOf(Array);
+
+      assert.strictEqual(findAllResponse.data.list instanceof Array, true);
     });
 
     it('검색어를 기준으로 이름이 겹치는 카테고리를 조회한다.', async () => {
@@ -75,8 +78,8 @@ describe('E2E categories test', () => {
         },
         { page: 1, limit: 10, search: 'a ' },
       );
-      expect(findAllResponse.data.list).toBeInstanceOf(Array);
-      expect(findAllResponse.data.list.length).toBe(1);
+      assert.strictEqual(findAllResponse.data.list instanceof Array, true);
+      assert.strictEqual(findAllResponse.data.list.length, 1);
     });
 
     /**
@@ -94,9 +97,9 @@ describe('E2E categories test', () => {
         },
         { page: 1, limit: 10, search: 'a b c' },
       );
-      expect(findAllResponse.data.list).toBeInstanceOf(Array);
-      expect(findAllResponse.data.list.length).toBe(categories.length);
-      expect(findAllResponse.data.list.length).toBe(3);
+      assert.strictEqual(findAllResponse.data.list instanceof Array, true);
+      assert.strictEqual(findAllResponse.data.list.length, categories.length);
+      assert.strictEqual(findAllResponse.data.list.length, 3);
     });
   });
 });
