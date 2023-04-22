@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { CreatedAtColumn } from '../common/created-at.column';
 import { ArticleEntity } from './article.entity';
 import { UserEntity } from './user.entity';
@@ -9,20 +9,20 @@ export class ReportArticleEntity extends CreatedAtColumn {
    * 유저의 아이디
    * @type int
    */
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn('int4')
   public userId!: number;
 
   /**
    * 게시글의 아이디
    * @type int
    */
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn('int4')
   public articleId!: number;
 
   /**
    * 신고를 철회했을 경우를 대비하여 canceled라는 상태를 둔다.
    */
-  @Column({ default: 'reported' })
+  @Column('varchar', { default: 'reported' })
   public status!: 'reported' | 'canceled';
 
   /**

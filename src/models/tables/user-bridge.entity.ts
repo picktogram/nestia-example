@@ -9,7 +9,7 @@ export class UserBridgeEntity extends CreatedAtColumn {
    * 맞팔의 경우 서로가 서로에 대해 [from, to], [to, from]으로 존재한다.
    * @type int
    */
-  @PrimaryColumn()
+  @PrimaryColumn('int4')
   firstUserId!: number;
 
   /**
@@ -17,7 +17,7 @@ export class UserBridgeEntity extends CreatedAtColumn {
    * 맞팔의 경우 서로가 서로에 대해 [from, to], [to, from]으로 존재한다.
    * @type int
    */
-  @PrimaryColumn()
+  @PrimaryColumn('int4')
   secondUserId!: number;
 
   /**

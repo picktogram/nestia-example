@@ -10,21 +10,21 @@ export class CommentEntity extends CommonCloumns {
    * 댓글이 달린 게시글의 아이디
    * @type int
    */
-  @Column({ select: false })
+  @Column('int4', { select: false })
   articleId!: number;
 
   /**
    * 작성자의 아이디
    * @type int
    */
-  @Column({ select: false })
+  @Column('int4', { select: false })
   writerId!: number;
 
   /**
    * '부모 댓글이 있는 경우, 즉 답글인 경우에는 부모 댓글 아이디를 받는다.'
    * @type int
    */
-  @Column({ nullable: true })
+  @Column('int4', { nullable: true })
   parentId?: number | null;
 
   /**

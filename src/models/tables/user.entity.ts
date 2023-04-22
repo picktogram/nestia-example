@@ -17,7 +17,7 @@ export class UserEntity extends CommonCloumns {
    * @minLength 1
    * @maxLength 50
    */
-  @Column({ length: 50, select: false })
+  @Column('varchar', { length: 50, select: false })
   public name!: string;
 
   /**
@@ -25,7 +25,7 @@ export class UserEntity extends CommonCloumns {
    * @minLength 1
    * @maxLength 50
    */
-  @Column({ length: 50 })
+  @Column('varchar', { length: 50 })
   public nickname!: string;
 
   /**
@@ -54,13 +54,13 @@ export class UserEntity extends CommonCloumns {
    * @minLength 4
    * @maxLength 50
    */
-  @Column({ nullable: true, unique: true, select: false })
+  @Column('varchar', { nullable: true, unique: true, select: false })
   public email!: string;
 
   /**
    * 사용자의 비밀번호로 로그인 시 필요
    */
-  @Column({ select: false })
+  @Column('varchar', { select: false })
   public password!: string;
 
   /**
@@ -96,7 +96,7 @@ export class UserEntity extends CommonCloumns {
   /**
    * 유저의 탈퇴 여부를 의미한다.
    */
-  @Column({ select: false, default: false })
+  @Column('bool', { select: false, default: false })
   public status!: boolean;
 
   /**

@@ -8,20 +8,20 @@ export class BodyImageEntity extends CommonCloumns {
    * 이미지가 부착된 게시글의 아이디를 의미
    * @type int
    */
-  @Column({ select: false })
+  @Column('int4', { select: false })
   articleId!: number;
 
   /**
    * 만약 어떤 댓글에 달려 있는 답글인 경우, 부모 댓글의 아이디를 가진다.
    * @type int
    */
-  @Column({ nullable: true })
+  @Column('int4', { nullable: true })
   parentId?: number | null;
 
   /**
    * 처음 이미지를 1이라 할 때, 몇 번째 업데이트 이미지인지를 의미하는 값
    */
-  @Column({ default: 1 })
+  @Column('int4', { default: 1 })
   depth!: number;
 
   /**
@@ -31,7 +31,7 @@ export class BodyImageEntity extends CommonCloumns {
    * @minLength 4
    * @maxLength 2048
    */
-  @Column({ length: 2048 })
+  @Column('varchar', { length: 2048 })
   url!: string;
 
   /**

@@ -7,13 +7,13 @@ export class ArticleHasCategoryEntity extends CreatedAtColumn {
    * 카테고리의 아이디
    * @type int
    */
-  @PrimaryColumn()
+  @PrimaryColumn('int4')
   public readonly categoryId!: number;
 
   /**
    * 게시글의 아이디
    * @type int
    */
-  @PrimaryColumn()
+  @PrimaryColumn('int4')
   public readonly airtcleId!: number;
 }
