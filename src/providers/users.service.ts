@@ -20,12 +20,14 @@ import {
   CANNOT_FIND_DESIGNER_PROFILE,
 } from '../config/errors/business-error';
 import typia from 'typia';
+import { ArticlesRepository } from '../models/repositories/articles.repository';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UsersRepository) private readonly usersRepository: UsersRepository,
     @InjectRepository(UserBridgesRepository) private readonly userBridgesRepository: UserBridgesRepository,
+    @InjectRepository(ArticlesRepository) private readonly articlesRepository: ArticlesRepository,
   ) {}
 
   async updateProfile(userId: number, updateUserDto: UserType.UpdateUserDto): Promise<true> {

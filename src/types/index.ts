@@ -135,6 +135,13 @@ export declare namespace ArticleType {
     comments: Pick<CommentEntity, 'id' | 'parentId' | 'contents' | 'xPosition' | 'yPosition'>[];
   }
 
+  interface GetAllArtcleDto extends PaginationDto {
+    /**
+     * @type int
+     */
+    writerId?: number;
+  }
+
   interface Element
     extends Merge<
       Omit<ArticleType.ReadArticleResponse, 'writerId' | 'nickname' | 'profileImage'>,

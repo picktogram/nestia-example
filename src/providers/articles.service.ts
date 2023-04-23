@@ -96,7 +96,7 @@ export class ArticlesService {
 
   async read(
     userId: number,
-    { page, limit }: PaginationDto,
+    { page, limit, writerId }: ArticleType.GetAllArtcleDto,
     { isNoReply }: { isNoReply?: boolean },
   ): Promise<{
     list: ArticleType.Element[];
@@ -127,6 +127,10 @@ export class ArticlesService {
           return `${subQuery} = 0`;
         })
         .andWhere('a.type = :type', { type: 'question' });
+    }
+
+    if (writerId) {
+      query = query.andWhere('a.writerId = :wrtierId', { writerId });
     }
 
     const [list, count]: [ArticleType.ReadArticleResponse[], number] = await Promise.all([

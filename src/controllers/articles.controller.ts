@@ -210,10 +210,10 @@ export class ArticlesController {
   @TypedRoute.Get()
   public async getAllArticles(
     @UserId() userId: number,
-    @TypedQuery() paginationDto: PaginationDto,
+    @TypedQuery() getAllArtcleDto: ArticleType.GetAllArtcleDto,
   ): Promise<ArticleType.GetAllArticlesReponse> {
-    const articlesToRead = await this.articlesService.read(userId, paginationDto, {});
-    const response = createPaginationForm(articlesToRead, paginationDto);
+    const articlesToRead = await this.articlesService.read(userId, getAllArtcleDto, {});
+    const response = createPaginationForm(articlesToRead, getAllArtcleDto);
     return response;
   }
 
