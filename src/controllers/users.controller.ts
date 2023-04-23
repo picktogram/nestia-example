@@ -80,6 +80,14 @@ export class UsersController {
     return createResponseForm(locations);
   }
 
+  /**
+   * @summary 디자이너가 자신의 프로필을 수정하는 API
+   *
+   * @tag users
+   * @param userId 수정할 디자이너의 아이디 ( 본인의 아이디를 의미 )
+   * @param updateUserDto
+   * @returns 수정이 되고 난 다음 프로필을 조회한 것과 동일한 응답 값
+   */
   @TypedRoute.Put('profile')
   async updateProfile(
     @UserId() userId: number,
