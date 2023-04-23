@@ -80,7 +80,7 @@ describe('E2E articles test', () => {
         { page: 1, limit: 10 },
       );
 
-      assert.notStrictEqual(response.data.list instanceof Array, true);
+      assert.strictEqual(response.data.list instanceof Array, true);
     });
 
     it('게시글 리스토 조회 시 나와의 관계를 의미하는 프로퍼티가 필요.', async () => {

@@ -212,10 +212,8 @@ export class ArticlesController {
     @UserId() userId: number,
     @TypedQuery() paginationDto: PaginationDto,
   ): Promise<ArticleType.GetAllArticlesReponse> {
-    console.time('test');
     const articlesToRead = await this.articlesService.read(userId, paginationDto, {});
     const response = createPaginationForm(articlesToRead, paginationDto);
-    console.timeEnd('test');
     return response;
   }
 

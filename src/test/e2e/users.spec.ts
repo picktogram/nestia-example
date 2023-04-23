@@ -391,6 +391,10 @@ describe('E2E users test', () => {
       // NOTE : 나를 팔로우할 대상을 생성
       const userData = typia.random<CreateUserDto>();
       const followee = await AuthApis.sign_up.signUp({ host }, userData);
+      if (isBusinessErrorGuard(followee)) {
+        assert.strictEqual(1, 2);
+        return;
+      }
 
       // NOTE : 나를 팔로우할 대상이 로그인하여, 나를 팔로우
       const loginResponse = await AuthApis.login({ host }, userData);
@@ -416,7 +420,7 @@ describe('E2E users test', () => {
       );
 
       assert.notStrictEqual(response.data.list, undefined);
-      assert.strictEqual(response.data.list.length, 1);
+      assert.notStrictEqual(response.data.list.length, 0);
 
       /**
        * 자기 자신이 추천 목록에 나와서는 안 된다.
@@ -424,6 +428,14 @@ describe('E2E users test', () => {
       assert.strictEqual(
         response.data.list.some((el) => el.id === decodedToken.id),
         false,
+      );
+
+      /**
+       * 상대는 추천 목록에 있어야 한다.
+       */
+      assert.strictEqual(
+        response.data.list.some((el) => el.id === followee.data.id),
+        true,
       );
     });
 
@@ -452,6 +464,7 @@ describe('E2E users test', () => {
         decodedToken.id,
       );
 
+      // NOTE : 나도 맞팔로우한다.
       await UserApis.follow.follow(
         {
           host,
@@ -462,6 +475,7 @@ describe('E2E users test', () => {
         followee.data.id,
       );
 
+      // NOTE : 내 기준으로 조회할 때, 상대가 친구 추천 목록에 나오는지 확인한다.
       const response = await UserApis.acquaintance.getAcquaintance(
         {
           host,
@@ -473,26 +487,88 @@ describe('E2E users test', () => {
       );
 
       assert.notStrictEqual(response.data.list, undefined);
-      assert.strictEqual(response.data.list.length, 0);
+      assert.notStrictEqual(response.data.list.length, 0);
+
+      /**
+       * 내가 조회한 친구 목록에서 먼저 팔로우해줬던 사람 (followee)이 있으면 안 된다.
+       */
+      assert.strictEqual(
+        response.data.list.some((el) => el.id === followee.data.id),
+        false,
+      );
     });
 
-    /**
-     * 위에서 에러가 발생했기 때문에 다른 방식으로 한 번 더 테스트 진행할 것
-     */
-    it('역으로 나도 팔로우를 하여, 서로 맞팔 상태가 되었을 때 친구 추천 목록에서 나오지 말아야 한다. 2', {
-      todo: true,
-    });
+    it('나 자신은 친구 추천 목록에서 나와서는 안 된다.', async () => {
+      const acquaintance = await UserApis.acquaintance.getAcquaintance(
+        { host, headers: { Authorization: token } },
+        { limit: 100, page: 1 },
+      );
 
-    it('나 자신은 친구 추천 목록에서 나와서는 안 된다.', { todo: true });
-    it('친구의 친구들을 추천해야 하며, 사유를 말해야 한다.', { todo: true });
+      const isIncludeMySelf = acquaintance.data.list.every((el) => el.id !== decodedToken.id);
+      assert.strictEqual(isIncludeMySelf, true);
+    });
 
     /**
      * 유명인의 기준은 팔로우가 100명 이상인 사람이다.
      */
     it('유명인들을 추천해주어야 하며, 사유를 말해야 한다.', { todo: true });
-    it('내가 좋아요를 누른 게시글과 댓글이 우연히 n 번 이상 동일 인물인 경우 추천해주며, 사유를 말해줘야 한다.', {
-      todo: true,
-    });
+    it(
+      '내가 좋아요를 누른 게시글과 댓글이 우연히 n 번 이상 동일 인물인 경우 추천해주며, 사유를 말해줘야 한다.',
+      {
+        todo: true,
+      },
+      async () => {
+        // 나를 팔로우한 사람이 있다면 친구 추천 목록에서 나와야 한다.
+
+        // NOTE : 나를 팔로우할 대상을 생성
+        const userData = typia.random<CreateUserDto>();
+        const followee = await AuthApis.sign_up.signUp({ host }, userData);
+        if (isBusinessErrorGuard(followee)) {
+          assert.strictEqual(1, 2);
+          return;
+        }
+
+        // NOTE : 나를 팔로우할 대상이 로그인하여, 나를 팔로우
+        const loginResponse = await AuthApis.login({ host }, userData);
+        const followerToken = loginResponse.data;
+        await UserApis.follow.follow(
+          {
+            host,
+            headers: {
+              Authorization: followerToken,
+            },
+          },
+          decodedToken.id,
+        );
+
+        // NOTE : 내 기준으로 조회할 때, 상대가 친구 추천 목록에 나오는지 확인한다.
+        const response = await UserApis.acquaintance.getAcquaintance(
+          {
+            host,
+            headers: {
+              Authorization: token,
+            },
+          },
+          { page: 1, limit: 10 },
+        );
+
+        assert.notStrictEqual(response.data.list, undefined);
+        assert.notStrictEqual(response.data.list.length, 0);
+
+        /**
+         * 내가 조회한 친구 목록에서 먼저 팔로우해줬던 사람 (followee)이 있어야 한다.
+         */
+        assert.strictEqual(
+          response.data.list.some((el) => el.id === followee.data.id),
+          true,
+        );
+
+        assert.strictEqual(
+          response.data.list.every((profile) => profile.reason),
+          true,
+        );
+      },
+    );
   });
 
   describe('GET api/v1/users/:id/follwers', { concurrency: true }, () => {

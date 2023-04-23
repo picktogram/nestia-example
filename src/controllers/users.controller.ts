@@ -146,8 +146,8 @@ export class UsersController {
   async checkFollowers(
     @UserId() userId: number,
     @TypedParam('id', 'number') designerId: number,
-  ): Promise<Try<UserType.GetAcquaintanceResponse>> {
-    return createResponseForm(typia.random<UserType.GetAcquaintanceResponse>());
+  ): Promise<Try<UserType.UserProfilePagination>> {
+    return createResponseForm(typia.random<UserType.UserProfilePagination>());
   }
 
   /**
@@ -161,8 +161,8 @@ export class UsersController {
   async checkFollowees(
     @UserId() userId: number,
     @TypedParam('id', 'number') designerId: number,
-  ): Promise<Try<UserType.GetAcquaintanceResponse>> {
-    return createResponseForm(typia.random<UserType.GetAcquaintanceResponse>());
+  ): Promise<Try<UserType.UserProfilePagination>> {
+    return createResponseForm(typia.random<UserType.UserProfilePagination>());
   }
 
   /**

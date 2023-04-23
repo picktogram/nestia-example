@@ -81,26 +81,8 @@ export class UsersService {
   async getAcquaintance(
     userId: number,
     { page, limit }: PaginationDto,
-  ): Promise<{ list: UserType.Profile[]; count: number }> {
+  ): Promise<{ list: UserType.Acquaintance[]; count: number }> {
     const { skip, take } = getOffset({ page, limit });
-    // const query = this.userBridgesRepository
-    //   .createQueryBuilder('u')
-    //   .select(['u.id AS "id"', 'u.nickname AS "nickname"', 'u.profileImage AS "profileImage"'])
-    //   .innerJoin('ub.secondUser', 'u', 'u.id = :userId', { userId })
-    //   .where((qb) => {
-    //     // NOTE : 내가 팔로우를 당했음에도 상대를 팔로우하지 않은 경우를 추천한다.
-    //     const subQuery = qb
-    //       .subQuery()
-    //       .select('COUNT(*)')
-    //       .from(UserBridgeEntity, 'sub')
-    //       .where('sub.firstUserId = :userId', { userId })
-    //       .andWhere('sub.secondUserId = ub.firstUserId') // 내가 상대를 팔로우한 횟수가 0인 경우, 즉 팔로우 안 한 경우
-    //       .getQuery();
-
-    //     return `${subQuery} = 0`;
-    //   })
-    //   .offset(skip)
-    //   .limit(take);
 
     const followedBridges = await this.userBridgesRepository.find({
       where: { secondUserId: userId },
@@ -124,7 +106,12 @@ export class UsersService {
 
     const [list, count]: [UserType.Profile[], number] = await Promise.all([query.getRawMany(), query.getCount()]);
 
-    return { list, count };
+    return {
+      list: list.map((profile): UserType.Acquaintance => {
+        return { ...profile, reason: '나를 팔로우한 사람' };
+      }),
+      count,
+    };
   }
 
   async create(

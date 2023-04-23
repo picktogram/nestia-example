@@ -20,7 +20,7 @@
     "start:dev": "cross-env NODE_ENV=DEVELOPMENT nest start --watch",
     "start:prod": "node dist/main",
     "start:pm2": "cross-env NODE_ENV=PRODUCTION pm2 start",
-    "pm2:reload": "npm run build && pm2 reload main",
+    "pm2:reload": "npm run build && pm2 reload app",
     "test": "jest",
     "test:watch:legacy": "cross-env NODE_ENV=TEST jest --watch --detectOpenHandles",
     "test:e2e:watch": "cross-env NODE_ENV=TEST node --watch --require ts-node/register --test src/test/e2e/*.spec.ts",
