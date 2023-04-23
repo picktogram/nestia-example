@@ -1,7 +1,7 @@
 {
   "name": "picktogram-server-apis",
-  "version": "0.0.8",
-  "description": "유저 프로필에 introduce 포함 후 배포 - 23.04.23",
+  "version": "0.0.9",
+  "description": "유저 프로필 조회 시 게시글을 볼 수 있도록 게시글 조회 로직에 writerId 추가 - 23.04.23",
   "main": "index.js",
   "typings": "index.d.ts",
   "repository": {
