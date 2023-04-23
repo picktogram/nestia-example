@@ -130,7 +130,7 @@ export class ArticlesService {
     }
 
     if (writerId) {
-      query = query.andWhere('a.writerId = :wrtierId', { writerId });
+      query = query.andWhere('a.writerId = :writerId', { writerId });
     }
 
     const [list, count]: [ArticleType.ReadArticleResponse[], number] = await Promise.all([
