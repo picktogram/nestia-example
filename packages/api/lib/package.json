@@ -1,7 +1,7 @@
 {
   "name": "picktogram-server-apis",
-  "version": "0.0.7",
-  "description": "API for PROJECT",
+  "version": "0.0.8",
+  "description": "유저 프로필에 introduce 포함 후 배포 - 23.04.23",
   "main": "index.js",
   "typings": "index.d.ts",
   "repository": {
