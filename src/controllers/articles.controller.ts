@@ -1,5 +1,5 @@
 import { TypedBody, TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UserId } from '../common/decorators/user-id.decorator';
 import { CreateArticleDto } from '../models/dtos/create-article.dto';
@@ -20,6 +20,10 @@ import {
   IS_NOT_WRITER_OF_THIS_ARTICLE,
   IS_SAME_POSITION,
 } from '../config/errors/business-error';
+import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
+import { LoggingInterceptor } from '../interceptors/logging.interceptor';
+
+@UseInterceptors(LoggingInterceptor, TimeoutInterceptor)
 @UseGuards(JwtGuard)
 @Controller('api/v1/articles')
 export class ArticlesController {
@@ -208,8 +212,10 @@ export class ArticlesController {
     @UserId() userId: number,
     @TypedQuery() paginationDto: PaginationDto,
   ): Promise<ArticleType.GetAllArticlesReponse> {
+    console.time('test');
     const articlesToRead = await this.articlesService.read(userId, paginationDto, {});
     const response = createPaginationForm(articlesToRead, paginationDto);
+    console.timeEnd('test');
     return response;
   }
 

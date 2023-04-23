@@ -27,16 +27,8 @@ import { SlackModule } from './external/slack/slack.module';
       useClass: ThrottlerGuard,
     },
     {
-      provide: APP_INTERCEPTOR,
-      useClass: TimeoutInterceptor,
-    },
-    {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptor,
     },
   ],
 })

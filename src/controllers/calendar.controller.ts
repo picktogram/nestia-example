@@ -1,6 +1,9 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtGuard } from '../auth/guards/jwt.guard';
+import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
+import { LoggingInterceptor } from '../interceptors/logging.interceptor';
 
+@UseInterceptors(LoggingInterceptor, TimeoutInterceptor)
 @UseGuards(JwtGuard)
 @Controller('api/v1/calendar')
 export class CalendarController {

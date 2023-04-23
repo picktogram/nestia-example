@@ -18,7 +18,10 @@ import {
 import { CreateCoverImageMulterOptions, CreateProfileImageMulterOptions } from '../config/multer-s3/multer-option';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { isBusinessErrorGuard } from '../config/errors';
+import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
+import { LoggingInterceptor } from '../interceptors/logging.interceptor';
 
+@UseInterceptors(LoggingInterceptor, TimeoutInterceptor)
 @UseGuards(JwtGuard)
 @Controller('api/v1/users')
 export class UsersController {

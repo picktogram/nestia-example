@@ -11,7 +11,10 @@ import { BodyImagesService } from '../providers/body-images.service';
 import { TryCatch } from '../types';
 import { SELECT_MORE_THAN_ONE_IMAGE } from '../config/errors/business-error';
 import typia from 'typia';
+import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
+import { LoggingInterceptor } from '../interceptors/logging.interceptor';
 
+@UseInterceptors(LoggingInterceptor, TimeoutInterceptor)
 @UseGuards(JwtGuard)
 @Controller('api/v1/body-image')
 export class BodyImagesController {

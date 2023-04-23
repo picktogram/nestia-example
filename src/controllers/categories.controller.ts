@@ -1,11 +1,14 @@
 import { TypedQuery, TypedRoute } from '@nestia/core';
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createPaginationForm } from '../interceptors/transform.interceptor';
 import { SearchPaginationDto } from '../models/dtos/search-pagination.dto';
 import { CategoriesService } from '../providers/categories.service';
 import { CategoryType } from '../types';
+import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
+import { LoggingInterceptor } from '../interceptors/logging.interceptor';
 
+@UseInterceptors(LoggingInterceptor, TimeoutInterceptor)
 @UseGuards(JwtGuard)
 @Controller('api/v1/categories')
 export class CategoriesController {

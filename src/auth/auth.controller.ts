@@ -1,5 +1,5 @@
 import { TypedBody, TypedRoute } from '@nestia/core';
-import { Controller, Req, UseGuards } from '@nestjs/common';
+import { Controller, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBody } from '@nestjs/swagger';
 import { User } from '../common/decorators/user.decorator';
@@ -16,7 +16,10 @@ import { KaKaoGuard } from '../auth/guards/kakao.guard';
 import { Try, TryCatch } from '../types';
 import { ALREADY_CREATED_EMAIL, ALREADY_CREATED_PHONE_NUMBER } from '../config/errors/business-error';
 import { isBusinessErrorGuard } from '../config/errors';
+import { LoggingInterceptor } from '../interceptors/logging.interceptor';
+import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
 
+@UseInterceptors(LoggingInterceptor, TimeoutInterceptor)
 @Controller('api/v1/auth')
 export class AuthController {
   constructor(
