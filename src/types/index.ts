@@ -69,6 +69,9 @@ export declare namespace UserType {
   interface Profile extends Pick<UserEntity, 'id' | 'nickname' | 'profileImage'> {}
   interface DetailProfile
     extends Merge<DecodedUserToken, Pick<UserEntity, 'profileImage' | 'coverImage' | 'introduce'>> {
+    /**
+     * 나 자신의 프로필인 경우에는 true, 아닌 경우에는 false로 나온다.
+     */
     myself?: boolean;
   }
   interface DetailProfileWithRelation extends UserType.DetailProfile {
