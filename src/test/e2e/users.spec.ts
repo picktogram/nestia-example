@@ -272,6 +272,20 @@ describe('E2E users test', () => {
       assert.strictEqual(response.data.followStatus === 'followUp', true);
     });
 
+    /**
+     * 프로필 조회를 유저 조회로 합치면서, 자기 자신을 구분하기 위한 프로퍼티를 추가
+     */
+    it('자기 자신을 조회한 경우, myself이 true로 나오며 followStatus는 nothing이어야 한다.', async () => {
+      const response = await UserApis.getDetailProdfile(connection, decodedToken.id);
+      if (isErrorGuard(response)) {
+        assert.strictEqual(1, 2);
+        return;
+      }
+
+      assert.strictEqual(response.data.myself, true);
+      assert.strictEqual(response.data.followStatus === 'nothing', true);
+    });
+
     it('다른 디자이너 조회 시, 나를 조회한 사람인 경우 reverse 상태가 나와야 한다.', async () => {
       await UserApis.follow.follow(
         {
@@ -553,65 +567,61 @@ describe('E2E users test', () => {
     /**
      * 해당 로직에 문제가 있는 것으로 보인다.
      */
-    it(
-      '역으로 나도 팔로우를 하여, 서로 맞팔 상태가 되었을 때 친구 추천 목록에서 나오지 말아야 한다.',
-      { only: true },
-      async () => {
-        // NOTE : 나를 팔로우할 대상을 생성
-        const userData = typia.random<CreateUserDto>();
-        const followee = await AuthApis.sign_up.signUp({ host }, userData);
-        if (isBusinessErrorGuard(followee)) {
-          assert.strictEqual(1, 2);
-          return;
-        }
+    it('역으로 나도 팔로우를 하여, 서로 맞팔 상태가 되었을 때 친구 추천 목록에서 나오지 말아야 한다.', async () => {
+      // NOTE : 나를 팔로우할 대상을 생성
+      const userData = typia.random<CreateUserDto>();
+      const followee = await AuthApis.sign_up.signUp({ host }, userData);
+      if (isBusinessErrorGuard(followee)) {
+        assert.strictEqual(1, 2);
+        return;
+      }
 
-        // NOTE : 나를 팔로우할 대상이 로그인하여, 나를 팔로우
-        const loginResponse = await AuthApis.login({ host }, userData);
-        const followerToken = loginResponse.data;
-        await UserApis.follow.follow(
-          {
-            host,
-            headers: {
-              Authorization: followerToken,
-            },
+      // NOTE : 나를 팔로우할 대상이 로그인하여, 나를 팔로우
+      const loginResponse = await AuthApis.login({ host }, userData);
+      const followerToken = loginResponse.data;
+      await UserApis.follow.follow(
+        {
+          host,
+          headers: {
+            Authorization: followerToken,
           },
-          decodedToken.id,
-        );
+        },
+        decodedToken.id,
+      );
 
-        // NOTE : 나도 맞팔로우한다.
-        await UserApis.follow.follow(
-          {
-            host,
-            headers: {
-              Authorization: token,
-            },
+      // NOTE : 나도 맞팔로우한다.
+      await UserApis.follow.follow(
+        {
+          host,
+          headers: {
+            Authorization: token,
           },
-          followee.data.id,
-        );
+        },
+        followee.data.id,
+      );
 
-        // NOTE : 내 기준으로 조회할 때, 상대가 친구 추천 목록에 나오는지 확인한다.
-        const response = await UserApis.acquaintance.getAcquaintance(
-          {
-            host,
-            headers: {
-              Authorization: token,
-            },
+      // NOTE : 내 기준으로 조회할 때, 상대가 친구 추천 목록에 나오는지 확인한다.
+      const response = await UserApis.acquaintance.getAcquaintance(
+        {
+          host,
+          headers: {
+            Authorization: token,
           },
-          { page: 1, limit: 10 },
-        );
+        },
+        { page: 1, limit: 10 },
+      );
 
-        assert.notStrictEqual(response.data.list, undefined);
-        assert.strictEqual(response.data.list.length, 0);
+      assert.notStrictEqual(response.data.list, undefined);
+      assert.strictEqual(response.data.list.length, 0);
 
-        /**
-         * 내가 조회한 친구 목록에서 먼저 팔로우해줬던 사람 (followee)이 있으면 안 된다.
-         */
-        assert.strictEqual(
-          response.data.list.some((el) => el.id === followee.data.id),
-          false,
-        );
-      },
-    );
+      /**
+       * 내가 조회한 친구 목록에서 먼저 팔로우해줬던 사람 (followee)이 있으면 안 된다.
+       */
+      assert.strictEqual(
+        response.data.list.some((el) => el.id === followee.data.id),
+        false,
+      );
+    });
 
     it('나 자신은 친구 추천 목록에서 나와서는 안 된다.', async () => {
       const acquaintance = await UserApis.acquaintance.getAcquaintance(
