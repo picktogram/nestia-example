@@ -4,7 +4,7 @@ import { UserId } from '../common/decorators/user-id.decorator';
 import { TypedBody, TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
-import { PaginationDto, Try, TryCatch, TryPagination, UserType } from '../types';
+import { PaginationDto, Try, TryCatch, TryCatchPagination, TryPagination, UserType } from '../types';
 import typia from 'typia';
 import {
   STILL_UNFOLLOW_USER,
@@ -39,7 +39,7 @@ export class UsersController {
   async getAcquaintance(
     @UserId() userId: number,
     @TypedQuery() paginationDto: PaginationDto,
-  ): Promise<UserType.GetAcquaintanceResponse> {
+  ): Promise<TryPagination<UserType.ProfileList>> {
     const acquaintances = await this.usersService.getAcquaintance(userId, paginationDto);
     return createPaginationForm(acquaintances, paginationDto);
   }
@@ -146,12 +146,13 @@ export class UsersController {
   async checkFollowers(
     @UserId() userId: number,
     @TypedParam('id', 'number') designerId: number,
-  ): Promise<Try<UserType.UserProfilePagination>> {
-    return createResponseForm(typia.random<UserType.UserProfilePagination>());
+    @TypedQuery() paginationDto: PaginationDto,
+  ): Promise<TryPagination<UserType.ProfileList>> {
+    return typia.random<TryPagination<UserType.ProfileList>>();
   }
 
   /**
-   * @summary 230313 - 해당 디자이너님의 팔로이 ( 누구를 팔로우하고 있는지 ) 를 조회한다. (미완성)
+   * @summary 230313 - 해당 디자이너님의 팔로이 ( 누구를 팔로우하고 있는지 ) 를 조회한다.
    * @tag users
    * @param userId 조회를 요청한 사람, 즉 유저
    * @param designerId 조회를 당하는 사람, 즉 해당 디자이너

@@ -111,6 +111,21 @@ export class UserEntity extends CommonCloumns {
   })
   userLikeArticles!: ArticleEntity[];
 
+  @ManyToMany(() => UserEntity, (user) => user.followees)
+  @JoinTable({
+    name: 'user_bridge',
+    joinColumn: { name: 'firstUserId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'secondUserId', referencedColumnName: 'id' },
+  })
+  followers!: UserEntity[];
+
+  @ManyToMany(() => UserEntity, (user) => user.followers)
+  @JoinTable({
+    name: 'user_bridge',
+    joinColumn: { name: 'firstUserId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'secondUserId', referencedColumnName: 'id' },
+  })
+  followees!: UserEntity[];
   /**
    * 해당 유저로부터 팔로우를 건 대상들의 bridges
    */
