@@ -4,7 +4,7 @@ import { UserId } from '../common/decorators/user-id.decorator';
 import { TypedBody, TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
-import { PaginationDto, Try, TryCatch, UserType } from '../types';
+import { PaginationDto, Try, TryCatch, TryPagination, UserType } from '../types';
 import typia from 'typia';
 import {
   STILL_UNFOLLOW_USER,
@@ -161,8 +161,10 @@ export class UsersController {
   async checkFollowees(
     @UserId() userId: number,
     @TypedParam('id', 'number') designerId: number,
-  ): Promise<Try<UserType.UserProfilePagination>> {
-    return createResponseForm(typia.random<UserType.UserProfilePagination>());
+    @TypedQuery() paginationDto: PaginationDto,
+  ): Promise<TryPagination<UserType.ProfileList>> {
+    const response = await this.usersService.checkFollowees(designerId, paginationDto);
+    return createPaginationForm(response, paginationDto);
   }
 
   /**

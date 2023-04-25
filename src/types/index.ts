@@ -26,9 +26,14 @@ export type KeyOfError = keyof typeof ERROR;
 export type ValueOfError = (typeof ERROR)[KeyOfError];
 
 export type ERROR = { result: false; code: number; data: string };
-
+export interface InitialPaginationResponseType {
+  list: any[];
+  count: number;
+}
 export type Try<T> = ResponseForm<T>;
 export type TryCatch<T, E extends ERROR> = ResponseForm<T> | E;
+export type TryPagination<T extends InitialPaginationResponseType> = PaginationForm<T>;
+export type TryCatchPagination<T extends InitialPaginationResponseType, E extends ValueOfError> = PaginationForm<T> | E;
 
 export interface NestiaTypeErrorObject {
   path: string;
@@ -80,9 +85,14 @@ export declare namespace UserType {
 
   interface UpdateUserDto extends Partial<Pick<UserEntity, 'nickname' | 'profileImage' | 'coverImage' | 'introduce'>> {}
 
-  interface Acquaintance extends Merge<Profile, { reason: '나를 팔로우한 사람' }> {}
+  interface Acquaintance extends Merge<UserType.Profile, { reason: '나를 팔로우한 사람' }> {}
   interface GetAcquaintanceResponse extends PaginationForm<{ list: Acquaintance[]; count: number }> {}
-  interface UserProfilePagination extends PaginationForm<{ list: Profile[]; count: number }> {}
+  interface UserProfilePagination extends PaginationForm<{ list: UserType.Profile[]; count: number }> {}
+
+  interface ProfileList {
+    list: UserType.Profile[];
+    count: number;
+  }
 
   interface Retuation extends Pick<UserEntity, 'id'> {
     /**

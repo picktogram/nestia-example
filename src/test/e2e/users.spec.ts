@@ -705,8 +705,42 @@ describe('E2E users test', () => {
     it('해당 유저가 팔로워 목록에서 조회되서는 안 된다.', { todo: true });
   });
 
-  describe('GET api/v1/users/:id/followee', { concurrency: false }, () => {
-    it('해당 유저를 팔로이한 사람들이 조회된다.', { todo: true });
+  describe('GET api/v1/users/:id/followees', { concurrency: false }, () => {
+    let token: string = '';
+    let decodedToken: DecodedUserToken;
+    let connection: IConnection;
+    beforeEach(async () => {
+      const designer = typia.random<CreateUserDto>();
+      const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      if (isBusinessErrorGuard(signUpResponse)) {
+        assert.strictEqual(1, 2);
+        return;
+      }
+
+      decodedToken = signUpResponse.data;
+
+      const response = await AuthApis.login({ host }, designer);
+      token = response.data;
+      connection = {
+        host,
+        headers: {
+          Authorization: response.data,
+        },
+      };
+    });
+
+    it('해당 유저를 팔로이한 사람들이 조회된다.', async () => {
+      const checkFolloweesResponse = await UserApis.followees.checkFollowees(connection, decodedToken.id, {
+        page: 1,
+        limit: 1,
+      });
+      if (isErrorGuard(checkFolloweesResponse)) {
+        assert.strictEqual(1, 2);
+        return;
+      }
+
+      assert.strictEqual(checkFolloweesResponse.data.list instanceof Array, true);
+    });
 
     /**
      * 팔로우 자체를 못하게 막을 것이지만, 더 방어적으로 프로그래밍한다.

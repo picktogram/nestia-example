@@ -111,9 +111,15 @@ export class UserEntity extends CommonCloumns {
   })
   userLikeArticles!: ArticleEntity[];
 
+  /**
+   * 해당 유저로부터 팔로우를 건 대상들의 bridges
+   */
   @OneToMany(() => UserBridgeEntity, (ub) => ub.firstUser)
   firstUserBridges!: UserBridgeEntity[];
 
+  /**
+   * 해당 유저에게 팔로우를 건 대상들의 bridges
+   */
   @OneToMany(() => UserBridgeEntity, (ub) => ub.secondUser)
   secondUserBridges!: UserBridgeEntity[];
 

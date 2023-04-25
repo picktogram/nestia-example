@@ -194,6 +194,23 @@ export class UsersService {
     return true;
   }
 
+  async checkFollowees(
+    designerId: number,
+    { page, limit }: PaginationDto,
+  ): Promise<{ list: UserType.Profile[]; count: number }> {
+    const { skip, take } = getOffset({ page, limit });
+
+    const query = this.usersRepository
+      .createQueryBuilder('u')
+      .select(['u.id AS "id"', 'u.nickname AS "nickname"', 'u.profileImage AS "profileImage"'])
+      .innerJoin('u.firstUserBridges', 'fub', 'fub.secondUserId = :designerId', { designerId })
+      .offset(skip)
+      .limit(take);
+
+    const [list, count]: [UserType.Profile[], number] = await Promise.all([query.getRawMany(), query.getCount()]);
+    return { list, count };
+  }
+
   async getRelation(followerId: number, followeeId: number): Promise<UserBridgeType.FollowStatus> {
     const response = await this.getFolloweeOrThrow(followerId, followeeId);
     if (response.result === false) {
