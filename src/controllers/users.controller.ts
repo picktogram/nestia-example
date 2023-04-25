@@ -213,11 +213,13 @@ export class UsersController {
   async getDetailProdfile(
     @UserId() userId: number,
     @TypedParam('id', 'number') designerId: number,
-  ): Promise<TryCatch<UserType.DetailProfile, CANNOT_FIND_DESIGNER_PROFILE>> {
+  ): Promise<TryCatch<UserType.DetailProfileWithRelation, CANNOT_FIND_DESIGNER_PROFILE>> {
     const designerProfile = await this.usersService.getUserProfile(designerId);
     if (isBusinessErrorGuard(designerProfile)) {
       return designerProfile;
     }
-    return createResponseForm({ ...designerProfile, myself: userId === designerId });
+
+    const followStatus = await this.usersService.getRelation(userId, designerId);
+    return createResponseForm({ ...designerProfile, myself: userId === designerId, followStatus });
   }
 }

@@ -71,6 +71,9 @@ export declare namespace UserType {
     extends Merge<DecodedUserToken, Pick<UserEntity, 'profileImage' | 'coverImage' | 'introduce'>> {
     myself?: boolean;
   }
+  interface DetailProfileWithRelation extends UserType.DetailProfile {
+    followStatus: UserBridgeType.FollowStatus;
+  }
 
   interface UpdateUserDto extends Partial<Pick<UserEntity, 'nickname' | 'profileImage' | 'coverImage' | 'introduce'>> {}
 
@@ -181,6 +184,12 @@ export declare namespace CommentType {
 }
 
 export declare namespace UserBridgeType {
+  /**
+   * follow : 팔로우
+   * followUp : 맞 팔로우
+   * reverse : 팔로우 당한 상태
+   * nothing : 아무런 관계도 없는 디자이너
+   */
   export type FollowStatus = 'follow' | 'followUp' | 'reverse' | 'nothing';
 }
 

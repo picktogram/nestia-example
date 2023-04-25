@@ -13,6 +13,7 @@ import { isBusinessErrorGuard, isErrorGuard } from '../../config/errors';
 import { IConnection } from '@nestia/fetcher';
 import { describe, it, after, before, beforeEach } from 'node:test';
 import assert from 'node:assert';
+import { UserBridgeEntity } from '../../models/tables/user-bridge.entity';
 
 describe('E2E users test', () => {
   const host = 'http://localhost:4000';
@@ -32,7 +33,7 @@ describe('E2E users test', () => {
     await app.close();
   });
 
-  describe('PUT api/v1/users/profile', { concurrency: true }, () => {
+  describe('PUT api/v1/users/profile', { concurrency: false }, () => {
     let connection: IConnection;
     before(async () => {
       const designer = typia.random<CreateUserDto>();
@@ -91,7 +92,7 @@ describe('E2E users test', () => {
   /**
    * 이미지 업로드
    */
-  describe('POST api/v1/users/profile/cover', { concurrency: true }, () => {
+  describe('POST api/v1/users/profile/cover', { concurrency: false }, () => {
     let connection: IConnection;
     before(async () => {
       const designer = typia.random<CreateUserDto>();
@@ -120,7 +121,7 @@ describe('E2E users test', () => {
     });
   });
 
-  describe('GET api/v1/users/profile', { concurrency: true }, () => {
+  describe('GET api/v1/users/profile', { concurrency: false }, () => {
     let token: string = '';
     before(async () => {
       const designer = typia.random<CreateUserDto>();
@@ -180,9 +181,119 @@ describe('E2E users test', () => {
   /**
    * 다른 디자이너를 조회
    */
-  describe('GET api/v1/users/:id', { concurrency: true }, () => {});
+  describe('GET api/v1/users/:id', { concurrency: false }, () => {
+    let token: string = '';
+    let decodedToken: DecodedUserToken;
 
-  describe('POST api/v1/users/:id/follow', { concurrency: true }, () => {
+    let otherDesignerToken: string = '';
+    let otherDesignerDecodedToken: DecodedUserToken;
+    let connection: IConnection;
+    beforeEach(async () => {
+      const designer = typia.random<CreateUserDto>();
+      const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      if (isBusinessErrorGuard(signUpResponse)) {
+        return false;
+      }
+
+      decodedToken = signUpResponse.data;
+
+      const response = await AuthApis.login({ host }, designer);
+      token = response.data;
+      connection = {
+        host,
+        headers: {
+          Authorization: token,
+        },
+      };
+
+      /**
+       * 조회할 대상을 추가
+       */
+      const otherDesigner = typia.random<CreateUserDto>();
+      const otherDesignerSignUpResponse = await AuthApis.sign_up.signUp({ host }, otherDesigner);
+      if (isBusinessErrorGuard(otherDesignerSignUpResponse)) {
+        return false;
+      }
+
+      otherDesignerDecodedToken = otherDesignerSignUpResponse.data;
+      const otherDesignerLoginResponse = await AuthApis.login({ host }, otherDesigner);
+      otherDesignerToken = otherDesignerLoginResponse.data;
+    });
+
+    it.todo('조회에 성공해야 한다.');
+
+    it('다른 디자이너 조회 시, 서로 팔로우하지 않은 경우 nothing 상태 값이 나와야 한다.', async () => {
+      const response = await UserApis.getDetailProdfile(connection, otherDesignerDecodedToken.id);
+      if (isErrorGuard(response)) {
+        assert.strictEqual(1, 2);
+        return;
+      }
+
+      assert.strictEqual(response.data.followStatus === 'nothing', true);
+    });
+
+    it('다른 디자이너 조회 시, 팔로우한 경우 follow 상태가 나와야 한다.', async () => {
+      await UserApis.follow.follow(connection, otherDesignerDecodedToken.id);
+      const response = await UserApis.getDetailProdfile(connection, otherDesignerDecodedToken.id);
+      if (isErrorGuard(response)) {
+        assert.strictEqual(1, 2);
+        return;
+      }
+
+      assert.strictEqual(response.data.followStatus === 'follow', true);
+    });
+
+    it('다른 디자이너 조회 시, 맞팔로우한 경우 followUp 상태가 나와야 한다.', async () => {
+      /**
+       * 팔로우 후 맞 팔로우를 당했다고 가정한다.
+       */
+      await UserApis.follow.follow(connection, otherDesignerDecodedToken.id);
+      await UserApis.follow.follow(
+        {
+          host,
+          headers: {
+            authorization: otherDesignerToken,
+          },
+        },
+        decodedToken.id,
+      );
+      const response = await UserApis.getDetailProdfile(connection, otherDesignerDecodedToken.id);
+
+      if (isErrorGuard(response)) {
+        assert.strictEqual(1, 2);
+        return;
+      }
+
+      const first = await UserBridgeEntity.findOne({ where: { firstUserId: decodedToken.id } });
+      const second = await UserBridgeEntity.findOne({ where: { secondUserId: otherDesignerDecodedToken.id } });
+      assert.notStrictEqual(first, null);
+      assert.notStrictEqual(second, null);
+
+      assert.strictEqual(response.data.followStatus === 'followUp', true);
+    });
+
+    it('다른 디자이너 조회 시, 나를 조회한 사람인 경우 reverse 상태가 나와야 한다.', async () => {
+      await UserApis.follow.follow(
+        {
+          host,
+          headers: {
+            authorization: otherDesignerToken,
+          },
+        },
+        decodedToken.id,
+      );
+      const response = await UserApis.getDetailProdfile(connection, otherDesignerDecodedToken.id);
+
+      if (isErrorGuard(response)) {
+        assert.strictEqual(1, 2);
+        return;
+      }
+
+      assert.strictEqual(response.data.followStatus === 'reverse', true);
+    });
+  });
+
+  describe('POST api/v1/users/:id/follow', { concurrency: false }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
     beforeEach(async () => {
@@ -253,7 +364,7 @@ describe('E2E users test', () => {
     /**
      * @link {https://github.com/picktogram/server/issues/10}
      */
-    describe('#issue 10. followStatus 갱신 에러', { concurrency: true }, () => {
+    describe('#issue 10. followStatus 갱신 에러', { concurrency: false }, () => {
       let writerToken: string = '';
       let decodedWriterToken: DecodedUserToken;
 
@@ -356,7 +467,7 @@ describe('E2E users test', () => {
   /**
    * 알 수도 있는 사람을 조회하는 API
    */
-  describe('GET api/v1/users/acquaintance', { concurrency: true }, () => {
+  describe('GET api/v1/users/acquaintance', { concurrency: false }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
     beforeEach(async () => {
@@ -442,61 +553,65 @@ describe('E2E users test', () => {
     /**
      * 해당 로직에 문제가 있는 것으로 보인다.
      */
-    it('역으로 나도 팔로우를 하여, 서로 맞팔 상태가 되었을 때 친구 추천 목록에서 나오지 말아야 한다.', async () => {
-      // NOTE : 나를 팔로우할 대상을 생성
-      const userData = typia.random<CreateUserDto>();
-      const followee = await AuthApis.sign_up.signUp({ host }, userData);
-      if (isBusinessErrorGuard(followee)) {
-        assert.strictEqual(1, 2);
-        return;
-      }
+    it(
+      '역으로 나도 팔로우를 하여, 서로 맞팔 상태가 되었을 때 친구 추천 목록에서 나오지 말아야 한다.',
+      { only: true },
+      async () => {
+        // NOTE : 나를 팔로우할 대상을 생성
+        const userData = typia.random<CreateUserDto>();
+        const followee = await AuthApis.sign_up.signUp({ host }, userData);
+        if (isBusinessErrorGuard(followee)) {
+          assert.strictEqual(1, 2);
+          return;
+        }
 
-      // NOTE : 나를 팔로우할 대상이 로그인하여, 나를 팔로우
-      const loginResponse = await AuthApis.login({ host }, userData);
-      const followerToken = loginResponse.data;
-      await UserApis.follow.follow(
-        {
-          host,
-          headers: {
-            Authorization: followerToken,
+        // NOTE : 나를 팔로우할 대상이 로그인하여, 나를 팔로우
+        const loginResponse = await AuthApis.login({ host }, userData);
+        const followerToken = loginResponse.data;
+        await UserApis.follow.follow(
+          {
+            host,
+            headers: {
+              Authorization: followerToken,
+            },
           },
-        },
-        decodedToken.id,
-      );
+          decodedToken.id,
+        );
 
-      // NOTE : 나도 맞팔로우한다.
-      await UserApis.follow.follow(
-        {
-          host,
-          headers: {
-            Authorization: token,
+        // NOTE : 나도 맞팔로우한다.
+        await UserApis.follow.follow(
+          {
+            host,
+            headers: {
+              Authorization: token,
+            },
           },
-        },
-        followee.data.id,
-      );
+          followee.data.id,
+        );
 
-      // NOTE : 내 기준으로 조회할 때, 상대가 친구 추천 목록에 나오는지 확인한다.
-      const response = await UserApis.acquaintance.getAcquaintance(
-        {
-          host,
-          headers: {
-            Authorization: token,
+        // NOTE : 내 기준으로 조회할 때, 상대가 친구 추천 목록에 나오는지 확인한다.
+        const response = await UserApis.acquaintance.getAcquaintance(
+          {
+            host,
+            headers: {
+              Authorization: token,
+            },
           },
-        },
-        { page: 1, limit: 10 },
-      );
+          { page: 1, limit: 10 },
+        );
 
-      assert.notStrictEqual(response.data.list, undefined);
-      assert.notStrictEqual(response.data.list.length, 0);
+        assert.notStrictEqual(response.data.list, undefined);
+        assert.strictEqual(response.data.list.length, 0);
 
-      /**
-       * 내가 조회한 친구 목록에서 먼저 팔로우해줬던 사람 (followee)이 있으면 안 된다.
-       */
-      assert.strictEqual(
-        response.data.list.some((el) => el.id === followee.data.id),
-        false,
-      );
-    });
+        /**
+         * 내가 조회한 친구 목록에서 먼저 팔로우해줬던 사람 (followee)이 있으면 안 된다.
+         */
+        assert.strictEqual(
+          response.data.list.some((el) => el.id === followee.data.id),
+          false,
+        );
+      },
+    );
 
     it('나 자신은 친구 추천 목록에서 나와서는 안 된다.', async () => {
       const acquaintance = await UserApis.acquaintance.getAcquaintance(
@@ -571,7 +686,7 @@ describe('E2E users test', () => {
     );
   });
 
-  describe('GET api/v1/users/:id/follwers', { concurrency: true }, () => {
+  describe('GET api/v1/users/:id/follwers', { concurrency: false }, () => {
     it('해당 유저가 팔로우한 사람들이 조회된다.', { todo: true });
 
     /**
@@ -580,7 +695,7 @@ describe('E2E users test', () => {
     it('해당 유저가 팔로워 목록에서 조회되서는 안 된다.', { todo: true });
   });
 
-  describe('GET api/v1/users/:id/followee', { concurrency: true }, () => {
+  describe('GET api/v1/users/:id/followee', { concurrency: false }, () => {
     it('해당 유저를 팔로이한 사람들이 조회된다.', { todo: true });
 
     /**
@@ -593,7 +708,7 @@ describe('E2E users test', () => {
    * 유저의 평판 조회하기 API
    * 가리키는 아이디가 내 id일 경우, 내 평판 조회하는 것과 동일하게 된다.
    */
-  describe('GET api/v1/uesrs/:id/reputation', { concurrency: true }, () => {
+  describe('GET api/v1/uesrs/:id/reputation', { concurrency: false }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
     beforeEach(async () => {
@@ -630,7 +745,7 @@ describe('E2E users test', () => {
   /**
    * 유저가 다른 유저를 언팔로우하는 상황
    */
-  describe('DELETE api/v1/users/:id/follow', { concurrency: true }, () => {
+  describe('DELETE api/v1/users/:id/follow', { concurrency: false }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
 
@@ -688,19 +803,5 @@ describe('E2E users test', () => {
 
       assert.notStrictEqual(unfollowResponse.data, undefined);
     });
-  });
-
-  /**
-   * 내가 차단한 사람들 목록을 조회한다.
-   */
-  describe('GET v1/api/users/haters', { concurrency: true }, () => {
-    it('유저는 배열로 돌아와야 한다.', { todo: true });
-
-    it('내가 차단을 하면 차단 목록에 그 사람이 추가되어야 한다.', { todo: true });
-    /**
-     * 그리고 등등 테스트...
-     */
-
-    it('10번째 어떤 테스트', { todo: true });
   });
 });

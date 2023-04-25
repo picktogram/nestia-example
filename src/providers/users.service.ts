@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, flatten } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DecodedUserToken, UserEntity } from '../models/tables/user.entity';
 import { CreateUserDto } from '../models/dtos/create-user.dto';
 import { UsersRepository } from '../models/repositories/users.repository';
 import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
 import bcrypt from 'bcrypt';
-import { Merge, PaginationDto, UserType, ValueOfError } from '../types';
+import { Merge, PaginationDto, UserBridgeType, UserType, ValueOfError } from '../types';
 import { getOffset } from '../utils/getOffset';
 import { ArticleEntity } from '../models/tables/article.entity';
 import { CommentEntity } from '../models/tables/comment.entity';
@@ -35,7 +35,7 @@ export class UsersService {
     return true;
   }
 
-  async getUserProfile(userId: number): Promise<UserType.DetailProfile | CANNOT_FIND_DESIGNER_PROFILE> {
+  async getUserProfile(designerId: number): Promise<UserType.DetailProfile | CANNOT_FIND_DESIGNER_PROFILE> {
     const user = await this.usersRepository.findOne({
       select: {
         id: true,
@@ -47,7 +47,7 @@ export class UsersService {
         profileImage: true,
         coverImage: true,
       },
-      where: { id: userId },
+      where: { id: designerId },
     });
 
     if (!user) {
@@ -164,13 +164,9 @@ export class UsersService {
     followerId: number,
     followeeId: number,
   ): Promise<true | STILL_UNFOLLOW_USER | CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW> {
-    const response = await this.getFolloweeOrThrow(
-      followerId,
-      followeeId,
-      typia.random<CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW>(),
-    );
+    const response = await this.getFolloweeOrThrow(followerId, followeeId);
     if (!response.result) {
-      return response;
+      return typia.random<CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW>();
     }
 
     if (!response.bridge) {
@@ -185,13 +181,9 @@ export class UsersService {
     followerId: number,
     followeeId: number,
   ): Promise<true | ALREADY_FOLLOW_USER | CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW> {
-    const response = await this.getFolloweeOrThrow(
-      followerId,
-      followeeId,
-      typia.random<CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW>(),
-    );
+    const response = await this.getFolloweeOrThrow(followerId, followeeId);
     if (!response.result) {
-      return response;
+      return typia.random<CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW>();
     }
 
     if (response.bridge) {
@@ -202,7 +194,30 @@ export class UsersService {
     return true;
   }
 
-  private async getFolloweeOrThrow<T extends ValueOfError>(followerId: number, followeeId: number, customError: T) {
+  async getRelation(followerId: number, followeeId: number): Promise<UserBridgeType.FollowStatus> {
+    const response = await this.getFolloweeOrThrow(followerId, followeeId);
+    if (response.result === false) {
+      return 'nothing';
+    } else {
+      if (response.bridge && response.reversedBridge) {
+        return 'followUp';
+      } else if (response.bridge) {
+        return 'follow';
+      } else if (response.reversedBridge) {
+        return 'reverse';
+      }
+      return 'nothing';
+    }
+  }
+
+  /**
+   *
+   * @param followerId 팔로우 하는 사람
+   * @param followeeId 팔로우 당하는 사람
+   * @param customError 유저가 없을 경우에 대한 에러 처리
+   * @returns
+   */
+  private async getFolloweeOrThrow(followerId: number, followeeId: number) {
     const [followee, bridge, reversedBridge] = await Promise.all([
       this.usersRepository.findOne({ where: { id: followeeId } }),
       this.userBridgesRepository.findOne({ where: { firstUserId: followerId, secondUserId: followeeId } }),
@@ -210,7 +225,7 @@ export class UsersService {
     ]);
 
     if (!followee) {
-      return customError;
+      return { result: false as const, followee: null, bridge: null, reversedBridge: null };
     }
 
     return { result: true as const, followee, bridge, reversedBridge };

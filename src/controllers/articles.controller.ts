@@ -56,8 +56,9 @@ export class ArticlesController {
   public async report(
     @UserId() userId: number,
     @TypedParam('id', 'number') articleId: number,
-    @TypedBody() { reason }: ArticleType.ReportReason,
+    @TypedBody() reportReason: ArticleType.ReportReason,
   ): Promise<TryCatch<true, CANNOT_FINDONE_ARTICLE | ARLEADY_REPORTED_ARTICLE>> {
+    const { reason } = reportReason;
     const articleToReport = await this.articlesService.getOneDetailArticle(userId, articleId);
     if (!articleToReport) {
       return typia.random<CANNOT_FINDONE_ARTICLE>();
