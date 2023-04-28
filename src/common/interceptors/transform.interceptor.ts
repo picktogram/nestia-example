@@ -1,4 +1,4 @@
-import { Try } from '../types';
+import { Try } from '../../types';
 
 /**
  * TODO : 여기 있는 타입들을 모두 types/index.ts로 옮기고, 가능한 하나의 인터페이스로 통합할 것

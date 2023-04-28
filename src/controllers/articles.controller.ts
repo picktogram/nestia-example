@@ -7,7 +7,7 @@ import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
 import { ArticleType, CommentType, PaginationDto, TryCatch } from '../types';
-import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
+import { createPaginationForm, createResponseForm } from '../common/interceptors/transform.interceptor';
 import typia from 'typia';
 import { isBusinessErrorGuard } from '../config/errors';
 import {
@@ -21,7 +21,7 @@ import {
   IS_SAME_POSITION,
 } from '../config/errors/business-error';
 import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
-import { LoggingInterceptor } from '../interceptors/logging.interceptor';
+import { LoggingInterceptor } from '../common/interceptors/logging.interceptor';
 
 @UseInterceptors(LoggingInterceptor, TimeoutInterceptor)
 @UseGuards(JwtGuard)

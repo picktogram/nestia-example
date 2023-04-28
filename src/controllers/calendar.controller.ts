@@ -1,7 +1,7 @@
 import { Controller, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
-import { LoggingInterceptor } from '../interceptors/logging.interceptor';
+import { LoggingInterceptor } from '../common/interceptors/logging.interceptor';
 
 @UseInterceptors(LoggingInterceptor, TimeoutInterceptor)
 @UseGuards(JwtGuard)

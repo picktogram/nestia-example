@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
 import type { ERROR } from '../config/legacy/error';
-import type { PaginationForm } from '../interceptors/transform.interceptor';
+import type { PaginationForm } from '../common/interceptors/transform.interceptor';
 import type { CreateArticleDto } from '../models/dtos/create-article.dto';
 import type { AlarmEntity } from '../models/tables/alarm.entity';
 import type { ArticleEntity } from '../models/tables/article.entity';

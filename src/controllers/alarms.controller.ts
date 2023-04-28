@@ -2,11 +2,11 @@ import { TypedQuery, TypedRoute } from '@nestia/core';
 import { UseGuards, Controller, UseInterceptors } from '@nestjs/common';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UserId } from '../common/decorators/user-id.decorator';
-import { createPaginationForm } from '../interceptors/transform.interceptor';
+import { createPaginationForm } from '../common/interceptors/transform.interceptor';
 import { AlarmsService } from '../providers/alarms.service';
 import { AlarmType, PaginationDto } from '../types';
 import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
-import { LoggingInterceptor } from '../interceptors/logging.interceptor';
+import { LoggingInterceptor } from '../common/interceptors/logging.interceptor';
 
 @UseInterceptors(LoggingInterceptor, TimeoutInterceptor)
 @UseGuards(JwtGuard)

@@ -697,6 +697,29 @@ describe('E2E users test', () => {
   });
 
   describe('GET api/v1/users/:id/follwers', { concurrency: false }, () => {
+    let token: string = '';
+    let decodedToken: DecodedUserToken;
+    let connection: IConnection;
+    beforeEach(async () => {
+      const designer = typia.random<CreateUserDto>();
+      const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      if (isBusinessErrorGuard(signUpResponse)) {
+        assert.strictEqual(1, 2);
+        return;
+      }
+
+      decodedToken = signUpResponse.data;
+
+      const response = await AuthApis.login({ host }, designer);
+      token = response.data;
+      connection = {
+        host,
+        headers: {
+          Authorization: response.data,
+        },
+      };
+    });
+
     it('해당 유저가 팔로우한 사람들이 조회된다.', { todo: true });
 
     /**

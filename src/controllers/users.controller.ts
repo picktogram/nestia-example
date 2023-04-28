@@ -3,7 +3,7 @@ import { UsersService } from '../providers/users.service';
 import { UserId } from '../common/decorators/user-id.decorator';
 import { TypedBody, TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import { JwtGuard } from '../auth/guards/jwt.guard';
-import { createPaginationForm, createResponseForm } from '../interceptors/transform.interceptor';
+import { createPaginationForm, createResponseForm } from '../common/interceptors/transform.interceptor';
 import { PaginationDto, Try, TryCatch, TryCatchPagination, TryPagination, UserType } from '../types';
 import typia from 'typia';
 import {
@@ -19,7 +19,7 @@ import { CreateCoverImageMulterOptions, CreateProfileImageMulterOptions } from '
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { isBusinessErrorGuard } from '../config/errors';
 import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
-import { LoggingInterceptor } from '../interceptors/logging.interceptor';
+import { LoggingInterceptor } from '../common/interceptors/logging.interceptor';
 
 @UseInterceptors(LoggingInterceptor, TimeoutInterceptor)
 @UseGuards(JwtGuard)

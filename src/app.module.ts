@@ -1,14 +1,12 @@
 import { CacheModule, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { HttpExceptionFilter } from './common/filters/http-exception.fiter';
-import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmModuleOptions } from './config/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { LoggingInterceptor } from './interceptors/logging.interceptor';
-import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { SlackModule } from './external/slack/slack.module';
 
 @Module({

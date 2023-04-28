@@ -3,7 +3,7 @@ import { Controller, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBody } from '@nestjs/swagger';
 import { User } from '../common/decorators/user.decorator';
-import { createResponseForm } from '../interceptors/transform.interceptor';
+import { createResponseForm } from '../common/interceptors/transform.interceptor';
 import { CreateUserDto } from '../models/dtos/create-user.dto';
 import { LoginUserDto } from '../models/dtos/login-user.dto';
 import { DecodedUserToken } from '../models/tables/user.entity';
@@ -16,7 +16,7 @@ import { KaKaoGuard } from '../auth/guards/kakao.guard';
 import { Try, TryCatch } from '../types';
 import { ALREADY_CREATED_EMAIL, ALREADY_CREATED_PHONE_NUMBER } from '../config/errors/business-error';
 import { isBusinessErrorGuard } from '../config/errors';
-import { LoggingInterceptor } from '../interceptors/logging.interceptor';
+import { LoggingInterceptor } from '../common/interceptors/logging.interceptor';
 import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
 
 @UseInterceptors(LoggingInterceptor, TimeoutInterceptor)
