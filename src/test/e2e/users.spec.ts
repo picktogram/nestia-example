@@ -222,6 +222,11 @@ describe('E2E users test', () => {
 
     it.todo('조회에 성공해야 한다.');
 
+    /**
+     * @link {https://github.com/picktogram/server/issues/15}
+     * 
+     * 조회한 유저를 팔로우 중인지 확인하기 위한 프로퍼티 필요
+     */
     it('다른 디자이너 조회 시, 서로 팔로우하지 않은 경우 nothing 상태 값이 나와야 한다.', async () => {
       const response = await UserApis.getDetailProdfile(connection, otherDesignerDecodedToken.id);
       if (isErrorGuard(response)) {
