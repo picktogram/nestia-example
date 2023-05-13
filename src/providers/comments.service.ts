@@ -50,7 +50,7 @@ export class CommentsService {
   async readByArticleId(
     articleId: number,
     { page, limit }: { page: number; limit: number },
-  ): Promise<{ list: CommentType.RootComment[]; count: number }> {
+  ): Promise<CommentType.CommentsByArcile> {
     const { skip, take } = getOffset({ page, limit });
     const [list, count] = await this.commentsRepository.findAndCount({
       select: {
@@ -60,6 +60,17 @@ export class CommentsService {
         contents: true,
         xPosition: true,
         yPosition: true,
+        writer: {
+          id: true,
+          nickname: true,
+          name: true,
+          profileImage: true,
+          status: true,
+        },
+        createdAt: true,
+      },
+      relations: {
+        writer: true,
       },
       where: { articleId },
       order: { createdAt: 'DESC' },
@@ -67,7 +78,26 @@ export class CommentsService {
       take,
     });
 
-    return { list, count };
+    return {
+      // list: list.map((comment) => {
+      //   return {
+      //     id: comment.id,
+      //     writerId: comment.writerId,
+      //     parentId: comment.parentId,
+      //     contents: comment.contents,
+      //     xPosition: comment.xPosition,
+      //     yPosition: comment.yPosition,
+      //     createdAt: comment.createdAt.toString(),
+      //     writer: {
+      //       id: comment.writer.id,
+      //       nickname: comment.writer.nickname,
+      //       profileImage: comment.writer.profileImage,
+      //     },
+      //   };
+      // }),
+      list,
+      count,
+    };
   }
 
   async write(

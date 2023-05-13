@@ -6,7 +6,7 @@ import { CreateArticleDto } from '../models/dtos/create-article.dto';
 import { CreateCommentDto } from '../models/dtos/create-comment.dto';
 import { CommentsService } from '../providers/comments.service';
 import { ArticlesService } from '../providers/articles.service';
-import { ArticleType, CommentType, PaginationDto, TryCatch } from '../types';
+import { ArticleType, CommentType, PaginationDto, TryCatch, TryPagination } from '../types';
 import { createPaginationForm, createResponseForm } from '../common/interceptors/transform.interceptor';
 import typia from 'typia';
 import { isBusinessErrorGuard } from '../config/errors';
@@ -103,9 +103,10 @@ export class ArticlesController {
   public async readComments(
     @TypedParam('id', 'number') articleId: number,
     @TypedQuery() paginationDto: PaginationDto,
-  ): Promise<CommentType.ReadCommentsResponse> {
+  ): Promise<TryPagination<CommentType.CommentsByArcile>> {
     const comments = await this.commentsService.readByArticleId(articleId, paginationDto);
-    return createPaginationForm(comments, paginationDto);
+    const response = createPaginationForm(comments, paginationDto);
+    return response;
   }
 
   /**

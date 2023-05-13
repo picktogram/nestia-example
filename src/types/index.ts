@@ -177,7 +177,8 @@ export declare namespace ArticleType {
 }
 
 export declare namespace CommentType {
-  interface RootComment extends Pick<CommentEntity, 'id' | 'writerId' | 'contents' | 'xPosition' | 'yPosition'> {}
+  interface RootComment
+    extends Pick<CommentEntity, 'id' | 'writerId' | 'contents' | 'xPosition' | 'yPosition' | 'createdAt'> {}
 
   interface CreateResponse
     extends Pick<
@@ -194,7 +195,10 @@ export declare namespace CommentType {
       | 'parentId'
     > {}
 
-  interface ReadCommentsResponse extends PaginationForm<{ list: RootComment[]; count: number }> {}
+  interface CommentsByArcile {
+    list: Merge<RootComment, { writer: UserType.Profile }>[];
+    count: number;
+  }
 }
 
 export declare namespace UserBridgeType {
