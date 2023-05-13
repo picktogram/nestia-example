@@ -194,10 +194,7 @@ export class UsersService {
     return true;
   }
 
-  async checkFollowees(
-    designerId: number,
-    { page, limit }: PaginationDto,
-  ): Promise<{ list: UserType.Profile[]; count: number }> {
+  async checkFollowees(designerId: number, { page, limit }: PaginationDto): Promise<UserType.ProfileList> {
     const { skip, take } = getOffset({ page, limit });
 
     const query = this.usersRepository
@@ -208,7 +205,12 @@ export class UsersService {
       .limit(take);
 
     const [list, count]: [UserType.Profile[], number] = await Promise.all([query.getRawMany(), query.getCount()]);
-    return { list, count };
+    return {
+      list: list.map((el) => {
+        return { ...el, reason: '나를 팔로우한 사람' };
+      }),
+      count,
+    };
   }
 
   async getRelation(followerId: number, followeeId: number): Promise<UserBridgeType.FollowStatus> {

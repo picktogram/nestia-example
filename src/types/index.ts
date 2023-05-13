@@ -85,12 +85,12 @@ export declare namespace UserType {
 
   interface UpdateUserDto extends Partial<Pick<UserEntity, 'nickname' | 'profileImage' | 'coverImage' | 'introduce'>> {}
 
-  interface Acquaintance extends Merge<UserType.Profile, { reason: '나를 팔로우한 사람' }> {}
+  interface Acquaintance extends Merge<UserType.Profile, { reason: '나를 팔로우한 사람' | '내가 팔로우한 사람' }> {}
   interface GetAcquaintanceResponse extends PaginationForm<{ list: Acquaintance[]; count: number }> {}
   interface UserProfilePagination extends PaginationForm<{ list: UserType.Profile[]; count: number }> {}
 
   interface ProfileList {
-    list: UserType.Profile[];
+    list: UserType.Acquaintance[];
     count: number;
   }
 
