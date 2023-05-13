@@ -140,7 +140,8 @@ export declare namespace ArticleType {
     createdAt: Date;
     writerId: number;
     nickname: string;
-    profileImage: string;
+    profileImage: string | null;
+    thumbnail: string | null;
   }
 
   interface UpdateArticleDto extends Omit<Partial<CreateArticleDto>, 'images'> {}

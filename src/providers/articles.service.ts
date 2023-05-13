@@ -6,7 +6,7 @@ import { CommentsRepository } from '../models/repositories/comments.repository';
 import { UserBridgesRepository } from '../models/repositories/user-bridge.repository';
 import { ArticleEntity } from '../models/tables/article.entity';
 import { UserBridgeEntity } from '../models/tables/user-bridge.entity';
-import { ArticleType, PaginationDto, UserBridgeType } from '../types';
+import { ArticleType, UserBridgeType } from '../types';
 import { getOffset } from '../utils/getOffset';
 import { DataSource, In } from 'typeorm';
 import { CommentEntity } from '../models/tables/comment.entity';
@@ -15,6 +15,7 @@ import { UserLikeArticlesRepository } from '../models/repositories/user-like-art
 import typia from 'typia';
 import { ARLEADY_REPORTED_ARTICLE, IS_SAME_POSITION } from '../config/errors/business-error';
 import { isBusinessErrorGuard } from '../config/errors';
+import { BodyImageEntity } from '../models/tables/body-image.entity';
 
 @Injectable()
 export class ArticlesService {
@@ -108,6 +109,14 @@ export class ArticlesService {
       .createQueryBuilder('a')
       .select(['a.id AS "id"', 'a.contents AS "contents"', 'a.createdAt AS "createdAt"'])
       .addSelect(['w.id AS "writerId"', 'w.nickname AS "nickname"', 'w.profileImage AS "profileImage"'])
+      .addSelect((qb) => {
+        return qb
+          .select('b.url')
+          .from(BodyImageEntity, 'b')
+          .where('b.articleId = a.id')
+          .orderBy('b.position', 'ASC')
+          .limit(1);
+      }, 'thumbnail')
       .leftJoin('a.writer', 'w')
       .where('1=1')
       .orderBy('a.createdAt', 'DESC')
@@ -165,6 +174,7 @@ export class ArticlesService {
           id: article.id,
           contents: article.contents,
           createdAt: article.createdAt,
+          thumbnail: article.thumbnail,
           isMine: userId === article.writerId,
           writer: {
             id: article.writerId,

@@ -13,6 +13,7 @@ import { ArticleType } from '../../types';
 import { isBusinessErrorGuard } from '../../config/errors';
 import { describe, it, before, after, beforeEach } from 'node:test';
 import assert from 'node:assert';
+import { IConnection } from '@nestia/fetcher';
 
 describe('E2E articles test', () => {
   const host = 'http://localhost:4000';
@@ -61,41 +62,47 @@ describe('E2E articles test', () => {
   });
 
   describe('GET api/v1/articles', { concurrency: true }, () => {
-    let token: string = '';
+    let connection: IConnection;
+
     before(async () => {
       const designer = typia.random<CreateUserDto>();
       await AuthApis.sign_up.signUp({ host }, designer);
       const response = await AuthApis.login({ host }, designer);
-      token = response.data;
+
+      connection = {
+        host,
+        headers: {
+          Authorization: response.data,
+        },
+      };
+
+      /**
+       * 테스트를 위해 자기 자신의 이름으로 게시글 하나를 생성
+       */
+      await ArticleApis.writeArticle(connection, typia.random<CreateArticleDto>());
     });
 
     it('게시글 조회 테스트', async () => {
-      const response = await ArticleApis.getAllArticles(
-        {
-          host,
-          headers: {
-            Authorization: token,
-          },
-        },
-        { page: 1, limit: 10 },
-      );
+      const response = await ArticleApis.getAllArticles(connection, { page: 1, limit: 10 });
 
       assert.strictEqual(response.data.list instanceof Array, true);
     });
 
     it('게시글 리스토 조회 시 나와의 관계를 의미하는 프로퍼티가 필요.', async () => {
-      const response = await ArticleApis.getAllArticles(
-        {
-          host,
-          headers: {
-            Authorization: token,
-          },
-        },
-        { page: 1, limit: 10 },
-      );
+      const response = await ArticleApis.getAllArticles(connection, { page: 1, limit: 10 });
 
+      assert.notStrictEqual(response.data.list.length, 0);
       response.data.list.forEach((article) => {
         assert.notStrictEqual(article.writer.followStatus, undefined);
+      });
+    });
+
+    it('썸네일 이미지가 조회되어야 한다.', async () => {
+      const response = await ArticleApis.getAllArticles(connection, { page: 1, limit: 10 });
+
+      assert.notStrictEqual(response.data.list.length, 0);
+      response.data.list.forEach((article) => {
+        assert.notStrictEqual(article.thumbnail, undefined);
       });
     });
 
