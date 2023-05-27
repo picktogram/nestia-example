@@ -4,7 +4,7 @@ import { JwtGuard } from '../auth/guards/jwt.guard';
 import { createPaginationForm } from '../common/interceptors/transform.interceptor';
 import { SearchPaginationDto } from '../models/dtos/search-pagination.dto';
 import { CategoriesService } from '../providers/categories.service';
-import { CategoryType } from '../types';
+import { CategoryType, TryPagination } from '../types';
 import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
 import { LoggingInterceptor } from '../common/interceptors/logging.interceptor';
 
@@ -24,7 +24,9 @@ export class CategoriesController {
    * @param param0 검색어
    */
   @TypedRoute.Get()
-  async findAll(@TypedQuery() paginationDto: SearchPaginationDto): Promise<CategoryType.FindAllResponse> {
+  async findAll(
+    @TypedQuery() paginationDto: SearchPaginationDto,
+  ): Promise<TryPagination<CategoryType.FindAllResponse>> {
     const response = await this.categoriesService.getAll(paginationDto);
     return createPaginationForm(response, paginationDto);
   }

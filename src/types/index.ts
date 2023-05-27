@@ -67,7 +67,10 @@ export interface ExtendedResponse<T> {
 export declare namespace AlarmType {
   interface Element extends Pick<AlarmEntity, 'id' | 'userId' | 'resourceName' | 'resourceId' | 'redirectLink'> {}
 
-  interface ReadResponseType extends PaginationForm<{ list: Element[]; count: number }> {}
+  interface ReadResponseType {
+    list: Element[];
+    count: number;
+  }
 }
 
 export declare namespace UserType {
@@ -128,7 +131,10 @@ export declare namespace CategoryType {
   /**
    * 카테고리 수가 많아지기 전까지는 굳이 페이지네이션이 없어도 된다고 판단하였음.
    */
-  interface FindAllResponse extends PaginationForm<{ list: Element[]; count: number }> {}
+  interface FindAllResponse {
+    list: Element[];
+    count: number;
+  }
 }
 
 export declare namespace ArticleType {
@@ -169,11 +175,10 @@ export declare namespace ArticleType {
       }
     > {}
 
-  interface GetAllArticlesReponse
-    extends PaginationForm<{
-      list: ArticleType.Element[];
-      count: number;
-    }> {}
+  interface GetAllArticlesReponse {
+    list: ArticleType.Element[];
+    count: number;
+  }
 }
 
 export declare namespace CommentType {

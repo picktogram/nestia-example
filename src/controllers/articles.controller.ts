@@ -39,7 +39,7 @@ export class ArticlesController {
   public async getAllWithNoReply(
     @UserId() userId: number,
     @TypedQuery() paginationDto: PaginationDto,
-  ): Promise<ArticleType.GetAllArticlesReponse> {
+  ): Promise<TryPagination<ArticleType.GetAllArticlesReponse>> {
     const articlesToRead = await this.articlesService.read(userId, paginationDto, { isNoReply: true });
     const response = createPaginationForm(articlesToRead, paginationDto);
     return response;
@@ -213,7 +213,7 @@ export class ArticlesController {
   public async getAllArticles(
     @UserId() userId: number,
     @TypedQuery() getAllArtcleDto: ArticleType.GetAllArtcleDto,
-  ): Promise<ArticleType.GetAllArticlesReponse> {
+  ): Promise<TryPagination<ArticleType.GetAllArticlesReponse>> {
     const articlesToRead = await this.articlesService.read(userId, getAllArtcleDto, {});
     const response = createPaginationForm(articlesToRead, getAllArtcleDto);
     return response;

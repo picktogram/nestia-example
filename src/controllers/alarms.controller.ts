@@ -4,7 +4,7 @@ import { JwtGuard } from '../auth/guards/jwt.guard';
 import { UserId } from '../common/decorators/user-id.decorator';
 import { createPaginationForm } from '../common/interceptors/transform.interceptor';
 import { AlarmsService } from '../providers/alarms.service';
-import { AlarmType, PaginationDto } from '../types';
+import { AlarmType, PaginationDto, TryPagination } from '../types';
 import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
 import { LoggingInterceptor } from '../common/interceptors/logging.interceptor';
 
@@ -25,7 +25,7 @@ export class AlarmsController {
   async read(
     @UserId() userId: number,
     @TypedQuery() paginationDto: PaginationDto,
-  ): Promise<AlarmType.ReadResponseType> {
+  ): Promise<TryPagination<AlarmType.ReadResponseType>> {
     const response = await this.alarmsService.read(userId, paginationDto);
     return createPaginationForm(response, paginationDto);
   }
