@@ -16,6 +16,7 @@ import typia from 'typia';
 import { ARLEADY_REPORTED_ARTICLE, IS_SAME_POSITION } from '../config/errors/business-error';
 import { isBusinessErrorGuard } from '../config/errors';
 import { BodyImageEntity } from '../models/tables/body-image.entity';
+import { UserLikeArticleEntity } from '../models/tables/user-like-article.entity';
 
 @Injectable()
 export class ArticlesService {
@@ -117,6 +118,14 @@ export class ArticlesService {
           .orderBy('b.position', 'ASC')
           .limit(1);
       }, 'thumbnail')
+      .addSelect((qb) => {
+        return qb
+          .select('(CASE WHEN COUNT(*) = 0 THEN FALSE ELSE TRUE END)::bool')
+          .from(UserLikeArticleEntity, 'ula')
+          .where('ula.articleId = a.id')
+          .andWhere('ula.userId = :userId', { userId })
+          .limit(1);
+      }, 'myPick')
       .leftJoin('a.writer', 'w')
       .where('1=1')
       .orderBy('a.createdAt', 'DESC')
@@ -183,6 +192,7 @@ export class ArticlesService {
           createdAt: article.createdAt,
           thumbnail: article.thumbnail,
           isMine: userId === article.writerId,
+          myPick: article.myPick,
           writer: {
             id: article.writerId,
             nickname: article.nickname,

@@ -148,6 +148,11 @@ export declare namespace ArticleType {
     nickname: string;
     profileImage: string | null;
     thumbnail: string | null;
+
+    /**
+     * 내가 pick(좋아요) 한 게시글인지 아닌지 여부를 의미하며 기본 값은 false이다.
+     */
+    myPick: boolean;
   }
 
   interface UpdateArticleDto extends Omit<Partial<CreateArticleDto>, 'images'> {}
@@ -178,6 +183,7 @@ export declare namespace ArticleType {
         isMine: boolean;
         writer: any;
         comments: any[];
+        myPick: boolean;
       }
     > {}
 

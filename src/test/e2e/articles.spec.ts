@@ -133,6 +133,33 @@ describe('E2E articles test', () => {
       assert.deepStrictEqual(secondIsSearched, undefined);
     });
 
+    it('게시글 조회 시 내가 좋아요한 글인지 여부가 나와야 한다. ( false )', { concurrency: true }, async () => {
+      const response = await ArticleApis.getAllArticles(connection, { page: 1, limit: 10 });
+
+      assert.notStrictEqual(response.data.list.length, 0);
+      response.data.list.forEach((article) => {
+        assert.notStrictEqual(article.myPick, undefined);
+        assert.deepStrictEqual(article.myPick, false);
+      });
+    });
+
+    it('게시글 좋아요 이후에 좋아할 경우에 대한 검증', async () => {
+      const firstGetAllResponse = await ArticleApis.getAllArticles(connection, { page: 1, limit: 10 });
+      assert.notStrictEqual(firstGetAllResponse.data.list.length, 0);
+
+      /**
+       * 한 게시글을 꺼내 좋아요를 누른다.
+       */
+      const firstArticle = firstGetAllResponse.data.list.at(0);
+      await ArticleApis.likeOrUnlike(connection, firstArticle?.id as number);
+
+      const secondGetAllResponse = await ArticleApis.getAllArticles(connection, { page: 1, limit: 10 });
+      assert.notStrictEqual(secondGetAllResponse.data.list.length, 0);
+
+      const myPick = secondGetAllResponse.data.list.find((el) => el.id === firstArticle?.id)?.myPick;
+      assert.deepStrictEqual(myPick, true);
+    });
+
     it('각 게시글 타입 별 프로퍼티에 대한 검증 필요', { todo: true });
   });
 
