@@ -23,7 +23,7 @@
     "pm2:reload": "npm run build && pm2 reload app",
     "test": "jest",
     "test:watch:legacy": "cross-env NODE_ENV=TEST jest --watch --detectOpenHandles",
-    "test:e2e:watch": "cross-env NODE_ENV=TEST node --watch --require ts-node/register --test src/test/e2e/*.spec.ts",
+    "test:e2e:watch": "cross-env NODE_ENV=TEST node --watch --require ts-node/register --test src/test/e2e/articles.spec.ts",
     "test:cov": "cross-env NODE_ENV=TEST jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "schema:drop:local": "cross-env NODE_ENV=LOCAL ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:drop -d ./data-source.ts",

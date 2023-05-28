@@ -33,7 +33,7 @@ describe('E2E articles test', () => {
     await app.close();
   });
 
-  describe('POST api/v1/articles', { concurrency: true }, () => {
+  describe('POST api/v1/articles', { concurrency: false }, () => {
     let token: string = '';
     before(async () => {
       const designer = typia.random<CreateUserDto>();
@@ -61,7 +61,7 @@ describe('E2E articles test', () => {
     it('이미지가 있을 때, 이미지의 포지션이 동일해서는 안 된다.', { todo: true });
   });
 
-  describe('GET api/v1/articles', { concurrency: true }, () => {
+  describe('GET api/v1/articles', { concurrency: false }, () => {
     let connection: IConnection;
 
     before(async () => {
@@ -112,7 +112,7 @@ describe('E2E articles test', () => {
   /**
    * 답변을 기다리는 질문
    */
-  describe('GET api/v1/articles/no-reply', { concurrency: true }, () => {
+  describe('GET api/v1/articles/no-reply', { concurrency: false }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
     beforeEach(async () => {
@@ -256,7 +256,7 @@ describe('E2E articles test', () => {
   /**
    * 게시글에 대한 좋아요/좋아요 취소
    */
-  describe('PATCH api/v1/articles/:id', { concurrency: true }, () => {
+  describe('PATCH api/v1/articles/:id', { concurrency: false }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
     beforeEach(async () => {
@@ -344,7 +344,7 @@ describe('E2E articles test', () => {
   /**
    * 게시글 신고
    */
-  describe('POST api/v1/articles/:id/reports', { concurrency: true }, () => {
+  describe('POST api/v1/articles/:id/reports', { concurrency: false }, () => {
     /**
      * article.isReported는 1이 올라가며, ReportArcticle table에 row 1개 생성
      */
@@ -367,7 +367,7 @@ describe('E2E articles test', () => {
   /**
    * 게시글 중 그리기에 해당하는 글에 대한 수정
    */
-  describe('PUT api/v1/articles/:id', { concurrency: true }, () => {
+  describe('PUT api/v1/articles/:id', { concurrency: false }, () => {
     /**
      * 이미지를 수정하는 경우, 해당 이미지를 저장하고 그 이력을 남겨야 한다.
      * 서비스 내 이미지는 개발자의 커밋 이력처럼, 이미지 이력이 남아야 한다.
@@ -387,10 +387,11 @@ describe('E2E articles test', () => {
    * 게시글에 댓글 남기기
    * 그리기 타입 글에 대해서는 댓글에 좌표 값이 반드시 있어야 한다.
    */
-  describe('POST api/v1/articles/:id/comments', { concurrency: true }, () => {
+  describe('POST api/v1/articles/:id/comments', { concurrency: false }, () => {
     let token: string = '';
     let decodedToken: DecodedUserToken;
     let article: ArticleType.DetailArticle;
+    let connection: IConnection;
     beforeEach(async () => {
       const designer = typia.random<CreateUserDto>();
       const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
@@ -403,6 +404,13 @@ describe('E2E articles test', () => {
 
       const response = await AuthApis.login({ host }, designer);
       token = response.data;
+
+      connection = {
+        host,
+        headers: {
+          authorization: token,
+        },
+      };
 
       // NOTE : 테스트 대상인 게시글을 생성
       const writeArticleResponse = await ArticleApis.writeArticle(
@@ -439,16 +447,84 @@ describe('E2E articles test', () => {
   });
 
   /**
+   * 댓글 조회하기
+   */
+  describe('GET api/v1/articles/:articleId/comments', { concurrency: false }, () => {
+    let token: string = '';
+    let decodedToken: DecodedUserToken;
+    let article: ArticleType.DetailArticle;
+    let connection: IConnection;
+    beforeEach(async () => {
+      const designer = typia.random<CreateUserDto>();
+      const signUpResponse = await AuthApis.sign_up.signUp({ host }, designer);
+      if (isBusinessErrorGuard(signUpResponse)) {
+        assert.strictEqual(1, 2);
+        return;
+      }
+
+      decodedToken = signUpResponse.data;
+
+      const response = await AuthApis.login({ host }, designer);
+      token = response.data;
+
+      connection = {
+        host,
+        headers: {
+          authorization: token,
+        },
+      };
+
+      // NOTE : 테스트 대상인 게시글을 생성
+      const writeArticleResponse = await ArticleApis.writeArticle(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        typia.random<CreateArticleDto>(),
+      );
+
+      if (writeArticleResponse.code === 1000) {
+        article = writeArticleResponse.data;
+      }
+    });
+
+    it('게시글에 달린 댓글 조회에 성공한다.', async () => {
+      const getResponse = await ArticleApis.comments.readComments(connection, article.id, { page: 1, limit: 1 });
+      assert.deepStrictEqual(getResponse.data.list instanceof Array, true);
+    });
+
+    it('게시글에 댓글인 달린 경우 그 댓글이 조회되어야 한다.', async () => {
+      const writeResponse = await ArticleApis.comments.writeComment(connection, article.id, {
+        contents: typia.random<string>(),
+        parentId: null,
+        xPosition: typia.random<`${number}`>(),
+        yPosition: typia.random<`${number}`>(),
+      });
+
+      if (isBusinessErrorGuard(writeResponse)) {
+        assert.deepStrictEqual(1, 2);
+        return;
+      }
+
+      const getResponse = await ArticleApis.comments.readComments(connection, article.id, { page: 1, limit: 1 });
+      assert.deepStrictEqual(getResponse.data.list instanceof Array, true);
+      assert.deepStrictEqual(writeResponse.data.contents, getResponse.data.list.at(0)?.contents);
+    });
+  });
+
+  /**
    * 답글 달기
    */
-  describe('POST api/v1/articles/:articleId/comments/:commentId', { concurrency: true }, () => {
+  describe('POST api/v1/articles/:articleId/comments/:commentId', { concurrency: false }, () => {
     it('게시글의 댓글에 답변을 남기기', { todo: true });
   });
 
   /**
    * 댓글에 대한 좋아요/좋아요 취소
    */
-  describe('PATCH api/v1/articles/:articleId/comments/:commentId', { concurrency: true }, () => {
+  describe('PATCH api/v1/articles/:articleId/comments/:commentId', { concurrency: false }, () => {
     it('댓글에 좋아요 하기', { todo: true });
     it('이미 좋아요한 댓글에 대해 좋아요를 할 경우 취소가 된다.', { todo: true });
 
@@ -463,7 +539,7 @@ describe('E2E articles test', () => {
   /**
    * 댓글 삭제
    */
-  describe('DELETE api/v1/articles/:articleId/comments/:commentId', { concurrency: true }, () => {
+  describe('DELETE api/v1/articles/:articleId/comments/:commentId', { concurrency: false }, () => {
     it('작성자는 댓글을 삭제할 수 있어야 한다.', { todo: true });
     it('본인의 댓글이 아닌 경우에는 에러를 뱉어야 한다.', { todo: true });
 
@@ -477,7 +553,7 @@ describe('E2E articles test', () => {
    * 댓글 수정
    * 수정 시에는, 이전 내역이 욕설이나 그 외 상대의 기분을 해칠 수 있는 댓글인지를 확인해야 한다.
    */
-  describe('PUT api/v1/articles/:articleId/comments/:commentId', { concurrency: true }, () => {
+  describe('PUT api/v1/articles/:articleId/comments/:commentId', { concurrency: false }, () => {
     it('댓글을 수정할 수 있다.', { todo: true });
 
     /**
@@ -491,7 +567,7 @@ describe('E2E articles test', () => {
    * 댓글 신고
    * 댓글이 신고된 경우, 해당 댓글의 내역을, 유저가 수정할 경우를 대비해 따로 저장해두어야 한다.
    */
-  describe('POST api/v1/articles/:articleid/comments/:commentId', { concurrency: true }, () => {
+  describe('POST api/v1/articles/:articleid/comments/:commentId', { concurrency: false }, () => {
     /**
      * ReportComment에 칼럼을 두고, 신고 당시의 글 내용을 저장해두는 걸 추천한다.
      */
