@@ -163,6 +163,12 @@ export declare namespace ArticleType {
      * @type int
      */
     writerId?: number;
+
+    /**
+     * 검색할 키워드로, 중간에 빈 문자가 있을 경우 해당 문자를 기준으로 split 하여 검색한다.
+     * 즉, '초코 우유' 검색 시 초코와 우유가 동시에 있는 글만 볼 수 있다.
+     */
+    searchKeyword?: string | null;
   }
 
   interface Element

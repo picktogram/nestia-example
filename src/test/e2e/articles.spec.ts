@@ -106,6 +106,33 @@ describe('E2E articles test', () => {
       });
     });
 
+    it('게시글 조회 시 검색이 가능해야 한다.', async () => {
+      /**
+       * 검색 테스트할 대상을 생성하기
+       */
+      const createArticleDto = typia.random<CreateArticleDto>();
+      const first = await ArticleApis.writeArticle(connection, { ...createArticleDto, contents: 'abcd' });
+      const second = await ArticleApis.writeArticle(connection, { ...createArticleDto, contents: '가나다' });
+
+      if (isBusinessErrorGuard(first) || isBusinessErrorGuard(second)) {
+        assert.deepStrictEqual(1, 2);
+        return;
+      }
+
+      const getResponse = await ArticleApis.getAllArticles(connection, { page: 1, limit: 100, searchKeyword: 'abcd' });
+      /**
+       * 검색 시 조회되어야 한다.
+       */
+      const firstIsSearched = getResponse.data.list.find((el) => el.id === first.data.id);
+      assert.notDeepStrictEqual(firstIsSearched, undefined);
+
+      /**
+       * 검색 시 조회되선 안 된다. ( 검색어에 포함되지 않아 있는 글의 경우 )
+       */
+      const secondIsSearched = getResponse.data.list.find((el) => el.id === second.data.id);
+      assert.deepStrictEqual(secondIsSearched, undefined);
+    });
+
     it('각 게시글 타입 별 프로퍼티에 대한 검증 필요', { todo: true });
   });
 

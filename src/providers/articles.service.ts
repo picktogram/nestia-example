@@ -97,7 +97,7 @@ export class ArticlesService {
 
   async read(
     userId: number,
-    { page, limit, writerId }: ArticleType.GetAllArtcleDto,
+    { page, limit, writerId, searchKeyword }: ArticleType.GetAllArtcleDto,
     { isNoReply }: { isNoReply?: boolean },
   ): Promise<{
     list: ArticleType.Element[];
@@ -140,6 +140,13 @@ export class ArticlesService {
 
     if (writerId) {
       query = query.andWhere('a.writerId = :writerId', { writerId });
+    }
+
+    if (searchKeyword) {
+      const keywords = searchKeyword.split(/\s+/g).filter(Boolean);
+      keywords.forEach((keyword, i) => {
+        query.andWhere(`a.contents ILIKE :keyword${i}`, { [`keyword${i}`]: `%${keyword}%` });
+      });
     }
 
     const [list, count]: [ArticleType.ReadArticleResponse[], number] = await Promise.all([
