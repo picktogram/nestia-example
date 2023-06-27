@@ -53,7 +53,7 @@ export class CommentsService {
 
   async readByArticleId(
     articleId: number,
-    { page, limit, imageId }: CommentType.GetCommentDto,
+    { page, limit, imageId, parentId }: CommentType.GetCommentDto,
   ): Promise<CommentType.CommentsByArcile> {
     const { skip, take } = getOffset({ page, limit });
     const [list, count] = await this.commentsRepository.findAndCount({
@@ -77,7 +77,7 @@ export class CommentsService {
       relations: {
         writer: true,
       },
-      where: { articleId, ...(imageId && { imageId }) },
+      where: { articleId, ...(imageId && { imageId }), ...(parentId && { parentId }) },
       order: { createdAt: 'DESC' },
       skip,
       take,

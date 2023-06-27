@@ -94,7 +94,8 @@ export class ArticlesController {
   }
 
   /**
-   * @summary 230223 - 게시글의 댓글을 최신 순으로 조회한다. (페이지네이션 형태로 변경할 예정)
+   * @summary 230627 - 게시글의 댓글을 최신 순으로 조회한다.
+   * @author kakasoo
    * @tag articles
    * @param articleId 댓글을 조회하고자 하는 게시글의 id
    * @param paginationDto 페이지 정보
