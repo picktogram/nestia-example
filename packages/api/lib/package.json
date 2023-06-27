@@ -1,6 +1,6 @@
 {
   "name": "picktogram-server-apis",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "유저 상세 조회 시 팔로우 상태에 대한 프로퍼티 추가 - 23.04.25",
   "main": "index.js",
   "typings": "index.d.ts",
