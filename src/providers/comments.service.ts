@@ -126,7 +126,7 @@ export class CommentsService {
 
     if (createCommentDto.parentId) {
       const parentComment = await this.commentsRepository.findOne({
-        where: { articleId, parentId: createCommentDto.parentId },
+        where: { articleId, id: createCommentDto.parentId },
       });
 
       if (!parentComment) {

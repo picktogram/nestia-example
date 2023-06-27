@@ -534,6 +534,40 @@ describe('E2E articles test', () => {
       assert.notStrictEqual(comment, undefined);
       assert.deepStrictEqual(typeof comment.data.imageId === 'number', true);
     });
+
+    it('댓글에 대한 답글 달기', async () => {
+      const parentCommentToSave = typia.random<CreateCommentDto>();
+      parentCommentToSave.imageId = article.images?.at(0)?.id;
+      parentCommentToSave.parentId = null;
+      const parent = (await ArticleApis.comments.writeComment(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        article.id,
+        parentCommentToSave,
+      )) as unknown as Try<CommentType.CreateResponse>;
+
+      const childCommentToSave = typia.random<CreateCommentDto>();
+      childCommentToSave.imageId = article.images?.at(0)?.id;
+      childCommentToSave.parentId = parent.data.id;
+      const child = (await ArticleApis.comments.writeComment(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        article.id,
+        childCommentToSave,
+      )) as unknown as Try<CommentType.CreateResponse>;
+
+      assert.notStrictEqual(child, undefined);
+      assert.deepStrictEqual(typeof child.data.imageId === 'number', true);
+      assert.deepStrictEqual(child.data.parentId === parent.data.id, true);
+    });
   });
 
   /**
@@ -565,6 +599,7 @@ describe('E2E articles test', () => {
       };
 
       // NOTE : 테스트 대상인 게시글을 생성
+      const createArticleDto = typia.random<CreateArticleDto>();
       const writeArticleResponse = await ArticleApis.writeArticle(
         {
           host,
@@ -572,7 +607,7 @@ describe('E2E articles test', () => {
             Authorization: token,
           },
         },
-        typia.random<CreateArticleDto>(),
+        createArticleDto,
       );
 
       if (writeArticleResponse.code === 1000) {
