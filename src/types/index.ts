@@ -195,7 +195,7 @@ export declare namespace ArticleType {
 
 export declare namespace CommentType {
   interface RootComment
-    extends Pick<CommentEntity, 'id' | 'writerId' | 'contents' | 'xPosition' | 'yPosition' | 'createdAt'> {}
+    extends Pick<CommentEntity, 'id' | 'writerId' | 'contents' | 'imageId' | 'xPosition' | 'yPosition' | 'createdAt'> {}
 
   interface CreateResponse
     extends Pick<

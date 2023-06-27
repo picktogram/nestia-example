@@ -61,6 +61,7 @@ export class CommentsService {
         id: true,
         writerId: true,
         parentId: true,
+        imageId: true,
         contents: true,
         xPosition: true,
         yPosition: true,
