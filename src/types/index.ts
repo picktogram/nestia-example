@@ -218,7 +218,7 @@ export declare namespace CommentType {
     count: number;
   }
 
-  interface GetCommentQuery extends PaginationDto, Pick<CommentEntity, 'imageId'> {}
+  interface GetCommentDto extends PaginationDto, Pick<CommentEntity, 'imageId'> {}
 }
 
 export declare namespace UserBridgeType {
