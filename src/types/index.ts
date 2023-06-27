@@ -217,6 +217,8 @@ export declare namespace CommentType {
     list: Merge<RootComment, { writer: UserType.Profile }>[];
     count: number;
   }
+
+  interface GetCommentQuery extends PaginationDto, Pick<CommentEntity, 'imageId'> {}
 }
 
 export declare namespace UserBridgeType {

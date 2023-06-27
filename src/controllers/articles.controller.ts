@@ -103,7 +103,7 @@ export class ArticlesController {
   @TypedRoute.Get(':id/comments')
   public async readComments(
     @TypedParam('id', 'number') articleId: number,
-    @TypedQuery() paginationDto: PaginationDto,
+    @TypedQuery() paginationDto: CommentType.GetCommentQuery,
   ): Promise<TryPagination<CommentType.CommentsByArcile>> {
     const comments = await this.commentsService.readByArticleId(articleId, paginationDto);
     const response = createPaginationForm(comments, paginationDto);
