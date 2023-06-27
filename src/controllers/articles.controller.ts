@@ -19,6 +19,7 @@ import {
   TOO_MANY_REPORTED_ARTICLE,
   IS_NOT_WRITER_OF_THIS_ARTICLE,
   IS_SAME_POSITION,
+  CANNOT_FIND_IMAGE_TO_LEFT_COMMENT,
 } from '../config/errors/business-error';
 import { TimeoutInterceptor } from '../common/interceptors/timeout.interceptor';
 import { LoggingInterceptor } from '../common/interceptors/logging.interceptor';
@@ -128,7 +129,10 @@ export class ArticlesController {
   ): Promise<
     TryCatch<
       CommentType.CreateResponse,
-      CANNOT_FIND_ONE_REPLY_COMMENT | NOT_FOUND_ARTICLE_TO_COMMENT | TOO_MANY_REPORTED_ARTICLE
+      | CANNOT_FIND_ONE_REPLY_COMMENT
+      | NOT_FOUND_ARTICLE_TO_COMMENT
+      | TOO_MANY_REPORTED_ARTICLE
+      | CANNOT_FIND_IMAGE_TO_LEFT_COMMENT
     >
   > {
     const comment = await this.commentsService.write(writerId, articleId, createCommentDto);

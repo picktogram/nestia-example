@@ -127,3 +127,10 @@ export interface CANNOT_FIND_DESIGNER_PROFILE extends ERROR {
   code: 4018;
   data: '디자이너의 프로필을 찾지 못했어요.';
 }
+
+export interface CANNOT_FIND_IMAGE_TO_LEFT_COMMENT extends ERROR {
+  type: 'business';
+  result: false;
+  code: 4019;
+  data: '댓글을 남길 이미지를 찾지 못했어요.';
+}

@@ -9,12 +9,14 @@ import { CommentEntity } from '../models/tables/comment.entity';
 import { CommentType } from '../types';
 import { getOffset } from '../utils/getOffset';
 import {
+  CANNOT_FIND_IMAGE_TO_LEFT_COMMENT,
   CANNOT_FIND_ONE_COMMENT,
   CANNOT_FIND_ONE_REPLY_COMMENT,
   NOT_FOUND_ARTICLE_TO_COMMENT,
   TOO_MANY_REPORTED_ARTICLE,
 } from '../config/errors/business-error';
 import typia from 'typia';
+import { BodyImagesRepository } from '../models/repositories/body-images.repository';
 
 @Injectable()
 export class CommentsService {
@@ -25,6 +27,8 @@ export class CommentsService {
     private readonly articlesRepository: ArticlesRepository,
     @InjectRepository(UserLikeCommentsRepository)
     private readonly userLikeCommentsRepository: UserLikeCommentsRepository,
+    @InjectRepository(BodyImagesRepository)
+    private readonly bodyImagesRepository: BodyImagesRepository,
   ) {}
 
   async likeOrUnlike(userId: number, commentId: number) {
@@ -104,7 +108,13 @@ export class CommentsService {
     writerId: number,
     articleId: number,
     createCommentDto: CreateCommentDto,
-  ): Promise<CommentEntity | CANNOT_FIND_ONE_REPLY_COMMENT | NOT_FOUND_ARTICLE_TO_COMMENT | TOO_MANY_REPORTED_ARTICLE> {
+  ): Promise<
+    | CommentEntity
+    | CANNOT_FIND_ONE_REPLY_COMMENT
+    | NOT_FOUND_ARTICLE_TO_COMMENT
+    | TOO_MANY_REPORTED_ARTICLE
+    | CANNOT_FIND_IMAGE_TO_LEFT_COMMENT
+  > {
     const article = await this.articlesRepository.findOne({
       select: {
         id: true,
@@ -120,6 +130,16 @@ export class CommentsService {
 
       if (!parentComment) {
         return typia.random<CANNOT_FIND_ONE_REPLY_COMMENT>();
+      }
+    }
+
+    if (createCommentDto.imageId) {
+      const image = await this.bodyImagesRepository.findOne({
+        where: { articleId, id: createCommentDto.imageId },
+      });
+
+      if (!image) {
+        return typia.random<CANNOT_FIND_IMAGE_TO_LEFT_COMMENT>();
       }
     }
 
