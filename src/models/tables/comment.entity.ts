@@ -3,6 +3,7 @@ import { ArticleEntity } from './article.entity';
 import { UserEntity } from './user.entity';
 import { CommonCloumns } from '../common/common-columns';
 import { UserLikeCommentEntity } from './user-like-comment.entity';
+import { BodyImageEntity } from './body-image.entity';
 
 @Entity({ name: 'comment' })
 export class CommentEntity extends CommonCloumns {
@@ -34,6 +35,9 @@ export class CommentEntity extends CommonCloumns {
    */
   @Column('text')
   contents!: string;
+
+  @Column('int4', { nullable: true })
+  imageId?: number | null;
 
   /**
    * 소수점을 포함한 좌표 값
@@ -68,4 +72,8 @@ export class CommentEntity extends CommonCloumns {
 
   @OneToMany(() => UserLikeCommentEntity, (ulc) => ulc.comment)
   commentLikedByUsers?: UserLikeCommentEntity[];
+
+  @ManyToOne(() => BodyImageEntity, (image) => image.comments)
+  @JoinColumn({ name: 'imageId', referencedColumnName: 'id' })
+  image!: BodyImageEntity;
 }

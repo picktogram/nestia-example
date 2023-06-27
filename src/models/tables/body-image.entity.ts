@@ -1,6 +1,7 @@
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { CommonCloumns } from '../common/common-columns';
 import { ArticleEntity } from './article.entity';
+import { CommentEntity } from './comment.entity';
 
 @Entity({ name: 'body_image' })
 export class BodyImageEntity extends CommonCloumns {
@@ -54,4 +55,7 @@ export class BodyImageEntity extends CommonCloumns {
 
   @OneToMany(() => BodyImageEntity, (child) => child.parent)
   children!: BodyImageEntity[];
+
+  @OneToMany(() => CommentEntity, (comment) => comment.image)
+  comments!: CommentEntity[];
 }
