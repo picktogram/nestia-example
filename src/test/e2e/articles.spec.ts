@@ -9,7 +9,7 @@ import { CreateArticleDto } from '../../models/dtos/create-article.dto';
 import { CreateCommentDto } from '../../models/dtos/create-comment.dto';
 import { CommentEntity } from '../../models/tables/comment.entity';
 import { DecodedUserToken } from '../../models/tables/user.entity';
-import { ArticleType } from '../../types';
+import { ArticleType, CommentType, Try, TryPagination } from '../../types';
 import { isBusinessErrorGuard } from '../../config/errors';
 import { describe, it, before, after, beforeEach } from 'node:test';
 import assert from 'node:assert';
@@ -63,6 +63,7 @@ describe('E2E articles test', () => {
 
   describe('GET api/v1/articles', { concurrency: false }, () => {
     let connection: IConnection;
+    let article: ArticleType.DetailArticle;
 
     before(async () => {
       const designer = typia.random<CreateUserDto>();
@@ -79,7 +80,13 @@ describe('E2E articles test', () => {
       /**
        * 테스트를 위해 자기 자신의 이름으로 게시글 하나를 생성
        */
-      await ArticleApis.writeArticle(connection, typia.random<CreateArticleDto>());
+      const createArticleDto = typia.random<CreateArticleDto>();
+      createArticleDto.images = [{ url: 'test.jpg' }];
+      const writeArticleResponse = (await ArticleApis.writeArticle(
+        connection,
+        createArticleDto,
+      )) as unknown as Try<ArticleType.DetailArticle>;
+      article = writeArticleResponse.data;
     });
 
     it('게시글 조회 테스트', async () => {
@@ -469,6 +476,13 @@ describe('E2E articles test', () => {
       };
 
       // NOTE : 테스트 대상인 게시글을 생성
+      const createArticleDto = typia.random<CreateArticleDto>();
+      createArticleDto.images = [
+        {
+          url: 'test.jpg',
+          position: 0,
+        },
+      ];
       const writeArticleResponse = await ArticleApis.writeArticle(
         {
           host,
@@ -476,7 +490,7 @@ describe('E2E articles test', () => {
             Authorization: token,
           },
         },
-        typia.random<CreateArticleDto>(),
+        createArticleDto,
       );
 
       if (writeArticleResponse.code === 1000) {
@@ -500,6 +514,25 @@ describe('E2E articles test', () => {
       );
 
       assert.notStrictEqual(comment, undefined);
+    });
+
+    it('게시글, 이미지에 댓글 남기기', async () => {
+      const commentToSave = typia.random<CreateCommentDto>();
+      commentToSave.imageId = article.images?.at(0)?.id;
+      commentToSave.parentId = null;
+      const comment = (await ArticleApis.comments.writeComment(
+        {
+          host,
+          headers: {
+            Authorization: token,
+          },
+        },
+        article.id,
+        commentToSave,
+      )) as unknown as Try<CommentType.CreateResponse>;
+
+      assert.notStrictEqual(comment, undefined);
+      assert.deepStrictEqual(typeof comment.data.imageId === 'number', true);
     });
   });
 
@@ -576,6 +609,53 @@ describe('E2E articles test', () => {
    */
   describe('POST api/v1/articles/:articleId/comments/:commentId', { concurrency: false }, () => {
     it('게시글의 댓글에 답변을 남기기', { todo: true });
+  });
+  /**
+   * 단일 게시글 조회
+   */
+  describe('GET api/v1/articles/:articleId', () => {
+    let connection: IConnection;
+    let article: ArticleType.DetailArticle;
+
+    before(async () => {
+      const designer = typia.random<CreateUserDto>();
+      await AuthApis.sign_up.signUp({ host }, designer);
+      const response = await AuthApis.login({ host }, designer);
+
+      connection = {
+        host,
+        headers: {
+          Authorization: response.data,
+        },
+      };
+
+      /**
+       * 테스트를 위해 자기 자신의 이름으로 게시글 하나를 생성
+       */
+      const createArticleDto = typia.random<CreateArticleDto>();
+      createArticleDto.images = [{ url: 'test.jpg' }];
+      const writeArticleResponse = (await ArticleApis.writeArticle(
+        connection,
+        createArticleDto,
+      )) as unknown as Try<ArticleType.DetailArticle>;
+      article = writeArticleResponse.data;
+    });
+
+    /**
+     * @author kakasoo
+     * @date 230627
+     */
+    it('게시글 조회에 성공해야 한다.', async () => {
+      const getOneDetailArticleResponse = (await ArticleApis.getOneDetailArticle(
+        connection,
+        article.id,
+      )) as unknown as Try<ArticleType.DetailArticle>;
+
+      assert.notEqual(getOneDetailArticleResponse.data, undefined);
+      assert.notEqual(getOneDetailArticleResponse.data, null);
+      assert.deepStrictEqual(getOneDetailArticleResponse.data.images?.length, 1);
+      assert.deepStrictEqual(getOneDetailArticleResponse.data.images.at(0)?.url, 'test.jpg');
+    });
   });
 
   /**

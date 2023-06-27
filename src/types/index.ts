@@ -206,6 +206,7 @@ export declare namespace CommentType {
       | 'contents'
       | 'xPosition'
       | 'yPosition'
+      | 'imageId'
       // | 'deletedAt'
       // | 'createdAt'
       // | 'updatedAt'

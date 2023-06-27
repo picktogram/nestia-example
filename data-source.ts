@@ -14,10 +14,7 @@ export default new DataSource({
   username: process.env[`${NODE_ENV}_DB_USERNAME`] as string,
   database: process.env[`${NODE_ENV}_DB_DATABASE`] as string,
   password: process.env[`${NODE_ENV}_DB_PASSWORD`] as string,
-  entities: [
-    path.join(__dirname, './src/models/tables/*.ts'),
-    path.join(__dirname, './src/models/tables/*.js'),
-  ],
+  entities: [path.join(__dirname, './src/models/tables/*.ts'), path.join(__dirname, './src/models/tables/*.js')],
   synchronize: false,
   logging: true,
 });
