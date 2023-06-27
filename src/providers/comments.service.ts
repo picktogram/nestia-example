@@ -141,6 +141,12 @@ export class CommentsService {
       if (!image) {
         return typia.random<CANNOT_FIND_IMAGE_TO_LEFT_COMMENT>();
       }
+    } else {
+      /**
+       * 이미지를 지정하지 않은 경우에는 좌표 값을 삭제한다.
+       */
+      createCommentDto.xPosition = null;
+      createCommentDto.yPosition = null;
     }
 
     if (!article) {

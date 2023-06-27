@@ -267,6 +267,8 @@ describe('E2E articles test', () => {
       // NOTE : 질문이지만 댓글이 달린 경우는 조회되서는 안 된다.
       const dummyQuestionWithReply = typia.random<CreateArticleDto>();
       const dummyReply = typia.random<CreateCommentDto>();
+      delete dummyReply.imageId;
+
       dummyQuestionWithReply.type = 'question';
       const questionWithReply = await ArticleApis.writeArticle(
         {
@@ -484,6 +486,7 @@ describe('E2E articles test', () => {
 
     it('게시글에 댓글 남기기', async () => {
       const commentToSave = typia.random<CreateCommentDto>();
+      delete commentToSave.imageId;
       commentToSave.parentId = null;
       const comment = await ArticleApis.comments.writeComment(
         {

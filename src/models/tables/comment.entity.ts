@@ -36,6 +36,10 @@ export class CommentEntity extends CommonCloumns {
   @Column('text')
   contents!: string;
 
+  /**
+   * 이미지의 아이디로 없을 수도 있다.
+   * 없는 경우에는 그 게시글에 달린 것으로, xPosition, yPosition을 무시한다.
+   */
   @Column('int4', { nullable: true })
   imageId?: number | null;
 
