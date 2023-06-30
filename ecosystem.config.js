@@ -95,8 +95,8 @@ module.exports = {
        * @example {“NODE_ENV”: “development”, “ID”: “42”}
        */
       env: {
-        NODE_ENV: 'development',
-        NODE_CONFIG_ENV: 'development',
+        NODE_ENV: 'DEVELOPMENT',
+        NODE_CONFIG_ENV: 'DEVELOPMENT',
       },
       /**
        * default to true, [enable/disable source map file]
@@ -104,8 +104,8 @@ module.exports = {
        * @example {“NODE_ENV”: “production”, “ID”: “89”}
        */
       env_production: {
-        NODE_ENV: 'production',
-        NODE_CONFIG_ENV: 'production',
+        NODE_ENV: 'PRODUCTION',
+        NODE_CONFIG_ENV: 'PRODUCTION',
       },
       /**
        * default to true, [enable/disable source map file]
