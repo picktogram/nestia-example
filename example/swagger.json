@@ -1,0 +1,7003 @@
+{
+  "openapi": "3.0.1",
+  "servers": [
+    {
+      "url": "https://github.com/samchon/nestia",
+      "description": "insert your server url"
+    }
+  ],
+  "info": {
+    "version": "0.0.1",
+    "title": "picktogram-server",
+    "description": ""
+  },
+  "paths": {
+    "/api/v1/alarms": {
+      "get": {
+        "tags": [
+          "alarms"
+        ],
+        "parameters": [
+          {
+            "name": "paginationDto",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/PaginationDto"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "알람",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TryPagination_lt_AlarmType.ReadResponseType_gt_"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "유저가 지금까지 받은 알람을 제공하는 API",
+        "description": "",
+        "x-nestia-namespace": "api.v1.alarms.read",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "유저가 지금까지 받은 알람을 제공하는 API",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "alarms",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "paginationDto",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "알람",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/articles/no-reply": {
+      "get": {
+        "tags": [
+          "articles"
+        ],
+        "parameters": [
+          {
+            "name": "paginationDto",
+            "in": "query",
+            "description": "페이지 정보",
+            "schema": {
+              "$ref": "#/components/schemas/PaginationDto"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "답변이 없는 글들의 리스트",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TryPagination_lt_ArticleType.GetAllArticlesReponse_gt_"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230312 - 댓글이 달리지 않는 게시글 리스트를 조회한다.",
+        "description": "",
+        "x-nestia-namespace": "api.v1.articles.no-reply.getAllWithNoReply",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230312 - 댓글이 달리지 않는 게시글 리스트를 조회한다.",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "articles",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "paginationDto",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "페이지 정보",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "답변이 없는 글들의 리스트",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/articles/{id}/reports": {
+      "post": {
+        "tags": [
+          "articles"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "신고할 대상인 게시글의 아이디",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticleType.ReportReason"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "성공 시 true를 데이터로 반환",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FINDONE_ARTICLE"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ARLEADY_REPORTED_ARTICLE"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_true_gt_"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230312 - 게시글 신고하기",
+        "description": "",
+        "x-nestia-namespace": "api.v1.articles.reports.report",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230312 - 게시글 신고하기",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "articles",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "articleId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "신고할 대상인 게시글의 아이디",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "성공 시 true를 데이터로 반환",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/articles/{articleId}/comments/{commentId}": {
+      "patch": {
+        "tags": [
+          "articles"
+        ],
+        "parameters": [
+          {
+            "name": "articleId",
+            "in": "path",
+            "description": "좋아요/좋아요 취소를 당하는 댓글의 게시글",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "commentId",
+            "in": "path",
+            "description": "좋아요/좋아요 취소를 당하는 댓글",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FIND_ONE_COMMENT"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_boolean_gt_"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230312 - 댓글 좋아요/좋아요 취소 기능",
+        "description": "",
+        "x-nestia-namespace": "api.v1.articles.comments.likeOrUnLikeComment",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230312 - 댓글 좋아요/좋아요 취소 기능",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "articles",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "좋아요/좋아요 취소를 할 사람",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "articleId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "좋아요/좋아요 취소를 당하는 댓글의 게시글",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "commentId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "좋아요/좋아요 취소를 당하는 댓글",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/articles/{id}/comments": {
+      "get": {
+        "tags": [
+          "articles"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "댓글을 조회하고자 하는 게시글의 id",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "getCommentDto",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/CommentType.GetCommentDto"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "댓글의 리스트",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TryPagination_lt_CommentType.CommentsByArcile_gt_"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230627 - 게시글의 댓글을 최신 순으로 조회한다.",
+        "description": "",
+        "x-nestia-namespace": "api.v1.articles.comments.readComments",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230627 - 게시글의 댓글을 최신 순으로 조회한다.",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "author",
+            "text": [
+              {
+                "text": "kakasoo",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "articles",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "articleId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "댓글을 조회하고자 하는 게시글의 id",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "paginationDto",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "페이지 정보",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "댓글의 리스트",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "articles"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "게시글의 아이디",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "작성하고자 하는 댓글의 정보",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentDto"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "방금 작성된 댓글",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FIND_ONE_REPLY_COMMENT"
+                    },
+                    {
+                      "$ref": "#/components/schemas/NOT_FOUND_ARTICLE_TO_COMMENT"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TOO_MANY_REPORTED_ARTICLE"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FIND_IMAGE_TO_LEFT_COMMENT"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_CommentType.CreateResponse_gt_"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          },
+          "4006": {
+            "description": "댓글을 작성할 게시글을 찾지 못했습니다."
+          },
+          "4007": {
+            "description": "신고가 접수된 게시글이라 댓글 작성이 불가능합니다."
+          }
+        },
+        "summary": "게시글에 댓글을 작성한다",
+        "description": "게시글에 댓글을 작성한다.\n게시글에 댓글을 작성하는 API로, 본인의 게시글이든 아니든 상관 없이 동일한 기능을 수행한다.",
+        "x-nestia-namespace": "api.v1.articles.comments.writeComment",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "articles",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "writerId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "작성자의 아이디",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "articleId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "게시글의 아이디",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "createCommentDto",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "작성하고자 하는 댓글의 정보",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "throw",
+            "text": [
+              {
+                "text": "4006 댓글을 작성할 게시글을 찾지 못했습니다.",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "throw",
+            "text": [
+              {
+                "text": "4007 신고가 접수된 게시글이라 댓글 작성이 불가능합니다.",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "방금 작성된 댓글",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/articles/{id}": {
+      "patch": {
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "좋아요/좋아요 취소를 당한 게시글",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FINDONE_ARTICLE"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_boolean_gt_"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "게시글에 대한 좋아요/좋아요 취소를 설정하는 기능 (리턴 형식에 주의)",
+        "description": "",
+        "x-nestia-namespace": "api.v1.articles.likeOrUnlike",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "게시글에 대한 좋아요/좋아요 취소를 설정하는 기능 (리턴 형식에 주의)",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "좋아요/좋아요 취소를 하는 사람",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "articleId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "좋아요/좋아요 취소를 당한 게시글",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "retruns",
+            "text": [
+              {
+                "text": "좋아요 성공 시 true, 실패 시 false 에는 에러 상황",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "articles"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "수정할 게시글의 아이디",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "수정 후에 반영될 데이터",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticleType.UpdateArticleDto"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FINDONE_ARTICLE"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_boolean_gt_"
+                    },
+                    {
+                      "$ref": "#/components/schemas/IS_NOT_WRITER_OF_THIS_ARTICLE"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "게시글 수정으로 작성자만이 가능하다 ( 각 게시글 타입에 맞게 기능 추가 필요 )",
+        "description": "",
+        "x-nestia-namespace": "api.v1.articles.modify",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "게시글 수정으로 작성자만이 가능하다 ( 각 게시글 타입에 맞게 기능 추가 필요 )",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "articles",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "writerId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "수정할 사람의 아이디로, 반드시 게시글 작성자의 아이디와 일치해야 한다.",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "articleId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "수정할 게시글의 아이디",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "updateArticleDto",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "수정 후에 반영될 데이터",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "articles"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "조회하고자 하는 게시글의 id 값",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "조회한 게시글",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FINDONE_ARTICLE"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_ArticleType.DetailArticle_gt_"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "게시글 상세 조회",
+        "description": "",
+        "x-nestia-namespace": "api.v1.articles.getOneDetailArticle",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "게시글 상세 조회",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "articles",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "작성자의 아이디",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "articleId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "조회하고자 하는 게시글의 id 값",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "조회한 게시글",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/articles": {
+      "get": {
+        "tags": [
+          "articles"
+        ],
+        "parameters": [
+          {
+            "name": "getAllArtcleDto",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/ArticleType.GetAllArtcleDto"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "게시글 리스트",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TryPagination_lt_ArticleType.GetAllArticlesReponse_gt_"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "게시글 리스트 조회",
+        "description": "",
+        "x-nestia-namespace": "api.v1.articles.getAllArticles",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "게시글 리스트 조회",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "articles",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "조회를 하는 유저의 아이디",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "paginationDto",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "페이지의 정보",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "게시글 리스트",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "articles"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "description": "게시글의 정보",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateArticleDto"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FINDONE_ARTICLE"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_ArticleType.DetailArticle_gt_"
+                    },
+                    {
+                      "$ref": "#/components/schemas/IS_SAME_POSITION"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230129 - 게시글 작성 / 임시저장 기능이 추가되어야 한다. (incompleted)",
+        "description": "",
+        "x-nestia-namespace": "api.v1.articles.writeArticle",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230129 - 게시글 작성 / 임시저장 기능이 추가되어야 한다. (incompleted)",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "articles",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "글을 쓰고자 하는 작성자의 id",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "createArticleDto",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "게시글의 정보",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns"
+          }
+        ]
+      }
+    },
+    "/api/v1/body-image": {
+      "post": {
+        "tags": [
+          "body-images"
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "이미지가 저장되고 난 후의 경로의 배열",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/SELECT_MORE_THAN_ONE_IMAGE"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_Array_lt_string_gt__gt_"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230129 - 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 10개이다.",
+        "description": "",
+        "x-nestia-namespace": "api.v1.body-image.upload",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230129 - 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 10개이다.",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "body-images",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "files",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "저장할 이미지",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "이미지가 저장되고 난 후의 경로의 배열",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/categories": {
+      "get": {
+        "tags": [
+          "categories"
+        ],
+        "parameters": [
+          {
+            "name": "paginationDto",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/SearchPaginationDto"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TryPagination_lt_CategoryType.FindAllResponse_gt_"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "카테고리를 조회하는 API로, 글 작성 시 카테고리 선택을 위해 사용한다",
+        "description": "카테고리를 조회하는 API로, 글 작성 시 카테고리 선택을 위해 사용한다.\nwhere, andWhere 식의 검색어를 중첩해나가면서 검색 대상을 좁히는 게 아니라,\n점점 늘려가는 식으로 구현된다.\n단, 중복이 발생해서는 안 된다.",
+        "x-nestia-namespace": "api.v1.categories.findAll",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "categories",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "param0",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "검색어",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/users/acquaintance": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "paginationDto",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/PaginationDto"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TryPagination_lt_UserType.ProfileList_gt_"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "친구 추천 기능\n유저가 자신의 친구일 수 있는 사람, 유명인 등을 조회하는 API로, 일종의 친구 추천 기능을 의미한다.",
+        "description": "",
+        "x-nestia-namespace": "api.v1.users.acquaintance.getAcquaintance",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "친구 추천 기능\n유저가 자신의 친구일 수 있는 사람, 유명인 등을 조회하는 API로, 일종의 친구 추천 기능을 의미한다.",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "users",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "유저 아이디",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns"
+          }
+        ]
+      }
+    },
+    "/api/v1/users/profile/cover-image": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "이미지가 저장되고 난 후의 경로의 배열",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/SELECT_MORE_THAN_ONE_IMAGE"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_Array_lt_string_gt__gt_"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230416 - 커버 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 1개이다.",
+        "description": "",
+        "x-nestia-namespace": "api.v1.users.profile.cover-image.uploadCoverImage",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230416 - 커버 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 1개이다.",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "users",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "files",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "저장할 이미지",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "이미지가 저장되고 난 후의 경로의 배열",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/users/profile/image": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "이미지가 저장되고 난 후의 경로의 배열",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/SELECT_MORE_THAN_ONE_IMAGE"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_Array_lt_string_gt__gt_"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230416 - 프로필 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 1개이다.",
+        "description": "",
+        "x-nestia-namespace": "api.v1.users.profile.image.uploadProfileImage",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230416 - 프로필 이미지를 저장하고, 저장된 경로를 받아오는 API로, key는 file 이라는 명칭, 최대 이미지 수는 1개이다.",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "users",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "files",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "저장할 이미지",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "이미지가 저장되고 난 후의 경로의 배열",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/users/profile": {
+      "put": {
+        "tags": [
+          "users"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserType.UpdateUserDto"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "수정이 되고 난 다음 프로필을 조회한 것과 동일한 응답 값",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FIND_DESIGNER_PROFILE"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_UserType.DetailProfile_gt_"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "디자이너가 자신의 프로필을 수정하는 API",
+        "description": "",
+        "x-nestia-namespace": "api.v1.users.profile.updateProfile",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "디자이너가 자신의 프로필을 수정하는 API",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "users",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "수정할 디자이너의 아이디 ( 본인의 아이디를 의미 )",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "updateUserDto",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "수정이 되고 난 다음 프로필을 조회한 것과 동일한 응답 값",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "유저의 토큰을 디코딩한 것과 동일한 형태의 값들이 반환된다.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FIND_DESIGNER_PROFILE"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_UserType.DetailProfile_gt_"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "디자이너가 자신의 프로필을 조회하는 API (legacy)",
+        "description": "",
+        "x-nestia-namespace": "api.v1.users.profile.getProfile",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "디자이너가 자신의 프로필을 조회하는 API (legacy)",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "users",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "user",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "유저의 토큰을 디코딩한 것과 동일한 형태의 값들이 반환된다.",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/users/{id}/reputation": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "조회하고자 하는 유저의 아이디",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Try_lt_UserType.Retuation_gt_"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "유저의 평판을 조회하는 API\n\n유저의 상세 페이지에서 호출되기도 하며, 또한 홈 페이지에서 자기 평판을 조회하기도 한다.",
+        "description": "",
+        "x-nestia-namespace": "api.v1.users.reputation.checkReputation",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "유저의 평판을 조회하는 API\n\n유저의 상세 페이지에서 호출되기도 하며, 또한 홈 페이지에서 자기 평판을 조회하기도 한다.",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "users",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "유저의 아이디",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "designerId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "조회하고자 하는 유저의 아이디",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/users/{id}/followers": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "조회를 당하는 사람, 즉 해당 디자이너",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "paginationDto",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/PaginationDto"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "팔로워 목록의 페이지네이션 값",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TryPagination_lt_UserType.ProfileList_gt_"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230313 - 해당 디자이너님의 팔로워 ( 누구를 팔로우하고 있는지 ) 를 조회한다. (미완성)",
+        "description": "",
+        "x-nestia-namespace": "api.v1.users.followers.checkFollowers",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230313 - 해당 디자이너님의 팔로워 ( 누구를 팔로우하고 있는지 ) 를 조회한다. (미완성)",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "users",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "조회를 요청한 사람, 즉 유저",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "designerId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "조회를 당하는 사람, 즉 해당 디자이너",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "팔로워 목록의 페이지네이션 값",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/users/{id}/followees": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "조회를 당하는 사람, 즉 해당 디자이너",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          },
+          {
+            "name": "paginationDto",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/PaginationDto"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "팔로이 목록의 페이지네이션 값",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TryPagination_lt_UserType.ProfileList_gt_"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230313 - 해당 디자이너님의 팔로이 ( 누구를 팔로우하고 있는지 ) 를 조회한다.",
+        "description": "",
+        "x-nestia-namespace": "api.v1.users.followees.checkFollowees",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230313 - 해당 디자이너님의 팔로이 ( 누구를 팔로우하고 있는지 ) 를 조회한다.",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "users",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "조회를 요청한 사람, 즉 유저",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "designerId",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "조회를 당하는 사람, 즉 해당 디자이너",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "팔로이 목록의 페이지네이션 값",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/users/{id}/follow": {
+      "delete": {
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공 시 true를 반환한다.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_true_gt_"
+                    },
+                    {
+                      "$ref": "#/components/schemas/STILL_UNFOLLOW_USER"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230210 - 디자이너님이 다른 디자이너님을 언팔로우하는 API (수정 필요)",
+        "description": "",
+        "x-nestia-namespace": "api.v1.users.follow.unfollow",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230210 - 디자이너님이 다른 디자이너님을 언팔로우하는 API (수정 필요)",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "users",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "followeeId",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "성공 시 true를 반환한다.",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "성공 시 true를 반환한다.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_true_gt_"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ALREADY_FOLLOW_USER"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FOLLOW_MYSELF"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230207 - 디자이너님이 다른 디자이너님을 팔로우하는 API",
+        "description": "",
+        "x-nestia-namespace": "api.v1.users.follow.follow",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230207 - 디자이너님이 다른 디자이너님을 팔로우하는 API",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "users",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "followeeId",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "성공 시 true를 반환한다.",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "유저의 상세한 프로필",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CANNOT_FIND_DESIGNER_PROFILE"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_UserType.DetailProfileWithRelation_gt_"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "디자이너 프로필 조회로, 자기 자신을 조회할 경우에는 myself 값이 true로 온다.",
+        "description": "",
+        "x-nestia-namespace": "api.v1.users.getDetailProdfile",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "디자이너 프로필 조회로, 자기 자신을 조회할 경우에는 myself 값이 true로 온다.",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "users",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "userId",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "designerId",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "유저의 상세한 프로필",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/sign-up": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ALREADY_CREATED_EMAIL"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ALREADY_CREATED_PHONE_NUMBER"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ResponseForm_lt_DecodedUserToken_gt_"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230129 - Local 로그인을 위한 User 생성",
+        "description": "",
+        "x-nestia-namespace": "api.v1.auth.sign-up.signUp",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230129 - Local 로그인을 위한 User 생성",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "auth",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "CreateUserDto",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "유저를 생성하기 위해 필요한 최소한의 값 정의",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginUserDto"
+              }
+            }
+          },
+          "required": true,
+          "x-nestia-encrypted": false
+        },
+        "responses": {
+          "201": {
+            "description": "암호화된 토큰, decode하여 사용할 값을 담고 있다.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Try_lt_string_gt_"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "summary": "230129 - 이메일과 패스워드를 이용한 로그인",
+        "description": "",
+        "x-nestia-namespace": "api.v1.auth.login.login",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "summary",
+            "text": [
+              {
+                "text": "230129 - 이메일과 패스워드를 이용한 로그인",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "tag",
+            "text": [
+              {
+                "text": "auth",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "email",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "string",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "param",
+            "text": [
+              {
+                "text": "password",
+                "kind": "parameterName"
+              },
+              {
+                "text": " ",
+                "kind": "space"
+              },
+              {
+                "text": "string",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "암호화된 토큰, decode하여 사용할 값을 담고 있다.",
+                "kind": "text"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/google/callback": {
+      "get": {
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "",
+        "x-nestia-namespace": "api.v1.auth.google.callback.googleAuthCallback",
+        "x-nestia-jsDocTags": []
+      }
+    },
+    "/api/v1/auth/google": {
+      "get": {
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "",
+        "x-nestia-namespace": "api.v1.auth.google.googleAuth",
+        "x-nestia-jsDocTags": []
+      }
+    },
+    "/api/v1/auth/kakao/callback": {
+      "get": {
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "",
+        "x-nestia-namespace": "api.v1.auth.kakao.callback.kakaoAuthCallback",
+        "x-nestia-jsDocTags": []
+      }
+    },
+    "/api/v1/auth/kakao": {
+      "get": {
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "",
+        "x-nestia-namespace": "api.v1.auth.kakao.kakaoAuth",
+        "x-nestia-jsDocTags": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PaginationDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "description": "페이지네이션의 페이지 값",
+            "x-typia-metaTags": [
+              {
+                "kind": "minimum",
+                "value": 1
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minimum",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "minimum": 1
+          },
+          "limit": {
+            "description": "",
+            "x-typia-metaTags": [
+              {
+                "kind": "maximum",
+                "value": 100
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "maximum",
+                "text": [
+                  {
+                    "text": "100",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "maximum": 100
+          }
+        },
+        "nullable": false,
+        "required": [
+          "page",
+          "limit"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "TryPagination_lt_AlarmType.ReadResponseType_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PaginationResponseType_lt_AlarmType.ReadResponseType_gt_",
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "PaginationResponseType_lt_AlarmType.ReadResponseType_gt_": {
+        "type": "object",
+        "properties": {
+          "list": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AlarmType.Element",
+              "description": "",
+              "x-typia-required": true,
+              "x-typia-optional": false
+            }
+          },
+          "count": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "totalResult": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "totalPage": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "search": {
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string"
+          },
+          "page": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "list",
+          "count",
+          "totalResult",
+          "totalPage",
+          "page"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "AlarmType.Element": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "userId": {
+            "description": "유저의 아이디",
+            "x-typia-metaTags": [
+              {
+                "kind": "type",
+                "value": "int"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "type",
+                "text": [
+                  {
+                    "text": "int",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "integer"
+          },
+          "resourceName": {
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string"
+          },
+          "resourceId": {
+            "description": "알람이 가리키는 리소스의 아이디로, 리소스마다 동일한 숫자의 아이디를 가질 수 있기에 유니크한 값이 아니다.",
+            "x-typia-metaTags": [
+              {
+                "kind": "type",
+                "value": "int"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "type",
+                "text": [
+                  {
+                    "text": "int",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer"
+          },
+          "redirectLink": {
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "id",
+          "userId"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "TryPagination_lt_ArticleType.GetAllArticlesReponse_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PaginationResponseType_lt_ArticleType.GetAllArticlesReponse_gt_",
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "PaginationResponseType_lt_ArticleType.GetAllArticlesReponse_gt_": {
+        "type": "object",
+        "properties": {
+          "list": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleType.Element",
+              "description": "",
+              "x-typia-required": true,
+              "x-typia-optional": false
+            }
+          },
+          "count": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "totalResult": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "totalPage": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "search": {
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string"
+          },
+          "page": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "list",
+          "count",
+          "totalResult",
+          "totalPage",
+          "page"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ArticleType.Element": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "contents": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "createdAt": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "$ref": "#/components/schemas/Date"
+          },
+          "thumbnail": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "nullable": true
+          },
+          "myPick": {
+            "description": "내가 pick(좋아요) 한 게시글인지 아닌지 여부를 의미하며 기본 값은 false이다.",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean"
+          },
+          "isMine": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean"
+          },
+          "writer": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          },
+          "comments": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "description": "",
+              "x-typia-required": true,
+              "x-typia-optional": false
+            }
+          }
+        },
+        "nullable": false,
+        "required": [
+          "id",
+          "contents",
+          "createdAt",
+          "thumbnail",
+          "myPick",
+          "isMine",
+          "writer",
+          "comments"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "Date": {
+        "type": "object",
+        "properties": {},
+        "nullable": false
+      },
+      "ArticleType.ReportReason": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "description": "신고를 하는 이유가 무엇인지를 기재하는 칸으로, 최소 10글자 이상",
+            "x-typia-metaTags": [
+              {
+                "kind": "length",
+                "value": 10
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "length",
+                "text": [
+                  {
+                    "text": "10",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string"
+          }
+        },
+        "nullable": false,
+        "x-typia-jsDocTags": []
+      },
+      "CANNOT_FINDONE_ARTICLE": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4004
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "게시글을 찾지 못했습니다."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ARLEADY_REPORTED_ARTICLE": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4014
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "이미 신고한 게시글입니다."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ResponseForm_lt_true_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CANNOT_FIND_ONE_COMMENT": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4016
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "해당 댓글을 찾지 못했습니다."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ResponseForm_lt_boolean_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CommentType.GetCommentDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "description": "페이지네이션의 페이지 값",
+            "x-typia-metaTags": [
+              {
+                "kind": "minimum",
+                "value": 1
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minimum",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "minimum": 1
+          },
+          "limit": {
+            "description": "",
+            "x-typia-metaTags": [
+              {
+                "kind": "maximum",
+                "value": 100
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "maximum",
+                "text": [
+                  {
+                    "text": "100",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "maximum": 100
+          },
+          "imageId": {
+            "description": "이미지의 아이디로 없을 수도 있다.\n없는 경우에는 그 게시글에 달린 것으로, xPosition, yPosition을 무시한다.",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "number",
+            "nullable": true
+          },
+          "parentId": {
+            "description": "'부모 댓글이 있는 경우, 즉 답글인 경우에는 부모 댓글 아이디를 받는다.'",
+            "x-typia-metaTags": [
+              {
+                "kind": "type",
+                "value": "int"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "type",
+                "text": [
+                  {
+                    "text": "int",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "nullable": true
+          }
+        },
+        "nullable": false,
+        "required": [
+          "page",
+          "limit"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "TryPagination_lt_CommentType.CommentsByArcile_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PaginationResponseType_lt_CommentType.CommentsByArcile_gt_",
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "PaginationResponseType_lt_CommentType.CommentsByArcile_gt_": {
+        "type": "object",
+        "properties": {
+          "list": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Merge_lt_CommentType.RootComment_comma__space___type_gt_",
+              "description": "",
+              "x-typia-required": true,
+              "x-typia-optional": false
+            }
+          },
+          "count": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "totalResult": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "totalPage": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "search": {
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string"
+          },
+          "page": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "list",
+          "count",
+          "totalResult",
+          "totalPage",
+          "page"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "Merge_lt_CommentType.RootComment_comma__space___type_gt_": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "writerId": {
+            "description": "작성자의 아이디",
+            "x-typia-metaTags": [
+              {
+                "kind": "type",
+                "value": "int"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "type",
+                "text": [
+                  {
+                    "text": "int",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "integer"
+          },
+          "contents": {
+            "description": "게시글 내용",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 1000
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "1000",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "createdAt": {
+            "oneOf": [
+              {
+                "description": "",
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "type": "string"
+              },
+              {
+                "description": "",
+                "x-typia-required": true,
+                "x-typia-optional": false,
+                "$ref": "#/components/schemas/Date"
+              }
+            ],
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          },
+          "imageId": {
+            "description": "이미지의 아이디로 없을 수도 있다.\n없는 경우에는 그 게시글에 달린 것으로, xPosition, yPosition을 무시한다.",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "number",
+            "nullable": true
+          },
+          "xPosition": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "pattern": "^(-?\\d+\\.?\\d*|(-?\\d+\\.?\\d*))$",
+                "nullable": true
+              },
+              {
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "type": "number",
+                "nullable": true
+              }
+            ],
+            "description": "소수점을 포함한 좌표 값",
+            "x-typia-required": false,
+            "x-typia-optional": true
+          },
+          "yPosition": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "pattern": "^(-?\\d+\\.?\\d*|(-?\\d+\\.?\\d*))$",
+                "nullable": true
+              },
+              {
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "type": "number",
+                "nullable": true
+              }
+            ],
+            "description": "소수점을 포함한 좌표 값",
+            "x-typia-required": false,
+            "x-typia-optional": true
+          },
+          "writer": {
+            "$ref": "#/components/schemas/UserType.Profile",
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          }
+        },
+        "nullable": false,
+        "required": [
+          "id",
+          "writerId",
+          "contents",
+          "createdAt",
+          "writer"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "UserType.Profile": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "description": "사용자의 별칭, 설정하지 않는 경우도 있다.",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "profileImage": {
+            "description": "사용자의 프로필 이미지",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "nullable": false,
+        "required": [
+          "nickname",
+          "id"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CreateCommentDto": {
+        "type": "object",
+        "properties": {
+          "contents": {
+            "description": "게시글 내용",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 1000
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "1000",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "imageId": {
+            "description": "이미지의 아이디로 없을 수도 있다.\n없는 경우에는 그 게시글에 달린 것으로, xPosition, yPosition을 무시한다.",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "number",
+            "nullable": true
+          },
+          "parentId": {
+            "description": "'부모 댓글이 있는 경우, 즉 답글인 경우에는 부모 댓글 아이디를 받는다.'",
+            "x-typia-metaTags": [
+              {
+                "kind": "type",
+                "value": "int"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "type",
+                "text": [
+                  {
+                    "text": "int",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "nullable": true
+          },
+          "xPosition": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "pattern": "^(-?\\d+\\.?\\d*|(-?\\d+\\.?\\d*))$",
+                "nullable": true
+              },
+              {
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "type": "number",
+                "nullable": true
+              }
+            ],
+            "description": "소수점을 포함한 좌표 값",
+            "x-typia-required": false,
+            "x-typia-optional": true
+          },
+          "yPosition": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "pattern": "^(-?\\d+\\.?\\d*|(-?\\d+\\.?\\d*))$",
+                "nullable": true
+              },
+              {
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "type": "number",
+                "nullable": true
+              }
+            ],
+            "description": "소수점을 포함한 좌표 값",
+            "x-typia-required": false,
+            "x-typia-optional": true
+          }
+        },
+        "nullable": false,
+        "required": [
+          "contents"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CANNOT_FIND_ONE_REPLY_COMMENT": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4012
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "답글을 달 댓글을 찾지 못했어요."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "NOT_FOUND_ARTICLE_TO_COMMENT": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4006
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "댓글을 작성할 게시글을 찾지 못했습니다."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "TOO_MANY_REPORTED_ARTICLE": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4007
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "신고가 접수된 게시글이라 댓글 작성이 불가능합니다."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CANNOT_FIND_IMAGE_TO_LEFT_COMMENT": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4019
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "댓글을 남길 이미지를 찾지 못했어요."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ResponseForm_lt_CommentType.CreateResponse_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "$ref": "#/components/schemas/CommentType.CreateResponse",
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CommentType.CreateResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "writerId": {
+            "description": "작성자의 아이디",
+            "x-typia-metaTags": [
+              {
+                "kind": "type",
+                "value": "int"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "type",
+                "text": [
+                  {
+                    "text": "int",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "integer"
+          },
+          "contents": {
+            "description": "게시글 내용",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 1000
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "1000",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "imageId": {
+            "description": "이미지의 아이디로 없을 수도 있다.\n없는 경우에는 그 게시글에 달린 것으로, xPosition, yPosition을 무시한다.",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "number",
+            "nullable": true
+          },
+          "parentId": {
+            "description": "'부모 댓글이 있는 경우, 즉 답글인 경우에는 부모 댓글 아이디를 받는다.'",
+            "x-typia-metaTags": [
+              {
+                "kind": "type",
+                "value": "int"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "type",
+                "text": [
+                  {
+                    "text": "int",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "nullable": true
+          },
+          "xPosition": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "pattern": "^(-?\\d+\\.?\\d*|(-?\\d+\\.?\\d*))$",
+                "nullable": true
+              },
+              {
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "type": "number",
+                "nullable": true
+              }
+            ],
+            "description": "소수점을 포함한 좌표 값",
+            "x-typia-required": false,
+            "x-typia-optional": true
+          },
+          "yPosition": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "pattern": "^(-?\\d+\\.?\\d*|(-?\\d+\\.?\\d*))$",
+                "nullable": true
+              },
+              {
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "type": "number",
+                "nullable": true
+              }
+            ],
+            "description": "소수점을 포함한 좌표 값",
+            "x-typia-required": false,
+            "x-typia-optional": true
+          },
+          "articleId": {
+            "description": "댓글이 달린 게시글의 아이디",
+            "x-typia-metaTags": [
+              {
+                "kind": "type",
+                "value": "int"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "type",
+                "text": [
+                  {
+                    "text": "int",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "integer"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "id",
+          "writerId",
+          "contents",
+          "articleId"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ArticleType.UpdateArticleDto": {
+        "type": "object",
+        "properties": {
+          "contents": {
+            "description": "글의 내용물로, 최대 3,000자",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 3000
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "3000",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 3000
+          },
+          "type": {
+            "description": "게시글 작성 시 디자이너님은 아래 4가지 중 하나를 반드시 골라야 한다.\nquestion은 질문하기 유형의 게시글,\ndraw는 그림 그리기로, 그림 위 댓글을 달 수 있는 유형의 피그마 식 게시글,\nevent는 모임이나 행사 등, 약속을 공유할 수 있도록 달력 기능을 제공하는 게시글,\nwriting은 그 외 어떠한 글이든 포함되는 타입을 말한다.",
+            "x-typia-required": false,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "question",
+              "draw",
+              "event",
+              "writing"
+            ]
+          }
+        },
+        "nullable": false,
+        "x-typia-jsDocTags": []
+      },
+      "IS_NOT_WRITER_OF_THIS_ARTICLE": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4015
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "이 게시글의 작성자만이 수정할 수 있습니다."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ResponseForm_lt_ArticleType.DetailArticle_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ArticleType.DetailArticle",
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ArticleType.DetailArticle": {
+        "type": "object",
+        "properties": {
+          "images": {
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Pick_lt_BodyImageEntity_comma__space__doublequote_id_doublequote__space__or__space__doublequote_position_doublequote__space__or__space__doublequote_url_doublequote__space__or__space__doublequote_depth_doublequote__gt_",
+              "description": "",
+              "x-typia-required": false,
+              "x-typia-optional": true
+            }
+          },
+          "writer": {
+            "$ref": "#/components/schemas/UserType.Profile",
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          },
+          "comments": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Pick_lt_CommentEntity_comma__space__doublequote_id_doublequote__space__or__space__doublequote_contents_doublequote__space__or__space__doublequote_parentId_doublequote__space__or__space__doublequote_xPosition_doublequote__space__or__space__doublequote_yPosition_doublequote__gt_",
+              "description": "",
+              "x-typia-required": true,
+              "x-typia-optional": false
+            }
+          },
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "contents": {
+            "description": "글의 내용물로, 최대 3,000자",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 3000
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "3000",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 3000
+          }
+        },
+        "nullable": false,
+        "required": [
+          "writer",
+          "comments",
+          "id",
+          "contents"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "Pick_lt_BodyImageEntity_comma__space__doublequote_id_doublequote__space__or__space__doublequote_position_doublequote__space__or__space__doublequote_url_doublequote__space__or__space__doublequote_depth_doublequote__gt_": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "position": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "이미지의 정렬 순서로, 오름차순 정렬된다.",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "pattern": "^(-?\\d+\\.?\\d*|(-?\\d+\\.?\\d*))$",
+                "nullable": true
+              },
+              {
+                "description": "이미지의 정렬 순서로, 오름차순 정렬된다.",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "type": "number",
+                "nullable": true
+              }
+            ],
+            "description": "이미지의 정렬 순서로, 오름차순 정렬된다.",
+            "x-typia-required": false,
+            "x-typia-optional": true
+          },
+          "url": {
+            "description": "서버를 통해 한 번 전처리된 이미지\nexample is @link {https://folder/test.jpg}",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 4
+              },
+              {
+                "kind": "maxLength",
+                "value": 2048
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "4",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "2048",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 2048
+          },
+          "depth": {
+            "description": "처음 이미지를 1이라 할 때, 몇 번째 업데이트 이미지인지를 의미하는 값",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "id",
+          "url",
+          "depth"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "Pick_lt_CommentEntity_comma__space__doublequote_id_doublequote__space__or__space__doublequote_contents_doublequote__space__or__space__doublequote_parentId_doublequote__space__or__space__doublequote_xPosition_doublequote__space__or__space__doublequote_yPosition_doublequote__gt_": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "contents": {
+            "description": "게시글 내용",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 1000
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "1000",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "parentId": {
+            "description": "'부모 댓글이 있는 경우, 즉 답글인 경우에는 부모 댓글 아이디를 받는다.'",
+            "x-typia-metaTags": [
+              {
+                "kind": "type",
+                "value": "int"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "type",
+                "text": [
+                  {
+                    "text": "int",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "nullable": true
+          },
+          "xPosition": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "pattern": "^(-?\\d+\\.?\\d*|(-?\\d+\\.?\\d*))$",
+                "nullable": true
+              },
+              {
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "type": "number",
+                "nullable": true
+              }
+            ],
+            "description": "소수점을 포함한 좌표 값",
+            "x-typia-required": false,
+            "x-typia-optional": true
+          },
+          "yPosition": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "pattern": "^(-?\\d+\\.?\\d*|(-?\\d+\\.?\\d*))$",
+                "nullable": true
+              },
+              {
+                "description": "소수점을 포함한 좌표 값",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "type": "number",
+                "nullable": true
+              }
+            ],
+            "description": "소수점을 포함한 좌표 값",
+            "x-typia-required": false,
+            "x-typia-optional": true
+          }
+        },
+        "nullable": false,
+        "required": [
+          "id",
+          "contents"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ArticleType.GetAllArtcleDto": {
+        "type": "object",
+        "properties": {
+          "writerId": {
+            "description": "",
+            "x-typia-metaTags": [
+              {
+                "kind": "type",
+                "value": "int"
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "type",
+                "text": [
+                  {
+                    "text": "int",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer"
+          },
+          "searchKeyword": {
+            "description": "검색할 키워드로, 중간에 빈 문자가 있을 경우 해당 문자를 기준으로 split 하여 검색한다.\n즉, '초코 우유' 검색 시 초코와 우유가 동시에 있는 글만 볼 수 있다.",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "nullable": true
+          },
+          "page": {
+            "description": "페이지네이션의 페이지 값",
+            "x-typia-metaTags": [
+              {
+                "kind": "minimum",
+                "value": 1
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minimum",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "minimum": 1
+          },
+          "limit": {
+            "description": "",
+            "x-typia-metaTags": [
+              {
+                "kind": "maximum",
+                "value": 100
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "maximum",
+                "text": [
+                  {
+                    "text": "100",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "maximum": 100
+          }
+        },
+        "nullable": false,
+        "required": [
+          "page",
+          "limit"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CreateArticleDto": {
+        "type": "object",
+        "properties": {
+          "images": {
+            "description": "",
+            "x-typia-metaTags": [
+              {
+                "kind": "maxItems",
+                "value": 10
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "maxItems",
+                "text": [
+                  {
+                    "text": "10",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateRootBodyImageDto",
+              "description": "",
+              "x-typia-metaTags": [
+                {
+                  "kind": "maxItems",
+                  "value": 10
+                }
+              ],
+              "x-typia-jsDocTags": [
+                {
+                  "name": "maxItems",
+                  "text": [
+                    {
+                      "text": "10",
+                      "kind": "text"
+                    }
+                  ]
+                }
+              ],
+              "x-typia-required": false,
+              "x-typia-optional": true
+            },
+            "maxItems": 10
+          },
+          "contents": {
+            "description": "글의 내용물로, 최대 3,000자",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 3000
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "3000",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 3000
+          },
+          "type": {
+            "description": "게시글 작성 시 디자이너님은 아래 4가지 중 하나를 반드시 골라야 한다.\nquestion은 질문하기 유형의 게시글,\ndraw는 그림 그리기로, 그림 위 댓글을 달 수 있는 유형의 피그마 식 게시글,\nevent는 모임이나 행사 등, 약속을 공유할 수 있도록 달력 기능을 제공하는 게시글,\nwriting은 그 외 어떠한 글이든 포함되는 타입을 말한다.",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "question",
+              "draw",
+              "event",
+              "writing"
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "contents",
+          "type"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CreateRootBodyImageDto": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "이미지의 정렬 순서로, 오름차순 정렬된다.",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "pattern": "^(-?\\d+\\.?\\d*|(-?\\d+\\.?\\d*))$",
+                "nullable": true
+              },
+              {
+                "description": "이미지의 정렬 순서로, 오름차순 정렬된다.",
+                "x-typia-required": false,
+                "x-typia-optional": true,
+                "type": "number",
+                "nullable": true
+              }
+            ],
+            "description": "이미지의 정렬 순서로, 오름차순 정렬된다.",
+            "x-typia-required": false,
+            "x-typia-optional": true
+          },
+          "url": {
+            "description": "서버를 통해 한 번 전처리된 이미지\nexample is @link {https://folder/test.jpg}",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 4
+              },
+              {
+                "kind": "maxLength",
+                "value": 2048
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "4",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "2048",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 2048
+          }
+        },
+        "nullable": false,
+        "required": [
+          "url"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "IS_SAME_POSITION": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4003
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "이미지의 정렬 값이 동일한 경우가 존재합니다."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "SELECT_MORE_THAN_ONE_IMAGE": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4005
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "적어도 1장 이상의 이미지를 골라야 합니다."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ResponseForm_lt_Array_lt_string_gt__gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "description": "",
+              "x-typia-required": true,
+              "x-typia-optional": false,
+              "type": "string"
+            }
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "SearchPaginationDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "description": "페이지네이션의 페이지 값",
+            "x-typia-metaTags": [
+              {
+                "kind": "minimum",
+                "value": 1
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minimum",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "minimum": 1
+          },
+          "limit": {
+            "description": "",
+            "x-typia-metaTags": [
+              {
+                "kind": "maximum",
+                "value": 100
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "maximum",
+                "text": [
+                  {
+                    "text": "100",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "maximum": 100
+          },
+          "search": {
+            "description": "검색하고자 하는 키워드, 또는 문장일 수도 있다",
+            "x-typia-metaTags": [
+              {
+                "kind": "maxLength",
+                "value": 200
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "200",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "nullable": false,
+        "required": [
+          "page",
+          "limit"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "TryPagination_lt_CategoryType.FindAllResponse_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PaginationResponseType_lt_CategoryType.FindAllResponse_gt_",
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "PaginationResponseType_lt_CategoryType.FindAllResponse_gt_": {
+        "type": "object",
+        "properties": {
+          "list": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryType.Element",
+              "description": "",
+              "x-typia-required": true,
+              "x-typia-optional": false
+            }
+          },
+          "count": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "totalResult": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "totalPage": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "search": {
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string"
+          },
+          "page": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "list",
+          "count",
+          "totalResult",
+          "totalPage",
+          "page"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CategoryType.Element": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "카테고리의 이름으로, 디자인 계열의 카테고리 이름",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "name",
+          "id"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "TryPagination_lt_UserType.ProfileList_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PaginationResponseType_lt_UserType.ProfileList_gt_",
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "PaginationResponseType_lt_UserType.ProfileList_gt_": {
+        "type": "object",
+        "properties": {
+          "list": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserType.Acquaintance",
+              "description": "",
+              "x-typia-required": true,
+              "x-typia-optional": false
+            }
+          },
+          "count": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "totalResult": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "totalPage": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "search": {
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string"
+          },
+          "page": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "list",
+          "count",
+          "totalResult",
+          "totalPage",
+          "page"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "UserType.Acquaintance": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "description": "사용자의 별칭, 설정하지 않는 경우도 있다.",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "profileImage": {
+            "description": "사용자의 프로필 이미지",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "nullable": true
+          },
+          "reason": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "나를 팔로우한 사람",
+              "내가 팔로우한 사람"
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "nickname",
+          "id",
+          "reason"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "UserType.UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "description": "사용자의 별칭, 설정하지 않는 경우도 있다.",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "profileImage": {
+            "description": "사용자의 프로필 이미지",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "nullable": true
+          },
+          "coverImage": {
+            "description": "사용자의 커버 이미지",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "nullable": true
+          },
+          "introduce": {
+            "description": "",
+            "x-typia-metaTags": [
+              {
+                "kind": "maxLength",
+                "value": 2000
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "2000",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 2000,
+            "nullable": true
+          }
+        },
+        "nullable": false,
+        "x-typia-jsDocTags": []
+      },
+      "CANNOT_FIND_DESIGNER_PROFILE": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4018
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "디자이너의 프로필을 찾지 못했어요."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ResponseForm_lt_UserType.DetailProfile_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserType.DetailProfile",
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "UserType.DetailProfile": {
+        "type": "object",
+        "properties": {
+          "myself": {
+            "description": "나 자신의 프로필인 경우에는 true, 아닌 경우에는 false로 나온다.",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "boolean"
+          },
+          "name": {
+            "description": "이름 칼럼으로 사용자의 이름을 의미",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "nickname": {
+            "description": "사용자의 별칭, 설정하지 않는 경우도 있다.",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "email": {
+            "description": "사용자의 이메일 주소로 로그인 시 필요",
+            "x-typia-metaTags": [
+              {
+                "kind": "format",
+                "value": "email"
+              },
+              {
+                "kind": "minLength",
+                "value": 4
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "format",
+                "text": [
+                  {
+                    "text": "email",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "4",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "email",
+            "minLength": 4,
+            "maxLength": 50
+          },
+          "birth": {
+            "description": "사용자의 생일을 의미하는 값",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "profileImage": {
+            "description": "사용자의 프로필 이미지",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "nullable": true
+          },
+          "coverImage": {
+            "description": "사용자의 커버 이미지",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "nullable": true
+          },
+          "introduce": {
+            "description": "",
+            "x-typia-metaTags": [
+              {
+                "kind": "maxLength",
+                "value": 2000
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "2000",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 2000,
+            "nullable": true
+          }
+        },
+        "nullable": false,
+        "required": [
+          "name",
+          "nickname",
+          "email",
+          "id"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "Try_lt_UserType.Retuation_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserType.Retuation",
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "UserType.Retuation": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "description": "지금까지 질문을 한 횟수로, 게시글과 무관하게 질문 횟수는 한 번 더 카운트해준다.",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "answer": {
+            "description": "답변을 한 횟수",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "adopted": {
+            "description": "최상위로 채택된 답변의 수로, 시간이 지남에 따라 변동될 수 있다",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "writing": {
+            "description": "글을 작성한 수",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "likes": {
+            "description": "좋아요를 받은 수로, 게시글과 댓글 모두를 합한 것을 의미한다.",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "question",
+          "answer",
+          "adopted",
+          "writing",
+          "likes",
+          "id"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "STILL_UNFOLLOW_USER": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4010
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "아직 팔로우한 적 없는 디자이너님에요!"
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CANNOT_FIND_ONE_DESIGNER_TO_UNFOLLOW": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4011
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "언팔로우할 디자이너님을 찾지 못했습니다."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ALREADY_FOLLOW_USER": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4008
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "이미 좋아요를 누른 디자이너님입니다!"
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CANNOT_FIND_ONE_DESIGNER_TO_FOLLOW": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4009
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "팔로우할 디자이너님을 찾지 못했습니다."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CANNOT_FOLLOW_MYSELF": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4017
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "설마 자기 자신을 팔로우하려고 했어요?!"
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ResponseForm_lt_UserType.DetailProfileWithRelation_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserType.DetailProfileWithRelation",
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "UserType.DetailProfileWithRelation": {
+        "type": "object",
+        "properties": {
+          "followStatus": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "follow",
+              "followUp",
+              "reverse",
+              "nothing"
+            ]
+          },
+          "myself": {
+            "description": "나 자신의 프로필인 경우에는 true, 아닌 경우에는 false로 나온다.",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "boolean"
+          },
+          "name": {
+            "description": "이름 칼럼으로 사용자의 이름을 의미",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "nickname": {
+            "description": "사용자의 별칭, 설정하지 않는 경우도 있다.",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "email": {
+            "description": "사용자의 이메일 주소로 로그인 시 필요",
+            "x-typia-metaTags": [
+              {
+                "kind": "format",
+                "value": "email"
+              },
+              {
+                "kind": "minLength",
+                "value": 4
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "format",
+                "text": [
+                  {
+                    "text": "email",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "4",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "email",
+            "minLength": 4,
+            "maxLength": 50
+          },
+          "birth": {
+            "description": "사용자의 생일을 의미하는 값",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "profileImage": {
+            "description": "사용자의 프로필 이미지",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "nullable": true
+          },
+          "coverImage": {
+            "description": "사용자의 커버 이미지",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "nullable": true
+          },
+          "introduce": {
+            "description": "",
+            "x-typia-metaTags": [
+              {
+                "kind": "maxLength",
+                "value": 2000
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "2000",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 2000,
+            "nullable": true
+          }
+        },
+        "nullable": false,
+        "required": [
+          "followStatus",
+          "name",
+          "nickname",
+          "email",
+          "id"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "이름 칼럼으로 사용자의 이름을 의미",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "nickname": {
+            "description": "사용자의 별칭, 설정하지 않는 경우도 있다.",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "email": {
+            "description": "사용자의 이메일 주소로 로그인 시 필요",
+            "x-typia-metaTags": [
+              {
+                "kind": "format",
+                "value": "email"
+              },
+              {
+                "kind": "minLength",
+                "value": 4
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "format",
+                "text": [
+                  {
+                    "text": "email",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "4",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "email",
+            "minLength": 4,
+            "maxLength": 50
+          },
+          "password": {
+            "description": "사용자의 비밀번호로 로그인 시 필요",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "phoneNumber": {
+            "description": "사용자의 전화번호로 동일한 값은 없으며, 미입력된 계정 둘의 전화번호가 같을 경우 계정 통합을 요구할 예정",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 11
+              },
+              {
+                "kind": "maxLength",
+                "value": 13
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "11",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "13",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 11,
+            "maxLength": 13
+          },
+          "birth": {
+            "description": "사용자의 생일을 의미하는 값",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "description": "사용자의 성별로 true면 남자라고 가정한다.",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "boolean",
+            "nullable": true
+          },
+          "smsAdsConsent": {
+            "description": "회원 가입 시 받는 값으로 수신 거부 가능",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean"
+          },
+          "emailAdsConsent": {
+            "description": "회원 가입 시 받는 값으로 수신 거부 가능",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "name",
+          "nickname",
+          "email",
+          "password",
+          "phoneNumber",
+          "smsAdsConsent",
+          "emailAdsConsent"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ALREADY_CREATED_EMAIL": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4001
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "이미 생성된 이메일입니다."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ALREADY_CREATED_PHONE_NUMBER": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "business"
+            ]
+          },
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              4013
+            ]
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "enum": [
+              "이미 생성된 전화번호입니다."
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ResponseForm_lt_DecodedUserToken_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "$ref": "#/components/schemas/DecodedUserToken",
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "DecodedUserToken": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "이름 칼럼으로 사용자의 이름을 의미",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "nickname": {
+            "description": "사용자의 별칭, 설정하지 않는 경우도 있다.",
+            "x-typia-metaTags": [
+              {
+                "kind": "minLength",
+                "value": 1
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "1",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "email": {
+            "description": "사용자의 이메일 주소로 로그인 시 필요",
+            "x-typia-metaTags": [
+              {
+                "kind": "format",
+                "value": "email"
+              },
+              {
+                "kind": "minLength",
+                "value": 4
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "format",
+                "text": [
+                  {
+                    "text": "email",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "4",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "email",
+            "minLength": 4,
+            "maxLength": 50
+          },
+          "birth": {
+            "description": "사용자의 생일을 의미하는 값",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "name",
+          "nickname",
+          "email",
+          "id"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "LoginUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "description": "사용자의 이메일 주소로 로그인 시 필요",
+            "x-typia-metaTags": [
+              {
+                "kind": "format",
+                "value": "email"
+              },
+              {
+                "kind": "minLength",
+                "value": 4
+              },
+              {
+                "kind": "maxLength",
+                "value": 50
+              }
+            ],
+            "x-typia-jsDocTags": [
+              {
+                "name": "format",
+                "text": [
+                  {
+                    "text": "email",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "minLength",
+                "text": [
+                  {
+                    "text": "4",
+                    "kind": "text"
+                  }
+                ]
+              },
+              {
+                "name": "maxLength",
+                "text": [
+                  {
+                    "text": "50",
+                    "kind": "text"
+                  }
+                ]
+              }
+            ],
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "email",
+            "minLength": 4,
+            "maxLength": 50
+          },
+          "password": {
+            "description": "사용자의 비밀번호로 로그인 시 필요",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "email",
+          "password"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "Try_lt_string_gt_": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "code": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number",
+            "enum": [
+              1000
+            ]
+          },
+          "requestToResponse": {
+            "type": "string",
+            "description": "",
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "pattern": "^(-?\\d+\\.?\\d*ms)$"
+          },
+          "data": {
+            "description": "",
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "result",
+          "code",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
+}
